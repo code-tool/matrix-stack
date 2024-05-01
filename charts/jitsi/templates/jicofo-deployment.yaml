@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: jitsi-jicofo
+  name: jitsi-jicofo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: jitsi-jicofo
+  template:
+    metadata:
+      labels:
+        k8s-app: jitsi-jicofo
+    spec:
+      containers:
+        - name: jicofo
+          image: {{ .Values.jitsi.jicofo.image.repository }}:{{ .Values.jitsi.jicofo.image.tag }}
+          imagePullPolicy: {{ .Values.jitsi.jicofo.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.jitsi.jicofo.resources | nindent 12 }}
+          env:
+            - name: XMPP_SERVER
+              value: prosody
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: JICOFO_COMPONENT_SECRET
+              value: {{ .Values.jitsi.jicofo.componentSecret | quote }}
+            - name: JICOFO_AUTH_USER
+              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+            - name: JICOFO_AUTH_PASSWORD
+              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+            - name: TZ
+              value: {{ .Values.jitsi.timeZone }}
+            - name: JVB_BREWERY_MUC
+              value: jvbbrewery
+            {{- if .Values.jitsi.jicofo.extraEnvs }}
+            {{- toYaml .Values.jitsi.jicofo.extraEnvs | nindent 12 }}
+            {{- end }}
+      {{- if .Values.jitsi.jicofo.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.jitsi.jicofo.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.jicofo.tolerations }}
+      tolerations:
+        {{ toYaml .Values.jitsi.jicofo.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.jicofo.affinity }}
+      affinity:
+        {{ toYaml .Values.jitsi.jicofo.affinity | nindent 8 }}
+      {{- end }}
