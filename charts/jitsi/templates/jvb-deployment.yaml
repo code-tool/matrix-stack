@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: jitsi-jvb
+  name: jitsi-jvb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: jitsi-jvb
+  template:
+    metadata:
+      labels:
+        k8s-app: jitsi-jvb
+    spec:
+      #hostNetwork: true
+      #dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: jvb
+          image: {{ .Values.jitsi.jvb.image.repository }}:{{ .Values.jitsi.jvb.image.tag }}
+          imagePullPolicy: {{ .Values.jitsi.jvb.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.jitsi.jvb.resources | nindent 12 }}
+          env:
+            - name: XMPP_SERVER
+              value: prosody
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: JVB_STUN_SERVERS
+              value: {{ join "," .Values.jitsi.jvb.stunServers | quote }}
+            - name: JICOFO_AUTH_USER
+              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "false"
+            - name: JVB_AUTH_USER
+              value: {{ .Values.jitsi.jvb.authUser | quote }}
+            - name: JVB_PORT
+              value: "30300"
+            - name: JVB_TCP_PORT
+              value: "30301"
+            - name: JVB_AUTH_PASSWORD
+              value: {{ .Values.jitsi.jvb.authPassword | quote }}
+            - name: JICOFO_AUTH_PASSWORD
+              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+            - name: JVB_BREWERY_MUC
+              value: jvbbrewery
+            - name: TZ
+              value: {{ .Values.jitsi.timeZone }}
+            - name: PUBLIC_URL
+              value: https://{{ .Values.jitsi.serverName }}
+            {{- if .Values.jitsi.jvb.extraEnvs }}
+            {{- toYaml .Values.jitsi.jvb.extraEnvs | nindent 12 }}
+            {{- end }}
+      {{- if .Values.jitsi.jvb.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.jitsi.jvb.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.jvb.tolerations }}
+      tolerations:
+        {{ toYaml .Values.jitsi.jvb.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.jvb.affinity }}
+      affinity:
+        {{ toYaml .Values.jitsi.jvb.affinity | nindent 8 }}
+      {{- end }}

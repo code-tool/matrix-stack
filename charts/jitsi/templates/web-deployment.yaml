@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: jitsi-web
+  name: jitsi-web
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: jitsi-web
+  template:
+    metadata:
+      labels:
+        k8s-app: jitsi-web
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.jitsi.web.image.repository }}:{{ .Values.jitsi.web.image.tag }}
+          imagePullPolicy: {{ .Values.jitsi.web.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.jitsi.web.resources | nindent 12 }}
+          env:
+            - name: XMPP_SERVER
+              value: prosody
+            - name: JICOFO_AUTH_USER
+              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: XMPP_BOSH_URL_BASE
+              value: http://prosody:5280
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: TZ
+              value: {{ .Values.jitsi.timeZone }}
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "false"
+            - name: PUBLIC_URL
+              value: https://{{ .Values.jitsi.serverName }}
+            - name: ENABLE_LOBBY
+              value: "0"
+            - name: ENABLE_WELCOME_PAGE
+              value: "0"
+            - name: ENABLE_PREJOIN_PAGE
+              value: "0"
+            - name: VIDEOQUALITY_ENFORCE_PREFERRED_CODEC
+              value: "1"
+            - name: P2P_PREFERRED_CODEC
+              value: "VP9"
+            - name: VIDEOQUALITY_PREFERRED_CODEC
+              value: "VP9"
+            {{- if .Values.jitsi.web.extraEnvs }}
+            {{- toYaml .Values.jitsi.web.extraEnvs | nindent 12 }}
+            {{- end }}
+      {{- if .Values.jitsi.web.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.jitsi.web.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.web.tolerations }}
+      tolerations:
+        {{ toYaml .Values.jitsi.web.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.web.affinity }}
+      affinity:
+        {{ toYaml .Values.jitsi.web.affinity | nindent 8 }}
+      {{- end }}
