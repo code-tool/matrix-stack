@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: jitsi-prosody
+  name: jitsi-prosody
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: jitsi-prosody
+  template:
+    metadata:
+      labels:
+        k8s-app: jitsi-prosody
+    spec:
+      containers:
+        - name: prosody
+          image: {{ .Values.jitsi.prosody.image.repository }}:{{ .Values.jitsi.prosody.image.tag }}
+          imagePullPolicy: {{ .Values.jitsi.prosody.image.pullPolicy }}
+          resources:
+            {{ toYaml .Values.jitsi.prosody.resources | nindent 12 }}
+          env:
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: XMPP_CROSS_DOMAIN
+              value: "true"
+            - name: JICOFO_COMPONENT_SECRET
+              value: {{ .Values.jitsi.jicofo.componentSecret | quote }}
+            - name: JVB_AUTH_USER
+              value: {{ .Values.jitsi.jvb.authUser | quote }}
+            - name: JVB_AUTH_PASSWORD
+              value: {{ .Values.jitsi.jvb.authPassword | quote }}
+            - name: JICOFO_AUTH_USER
+              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+            - name: JICOFO_AUTH_PASSWORD
+              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+            - name: TZ
+              value: {{ .Values.jitsi.timeZone }}
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "false"
+            {{- if .Values.jitsi.prosody.extraEnvs }}
+            {{- toYaml .Values.jitsi.prosody.extraEnvs | nindent 12 }}
+            {{- end }}
+      {{- if .Values.jitsi.prosody.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.jitsi.prosody.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.prosody.tolerations }}
+      tolerations:
+        {{ toYaml .Values.jitsi.prosody.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.jitsi.prosody.affinity }}
+      affinity:
+        {{ toYaml .Values.jitsi.prosody.affinity | nindent 8 }}
+      {{- end }}
