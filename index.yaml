@@ -1,0 +1,11 @@
+apiVersion: v1
+entries:
+  jitsi:
+  - apiVersion: v1
+    created: "2024-05-01T12:24:01.754850746Z"
+    digest: 08567687e858836168707a206d58d0784b197da639cae76d88127856e868e54d
+    name: jitsi
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.0.1/jitsi-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-05-01T12:24:01.754919233Z"
