@@ -1,0 +1,45 @@
+{{- $autoscalingWorkers := .Values.synapse.autoscalingWorkers | default (dict "federation_sender" 1 "client_reader" 1 "event_creator" 1 "media_repository" 1 ) -}}
+{{- $deployScalingWorkers := merge (deepCopy $autoscalingWorkers) ( .Values.synapse.deployScalingWorkers | default (dict "event_persister" 1 "pusher" 1 )) -}}
+{{- $nonscaling_workers := dict "master" 1 "account_data" 1 "presence" 1 "typing" 1 "background_worker" 1 "receipts" 1 "keys" 1 "to_device" 1 "media_repository_background_jobs" 1 -}}
+{{- $workers := merge (deepCopy $deployScalingWorkers) (deepCopy $nonscaling_workers) -}}
+
+
+{{- range $worker, $count := $workers }}
+{{ $name := $worker | replace "_" "-" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-{{ $name }}
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+spec:
+  clusterIP: None
+  selector:
+    {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
+  ports:
+  - name: client
+    port: 80
+    targetPort: 8008
+  - name: http
+    port: 8008
+    targetPort: 8008
+{{ end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-client-reader-headless
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+  labels:
+    {{- include "synapse-client-reader.selectorLabels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+    {{- include "synapse-client-reader.selectorLabels" . | nindent 6 }}

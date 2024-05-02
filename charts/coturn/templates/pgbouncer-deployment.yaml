@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn-pgbouncer
+  labels:
+    app: coturn-pgbouncer
+spec:
+  replicas: {{ .Values.coturn.pgbouncer.replicas }}
+  selector:
+    matchLabels:
+      app: coturn-pgbouncer
+  template:
+    metadata:
+      labels:
+        app: coturn-pgbouncer
+    spec:
+      containers:
+      - name: pgbouncer
+        mage: {{ .Values.coturn.pgbouncer.image.repository }}:{{ .Values.coturn.pgbouncer.image.tag }}
+        imagePullPolicy: {{ .Values.coturn.pgbouncer.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.coturn.pgbouncer.resources | nindent 10 }}
+        env:
+          - name: PGBOUNCER_PORT
+            value: "5432"
+          - name: POSTGRESQL_HOST
+            value: {{ .Values.coturn.postgres.host | quote }}
+          - name: PGBOUNCER_DATABASE
+            value: {{ .Values.coturn.postgres.dbname | quote }}
+          - name: POSTGRESQL_USERNAME
+            value: {{ .Values.coturn.postgres.user | quote }}
+          - name: POSTGRESQL_PASSWORD
+            value: {{ .Values.coturn.postgres.password | quote }}
+          - name: PGBOUNCER_AUTH_TYPE
+            value: {{ .Values.coturn.pgbouncer.authType | quote }}
+          - name: PGBOUNCER_MAX_CLIENT_CONN
+            value: {{ .Values.coturn.pgbouncer.maxClientConn | quote }}
+          - name: PGBOUNCER_DEFAULT_POOL_SIZE
+            value: {{ .Values.coturn.pgbouncer.poolSize | quote }}
+          - name: PGBOUNCER_POOL_MODE
+            value: {{ .Values.coturn.pgbouncer.poolMode | quote }}
+        ports:
+          - containerPort: 5432
+            name: pgbouncer
+            protocol: TCP
+      {{- if .Values.coturn.pgbouncer.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.coturn.pgbouncer.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.coturn.pgbouncer.tolerations }}
+      tolerations:
+        {{ toYaml .Values.coturn.pgbouncer.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.coturn.pgbouncer.affinity }}
+      affinity:
+        {{ toYaml .Values.coturn.pgbouncer.affinity | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10

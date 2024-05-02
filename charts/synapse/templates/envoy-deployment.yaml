@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-client-reader-envoy
+  labels:
+    {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.envoyProxy.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ .Files.Get "scripts/envoy.yaml" | sha256sum }}
+      {{- with .Values.envoyProxy.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: envoy
+          image: {{ .Values.envoyProxy.image.repository }}:{{ .Values.envoyProxy.image.tag }}
+          imagePullPolicy: {{ .Values.envoyProxy.image.pullPolicy }}
+          args:
+            - -c
+            - /config/envoy.yaml
+          ports:
+            - name: http
+              containerPort: 10000
+              protocol: TCP
+            - name: http-admin
+              containerPort: 9901
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http-admin
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-admin
+          resources:
+            {{ toYaml .Values.envoyProxy.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /config/envoy.yaml
+              subPath: envoy.yaml
+            - name: config
+              mountPath: /usr/lib/synapse.lua
+              subPath: synapse.lua
+      {{- if .Values.envoyProxy.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.envoyProxy.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.envoyProxy.tolerations }}
+      tolerations:
+        {{ toYaml .Values.envoyProxy.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.envoyProxy.affinity }}
+      affinity:
+        {{ toYaml .Values.envoyProxy.affinity | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: synapse-client-reader-envoy

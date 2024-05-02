@@ -1,0 +1,37 @@
+{{- if .Values.synapse.autoscaling.enabled }}
+{{- range $worker, $count := .Values.synapse.autoscalingWorkers }}
+{{- $name := $worker | replace "_" "-"}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: synapse-{{ $name }}-cpu
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: synapse-{{ $name }}
+  minReplicas: {{ $count }}
+  maxReplicas: 100
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 30
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 3
+        periodSeconds: 15
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Pods
+        value: 5
+        periodSeconds: 15
+{{- end }}
+{{- end }}

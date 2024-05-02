@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook
+  labels:
+    app: webhook
+spec:
+  replicas: {{ .Values.matrixWebHook.replicas }}
+  selector:
+    matchLabels:
+      app: webhook
+  template:
+    metadata:
+      labels:
+        app: webhook
+    spec:
+      containers:
+      - name: webhook
+        image: {{ .Values.matrixWebHook.image.repository }}:{{ .Values.matrixWebHook.image.tag }}
+        imagePullPolicy: {{ .Values.matrixWebHook.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.matrixWebHook.resources | nindent 10 }}
+        args: ["-vvvvvvvvvvvvvvvvvvvvv"]
+        env:
+        - name: MATRIX_URL
+          value: "https://{{ .Values.server_name }}"
+        - name: MATRIX_ID
+          value: "{{ .Values.matrixWebHook.matrix.id }}"
+        - name: MATRIX_PW
+          value: "{{ .Values.matrixWebHook.matrix.password }}"
+        - name: API_KEY
+          value: "{{ .Values.matrixWebHook.matrix.apiKey }}"
+        ports:
+          - containerPort: 4785
+            name: webhook
+            protocol: TCP
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.matrixWebHook.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.matrixWebHook.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matrixWebHook.tolerations }}
+      tolerations:
+        {{ toYaml .Values.matrixWebHook.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matrixWebHook.affinity }}
+      affinity:
+        {{ toYaml .Values.matrixWebHook.affinity | nindent 8 }}
+      {{- end }}

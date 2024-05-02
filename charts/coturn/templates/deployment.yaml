@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn
+  labels:
+    app: coturn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coturn
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+      labels:
+        app: coturn
+    spec:
+      containers:
+      - name: coturn
+        image: {{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}
+        imagePullPolicy: {{ .Values.coturn.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.coturn.resources | nindent 10 }}
+        args:
+        - --external-ip='$(detect-external-ip)'
+        ports:
+          - containerPort: 3478
+            name: tcp
+            protocol: TCP
+          - containerPort: 5349
+            name: tls
+            protocol: TCP
+        volumeMounts:
+        - name: coturn-config
+          mountPath: /etc/turnserver.conf
+          subPath: turnserver.conf
+        - name: coturn-tls
+          mountPath: /etc/tls
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.coturn.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.coturn.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.coturn.tolerations }}
+      tolerations:
+        {{ toYaml .Values.coturn.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.coturn.affinity }}
+      affinity:
+        {{ toYaml .Values.coturn.affinity | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: coturn-config
+        configMap:
+          name: coturn-config
+      - name: coturn-tls
+        secret:
+          secretName: tls

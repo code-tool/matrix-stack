@@ -1,0 +1,29 @@
+{{- if .Values.matrixAuthentication.enabled }}
+{{- if .Values.matrixAuthentication.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: matrix-authentication
+  annotations:
+    nginx.org/client-max-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.matrixAuthentication.ingress.host }}
+      secretName: tls
+  rules:
+  - host: {{ .Values.matrixAuthentication.ingress.host }}
+    http:
+      paths:
+      - path: "/"
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: matrix-authentication
+{{- end }}
+{{- end }}

@@ -1,0 +1,291 @@
+{{- $autoscalingWorkers := .Values.synapse.autoscalingWorkers | default (dict "federation_sender" 1 "client_reader" 1 "event_creator" 1 "media_repository" 1 ) -}}
+{{- $deployScalingWorkers := merge (deepCopy $autoscalingWorkers) ( .Values.synapse.deployScalingWorkers | default (dict "event_persister" 1 "pusher" 1 )) -}}
+{{- $nonscaling_workers := dict "master" 1 "account_data" 1 "presence" 1 "typing" 1 "background_worker" 1 "receipts" 1 "keys" 1 "to_device" 1 "media_repository_background_jobs" 1 -}}
+{{- $workers := merge (deepCopy $deployScalingWorkers) (deepCopy $nonscaling_workers) -}}
+
+{{- $registration_shared_secret := .Values.registration_shared_secret -}}
+{{- $form_secret := .Values.form_secret -}}
+{{- $macaroon_secret_key := .Values.macaroon_secret_key -}}
+{{- $media_storage_providers := .Values.media_storage_providers -}}
+{{- $turn_uris := .Values.turn_uris -}}
+{{- $password_providers := .Values.password_providers -}}
+{{- $saml2_config := .Values.saml2_config -}}
+{{- $oidc_providers := .Values.oidc_providers -}}
+{{- $mas_config := .Values.matrixAuthentication -}}
+{{- $signing_key := .Values.signing_key -}}
+{{- $federation_domain_whitelist := .Values.federation_domain_whitelist }}
+{{- $federation_metrics_domains := .Values.federation_metrics_domains }}
+{{- $idp_metadata := .Values.idp_metadata | default "" }}
+{{- $password_enabled := .Values.password_enabled }}
+{{- $rc_message := .Values.rc_message -}}
+
+{{- range $worker, $count := $workers }}
+{{ $name := $worker | replace "_" "-"}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synapse-{{ $name }}-config
+  labels:
+    app: synapse
+    component: synapse-{{ $name }}
+data:
+  homeserver.yaml: |
+    ---
+    server_name: {{ $.Values.synapse.serverName }}
+    {{- if ne $worker "master" }}
+    worker_app: synapse.app.generic_worker
+    {{- end }}
+    account_threepid_delegates: ~
+    account_validity: ~
+    alias_creation_rules:
+      - action: allow
+        alias: "*"
+        room_id: "*"
+        user_id: "*"
+    allow_guest_access: false
+    allow_per_room_profiles: false
+    allow_public_rooms_over_federation: true
+    allow_public_rooms_without_auth: false
+    auto_join_rooms:
+      - "#general:{{ $.Values.synapse.serverName }}"
+    auto_join_rooms_for_guests: false
+    autocreate_auto_join_room_preset: public_chat
+    autocreate_auto_join_rooms: true
+    autocreate_auto_join_rooms_federated: false
+    block_non_admin_invites: false
+    event_cache_size: "10K"
+    database:
+      args:
+        cp_max: {{ $.Values.synapse.postgres.cp_max }}
+        cp_min: {{ $.Values.synapse.postgres.cp_min }}
+        database: {{ $.Values.synapse.postgres.dbname }}
+        host: synapse-pgbouncer
+        password: {{ $.Values.synapse.postgres.password }}
+        user: {{ $.Values.synapse.postgres.user }}
+      name: psycopg2
+    rc_message: {{- $rc_message | toYaml | nindent 6 }}
+    disable_msisdn_registration: true
+    dynamic_thumbnails: false
+    max_upload_size: 100M
+    email: ~
+    enable_3pid_changes: false
+    enable_group_creation: false
+    enable_registration: false
+    enable_room_list_search: true
+    enable_search: true
+    enable_set_avatar_url: true
+    enable_set_displayname: false
+    encryption_enabled_by_default_for_room_type: off
+    form_secret: "{{ $form_secret }}"
+    limit_profile_requests_to_users_who_share_rooms: false
+    limit_remote_rooms: ~
+    {{- if eq $worker "master" }}
+    listeners:
+    {{- else }}
+    worker_listeners:
+    {{- end }}
+      - port: 9092
+        tls: false
+        type: http
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [metrics]
+            compress: false
+      {{- if has $worker (list "master") }}
+      - port: 8008
+        tls: false
+        type: http
+        x_forwarded: true
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [client, federation]
+            compress: true
+      {{- end }}
+      {{- if has $worker (list "account_data" "client_reader" "event_creator" "presence" "receipts" "keys" "to_device" "typing") }}
+      - port: 8008
+        tls: false
+        type: http
+        x_forwarded: true
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [client]
+            compress: true
+      {{- end }}
+      {{- if has $worker (list "federation_sender") }}
+      - port: 8008
+        tls: false
+        type: http
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [federation]
+            compress: true
+      {{- end }}
+      {{- if has $worker (list "media_repository" "media_repository_background_jobs") }}
+      - port: 8008
+        tls: false
+        type: http
+        x_forwarded: true
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [media]
+            compress: false
+      {{- end }}
+      {{- if has $worker (list "master" "account_data" "event_persister" "presence" "receipts" "to_device" "typing") }}
+      - port: 9093
+        tls: false
+        type: http
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [replication]
+            compress: false
+      {{- end }}
+    enable_metrics: true
+    federation_domain_whitelist: {{- $federation_domain_whitelist | toYaml | nindent 6 }}
+    federation_metrics_domains:  {{- $federation_metrics_domains | toYaml | nindent 6 }}
+    allow_profile_lookup_over_federation: true
+    allow_device_name_lookup_over_federation: true
+    instance_map:
+      main:
+        host: synapse-master-0.synapse-master
+        port: 9093
+
+      {{- range until ( $workers.event_persister | int) }}
+      synapse-event-persister-{{ . }}:
+        host: synapse-event-persister-{{ . }}.synapse-event-persister
+        port: 9093
+      {{- end }}
+
+      synapse-account-data-0:
+        host: synapse-account-data-0.synapse-account-data
+        port: 9093
+
+      synapse-to-device-0:
+        host: synapse-to-device-0.synapse-to-device
+        port: 9093
+
+      synapse-presence-0:
+        host: synapse-presence-0.synapse-presence
+        port: 9093
+
+      synapse-typing-0:
+        host: synapse-typing-0.synapse-typing
+        port: 9093
+
+      synapse-receipts-0:
+        host: synapse-receipts-0.synapse-receipts
+        port: 9093
+
+    stream_writers:
+      presence:
+        - synapse-presence-0
+      typing:
+        - synapse-typing-0
+      account_data:
+        - synapse-account-data-0
+      to_device:
+        - synapse-to-device-0
+      receipts:
+        - synapse-receipts-0
+      events:
+        {{- range until ( $workers.event_persister | int) }}
+        - synapse-event-persister-{{ . }}
+        {{- end }}
+
+    pusher_instances:
+      {{- range until ( $workers.pusher | int) }}
+      - synapse-pusher-{{ . }}
+      {{- end }}
+
+    run_background_tasks_on: synapse-background-worker-0
+    log_config: /data/log.config
+    macaroon_secret_key: "{{ $macaroon_secret_key }}"
+    {{- if has $worker (list "master" "media_repository" "media_repository_background_jobs") }}
+    {{- if ne $name "master" }}
+    media_storage_providers: {{- $media_storage_providers | toYaml | nindent 6 }}
+    {{- end }}
+    enable_media_repo: {{ ( ne $name "master") | ternary "true" "false" }}
+    {{- end }}
+    media_instance_running_background_jobs: media-repository-background-jobs-0
+    media_store_path: /tmp/media_store
+    metrics_flags: ~
+    oidc_providers: {{ $oidc_providers | toYaml | nindent 6 }}
+    old_signing_keys: ~
+    opentracing: ~
+    password_config:
+      enabled: {{ $password_enabled }}
+    password_providers: {{- $password_providers | toYaml | nindent 6 }}
+    pid_file: /tmp/homeserver.pid
+    push: ~
+    start_pushers: False
+    redaction_retention_period: ~
+    redis:
+      enabled: true
+      host: "redis"
+      port: 6379
+    registration_shared_secret: "{{ $registration_shared_secret }}"
+    report_stats: true
+    require_auth_for_profile_requests: true
+    require_membership_for_aliases: true
+    retention: ~
+    saml2_config: {{- $saml2_config | toYaml | nindent 6 }}
+    signing_key_path: /data/signing.key
+    soft_file_limit: 0
+    spam_checker: ~
+    sso: ~
+    thumbnail_sizes:
+      - height: 32
+        method: crop
+        width: 32
+      - height: 96
+        method: crop
+        width: 96
+      - height: 240
+        method: scale
+        width: 320
+    trusted_key_servers:
+      - server_name: {{ $.Values.synapse.serverName }}
+    turn_allow_guests: false
+    turn_shared_secret: {{ $.Values.coturn.sharedSecret }}
+    turn_uris: {{- $turn_uris | toYaml | nindent 6 }}
+    turn_user_lifetime: 86400000
+    ui_auth: ~
+    url_preview_accept_language: ~
+    url_preview_enabled: false
+    use_presence: {{ $.Values.synapse.presence }}
+    user_directory:
+      enabled: true
+      search_all_users: true
+    web_client_location: "https://{{ $.Values.synapse.serverName }}/"
+    {{- if $.Values.matrixAuthentication.enabled }}
+    # https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service
+    experimental_features: {{ $.Values.experimentalFeatures | toYaml | nindent 6 }}
+    {{- end }}
+
+  log.config: |
+    ---
+    disable_existing_loggers: false
+    formatters:
+      precise:
+        format: "%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: precise
+    loggers:
+      synapse.storage.SQL:
+        level: WARNING
+      twisted:
+        handlers:
+          - console
+        propagate: false
+    root:
+      handlers:
+        - console
+      level: WARNING
+    version: 1
+  signing.key: |
+    {{ $signing_key }}
+  idp.xml: |
+    {{- $idp_metadata | nindent 4 }}
+{{ end }}

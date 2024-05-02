@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coturn-config
+  labels:
+    app: coturn
+data:
+  turnserver.conf: |
+    server-name={{ .Values.server_name }}
+    realm={{ .Values.server_name }}
+    static-auth-secret={{ .Values.coturn.sharedSecret }}
+    use-auth-secret
+    cli-password={{ .Values.coturn.cliPassword }}
+    psql-userdb="host=coturn-pgbouncer dbname={{ .Values.coturn.postgres.dbname }} user={{ .Values.coturn.postgres.user }} password={{ .Values.coturn.postgres.password }} connect_timeout=30"
+    cert=/etc/tls/tls.crt
+    pkey=/etc/tls/tls.key
+    no-loopback-peers
+    no-multicast-peers
+    verbose

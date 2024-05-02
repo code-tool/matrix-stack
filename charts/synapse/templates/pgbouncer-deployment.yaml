@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-pgbouncer
+  labels:
+    app: synapse-pgbouncer
+spec:
+  replicas: {{ .Values.synapse.pgbouncer.replicas }}
+  selector:
+    matchLabels:
+      app: synapse-pgbouncer
+  template:
+    metadata:
+      labels:
+        app: synapse-pgbouncer
+    spec:
+      containers:
+      - name: pgbouncer
+        image: {{ .Values.synapse.pgbouncer.image.repository }}:{{ .Values.synapse.pgbouncer.image.tag }}
+        imagePullPolicy: {{ .Values.synapse.pgbouncer.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.synapse.pgbouncer.resources | nindent 10 }}
+        env:
+          - name: PGBOUNCER_PORT
+            value: "5432"
+          - name: POSTGRESQL_HOST
+            value: {{ .Values.synapse.postgres.host | quote }}
+          - name: PGBOUNCER_DATABASE
+            value: {{ .Values.synapse.postgres.dbname | quote }}
+          - name: POSTGRESQL_USERNAME
+            value: {{ .Values.synapse.postgres.user | quote }}
+          - name: POSTGRESQL_PASSWORD
+            value: {{ .Values.synapse.postgres.password | quote }}
+          - name: PGBOUNCER_AUTH_TYPE
+            value: {{ .Values.synapse.pgbouncer.authType | quote }}
+          - name: PGBOUNCER_MAX_CLIENT_CONN
+            value: {{ .Values.synapse.pgbouncer.maxClientConn | quote }}
+          - name: PGBOUNCER_DEFAULT_POOL_SIZE
+            value: {{ .Values.synapse.pgbouncer.poolSize | quote }}
+          - name: PGBOUNCER_POOL_MODE
+            value: {{ .Values.synapse.pgbouncer.poolMode | quote }}
+        ports:
+          - containerPort: 5432
+            name: pgbouncer
+            protocol: TCP
+      {{- if .Values.synapse.pgbouncer.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.synapse.pgbouncer.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.synapse.pgbouncer.tolerations }}
+      tolerations:
+        {{ toYaml .Values.synapse.pgbouncer.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.synapse.pgbouncer.affinity }}
+      affinity:
+        {{ toYaml .Values.synapse.pgbouncer.affinity | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10
