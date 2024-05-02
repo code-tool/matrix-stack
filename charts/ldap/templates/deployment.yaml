@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap
+  labels:
+    app: ldap
+spec:
+  replicas: {{ .Values.ldap.replicas }}
+  selector:
+    matchLabels:
+      app: ldap
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+      labels:
+        app: ldap
+    spec:
+      containers:
+      - name: ldap
+        image: {{ .Values.ldap.image.repository }}:{{ .Values.ldap.image.tag }}
+        imagePullPolicy: {{ .Values.ldap.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.ldap.resources | nindent 10 }}
+        ports:
+          - containerPort: 389
+            name: tcp
+            protocol: TCP
+        volumeMounts:
+        - name: ldap-config
+          mountPath: /usr/local/etc/haproxy/haproxy.cfg
+          subPath: haproxy.cfg
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.ldap.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.ldap.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.ldap.tolerations }}
+      tolerations:
+        {{ toYaml .Values.ldap.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.ldap.affinity }}
+      affinity:
+        {{ toYaml .Values.ldap.affinity | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: ldap-config
+        configMap:
+          name: ldap-config

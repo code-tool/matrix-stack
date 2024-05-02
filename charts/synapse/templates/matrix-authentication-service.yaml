@@ -1,0 +1,24 @@
+{{- if .Values.matrixAuthentication.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  matrix-authentication
+  labels:
+    {{- include "matrix-authentication.selectorLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.matrixAuthentication.service.type }}
+  ports:
+    - port: {{ .Values.matrixAuthentication.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{- with .Values.matrixAuthentication.metrics }}
+    - name: metrics
+      protocol: TCP
+      port: 9100
+      targetPort: metrics
+    {{- end }}
+  selector:
+    {{- include "matrix-authentication.selectorLabels" . | nindent 4 }}
+{{- end }}

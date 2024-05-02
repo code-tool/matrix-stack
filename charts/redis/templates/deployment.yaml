@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+      {{- if .Values.redis.exporter.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9121"
+      {{- end }}
+    spec:
+      containers:
+      - name: redis
+        image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}
+        imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.redis.resources | nindent 10 }}
+        volumeMounts:
+        - name: devshm
+          mountPath: /dev/shm
+        ports:
+        - name: redis
+          containerPort: 6379
+          protocol: TCP
+      {{- if .Values.redis.exporter.enabled }}
+      - name: redis-exporter
+        image: {{ .Values.redis.exporter.image.repository }}:{{ .Values.redis.exporter.image.tag }}
+        imagePullPolicy: {{ .Values.redis.exporter.image.pullPolicy }}
+        ports:
+        - name: redis-exporter
+          containerPort: 9121
+          protocol: TCP
+      {{- end }}
+      volumes:
+      - name: devshm
+        emptyDir:
+          medium: Memory

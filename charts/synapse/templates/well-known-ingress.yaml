@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: well-known
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.synapse.serverName }}
+      secretName: tls
+  rules:
+  - host: {{ .Values.synapse.serverName }}
+    http:
+      paths:
+      - path: /\.well-known/matrix
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: well-known

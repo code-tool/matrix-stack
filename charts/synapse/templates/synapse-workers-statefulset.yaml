@@ -1,0 +1,30 @@
+{{- $deployScalingWorkers := .Values.synapse.deployScalingWorkers | default (dict "event_persister" 1 "pusher" 1 ) -}}
+{{- $nonscaling_workers := dict "master" 1 "account_data" 1 "presence" 1 "typing" 1 "background_worker" 1 "receipts" 1 "keys" 1 "to_device" 1 "media_repository_background_jobs" 1 -}}
+{{- $workers := merge (deepCopy $deployScalingWorkers) (deepCopy $nonscaling_workers) -}}
+
+{{ $image := .Values.synapse.image }}
+
+{{- range $worker, $count := $workers }}
+{{ $name := $worker | replace "_" "-"}}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-{{ $name }}
+  labels:
+    {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
+spec:
+  replicas: {{ $count }}
+  selector:
+    matchLabels:
+      {{- include "synapse-workers.selectorLabels" $name | nindent 6 }}
+  serviceName: synapse-{{ $name }}
+  template:
+    metadata:
+      annotations:
+        {{- include "synapse-workers.annotations" $ | nindent 8 }}
+      labels:
+        {{- include "synapse-workers.selectorLabels" $name | nindent 8 }}
+    spec:
+      {{ include "synapse-workers.containers" (dict "name" $name "image" $image "worker" $worker) | nindent 6 }}
+{{ end }}

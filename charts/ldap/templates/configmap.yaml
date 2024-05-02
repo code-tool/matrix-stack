@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldap-config
+  labels:
+    app: ldap
+data:
+  haproxy.cfg: |
+    global
+      #debug
+
+    listen ipa
+      bind 0.0.0.0:389
+      mode tcp
+      balance roundrobin
+      {{- if .Values.ldap_servers }}
+      {{ .Values.ldap_servers | nindent 6 }}
+      {{- end }}

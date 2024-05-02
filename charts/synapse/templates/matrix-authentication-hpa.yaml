@@ -1,0 +1,33 @@
+{{- if .Values.matrixAuthentication.autoscaling.enabled }}
+---
+{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2
+{{- else }}
+apiVersion: autoscaling/v2beta1
+{{- end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: matrix-authentication
+  labels:
+    {{- include "matrix-authentication.selectorLabels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: matrix-authentication
+  minReplicas: {{ .Values.matrixAuthentication.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.matrixAuthentication.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.matrixAuthentication.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.matrixAuthentication.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.matrixAuthentication.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.matrixAuthentication.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

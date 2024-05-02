@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synapse-client-reader-envoy
+  labels:
+    {{- include "synapse-client-reader.selectorLabels" . | nindent 4 }}
+data:
+  envoy.yaml: |
+    {{- .Files.Get "scripts/envoy.yaml" | nindent 4 }}
+  synapse.lua: |
+    {{- .Files.Get "scripts/synapse.lua" | nindent 4 }}

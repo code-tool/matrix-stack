@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coturn-pgbouncer
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+spec:
+  selector:
+    app: coturn-pgbouncer
+  ports:
+  - name: pgbouncer
+    port: 5432
+    targetPort: 5432

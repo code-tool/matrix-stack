@@ -1,0 +1,120 @@
+{{- if .Values.matrixAuthentication.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-authentication
+  labels:
+    {{- include "matrix-authentication.selectorLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.matrixAuthentication.autoscaling.enabled }}
+  replicas: {{ .Values.matrixAuthentication.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "matrix-authentication.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{- include "matrix-authentication.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ .Values.matrixAuthentication.configYaml | sha256sum }}
+      {{- with .Values.matrixAuthentication.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      initContainers:
+        - name: database-migrate
+          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
+          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
+          env:
+            - name: "MAS_CONFIG"
+              value: "/etc/mas-config.yaml"
+          command:
+            - /usr/local/bin/mas-cli
+            - database
+            - migrate
+          resources:
+            {{- toYaml .Values.matrixAuthentication.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/mas-config.yaml"
+              subPath: "mas-config.yaml"
+              readOnly: true
+        - name: config-sync
+          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
+          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
+          env:
+            - name: "MAS_CONFIG"
+              value: "/etc/mas-config.yaml"
+          command:
+            - /usr/local/bin/mas-cli
+            - config
+            - sync
+            {{- if .Values.matrixAuthentication.configSyncPrune }}
+            - --prune
+            {{- end }}
+          resources:
+            {{- toYaml .Values.matrixAuthentication.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/mas-config.yaml"
+              subPath: "mas-config.yaml"
+              readOnly: true
+      containers:
+        - name: main
+          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
+          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
+          env:
+            - name: "MAS_CONFIG"
+              value: "/etc/mas-config.yaml"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: internal
+              containerPort: 8081
+              protocol: TCP
+            - name: metrics
+              containerPort: 9100
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: internal
+              path: /health
+          readinessProbe:
+            httpGet:
+              port: internal
+              path: /health
+          resources:
+            {{ toYaml .Values.matrixAuthentication.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/mas-config.yaml"
+              subPath: "mas-config.yaml"
+              readOnly: true
+      {{- if .Values.matrixAuthentication.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.matrixAuthentication.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matrixAuthentication.tolerations }}
+      tolerations:
+        {{ toYaml .Values.matrixAuthentication.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matrixAuthentication.affinity }}
+      affinity:
+        {{ toYaml .Values.matrixAuthentication.affinity | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config
+          secret:
+            secretName: matrix-authentication
+            items:
+             - key: mas-config.yaml
+               path: mas-config.yaml
+{{- end }}

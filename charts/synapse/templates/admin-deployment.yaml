@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  labels:
+    app: admin
+spec:
+  replicas: {{ .Values.admin.replicas }}
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+      - name: admin
+        image: {{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}
+        imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.admin.resources | nindent 10 }}
+        ports:
+          - containerPort: 80
+            name: admin
+            protocol: TCP
+      {{- if .Values.admin.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.admin.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.admin.tolerations }}
+      tolerations:
+        {{ toYaml .Values.admin.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.admin.affinity }}
+      affinity:
+        {{ toYaml .Values.admin.affinity | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10

@@ -1,0 +1,146 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: synapse
+  annotations:
+    nginx.org/client-max-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "320"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      # dummy
+      {{- if .Values.root_redirect_url }}
+      location ~ ^/$ {
+         rewrite / {{ .Values.root_redirect_url }} permanent;
+      }
+      {{ end }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.synapse.serverName }}
+      secretName: tls
+  rules:
+  - host: {{ .Values.synapse.serverName }}
+    http:
+      paths:
+{{- range $route := .Values.ingress.clientReaderStickyRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader-envoy
+{{- end }}
+{{- range $route := .Values.ingress.clientReaderRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader
+{{- end }}
+{{- range $route := .Values.ingress.accountData }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-account-data
+{{- end }}
+{{- range $route := .Values.ingress.presence }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-presence
+{{- end }}
+{{- range $route := .Values.ingress.mediaRepository }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-media-repository
+{{- end }}
+{{- range $route := .Values.ingress.toDevice }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-to-device
+{{- end }}
+{{- range $route := .Values.ingress.typing }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-typing
+{{- end }}
+{{- range $route := .Values.ingress.receipts }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-receipts
+{{- end }}
+{{- range $route := .Values.ingress.keys }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-keys
+{{- end }}
+{{- range $route := .Values.ingress.eventCreator }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-event-creator
+{{- end }}
+{{- range $route := .Values.ingress.federationSenderRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-federation-sender
+{{- end }}
+{{- if .Values.matrixAuthentication.enabled }}
+{{- range $route := .Values.ingress.matrixAuthentication }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: matrix-authentication
+{{- end }}
+{{- end }}
+      # Send all other traffic to the main process
+{{- range $route := .Values.ingress.masterRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-master
+{{- end }}

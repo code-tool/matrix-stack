@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: well-known-config
+  labels:
+    app: well-known
+data:
+  default.conf: |
+    server {
+        listen       80;
+        server_name  localhost;
+        default_type application/json;
+        add_header Access-Control-Allow-Origin *;
+        location / {
+            root   /usr/share/nginx/html;
+        }
+    }
+
+  client: |
+    {
+      "m.homeserver": {
+        "base_url": "https://{{ .Values.synapse.serverName }}"
+      },
+      "org.matrix.msc3575.proxy": {
+        "url": "https://{{ .Values.slidingSyncProxy.ingress.host }}"
+      },
+      "jitsi": {
+        "preferredDomain": "meet.jit.si"
+      },
+      "im.vector.riot.jitsi": {
+        "preferredDomain": "meet.jit.si"
+      },
+      "io.element.e2ee": {
+        "default":true
+      },
+      "org.matrix.msc2965.authentication": {
+         "issuer": "https://{{ .Values.matrixAuthentication.ingress.host }}/",
+         "account": "https://{{ .Values.matrixAuthentication.ingress.host }}/account"
+      }
+    }
+
+  server: |
+    {
+      "m.server": "{{ .Values.synapse.serverName }}:443"
+    }
+  openid-configuration: |
+    {
+      "issuer": "https://{{ .Values.synapse.serverName }}",
+      "authorization_endpoint": "https://{{ .Values.matrixAuthentication.ingress.host }}/authorize",
+      "token_endpoint": "https://{{ .Values.matrixAuthentication.ingress.host }}/oauth2/token",
+      "jwks_uri": "https://{{ .Values.matrixAuthentication.ingress.host }}/oauth2/keys.json",
+      "registration_endpoint": "https://{{ .Values.matrixAuthentication.ingress.host }}/oauth2/registration"
+    }
