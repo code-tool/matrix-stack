@@ -31,4 +31,36 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/overprovisioning-0.0.2/overprovisioning-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-02T13:05:32.879624039Z"
+  redis:
+  - apiVersion: v1
+    created: "2024-05-02T13:07:12.90720864Z"
+    digest: 472efa9dc1722a7ee70bdae20967be2aff3efb4515076a66498953a9be2b6589
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
+    version: 0.0.2
+  synapse:
+  - apiVersion: v1
+    created: "2024-05-02T13:07:13.077435038Z"
+    digest: bf20d22cb4ac6330603d0ac709de91548eecc771ac585dc2fcc0bbb32f5d8722
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.0.2/synapse-0.0.2.tgz
+    version: 0.0.2
+  tls:
+  - apiVersion: v1
+    created: "2024-05-02T13:07:13.22250975Z"
+    digest: c510b90b77cc084abcc4be4e441ffe325a4774292864a9f3f98a2234358633e4
+    name: tls
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/tls-0.0.2/tls-0.0.2.tgz
+    version: 0.0.2
+  webhook:
+  - apiVersion: v1
+    created: "2024-05-02T13:07:13.350294594Z"
+    digest: e745a95d8d547daad5fbdb00c23bb675366cccccab0c93732749a18a8f9a238b
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
+    version: 0.0.2
+generated: "2024-05-02T13:07:13.350315052Z"
