@@ -15,4 +15,20 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.0.1/jitsi-0.0.1.tgz
     version: 0.0.1
-generated: "2024-05-02T13:03:44.097402386Z"
+  ldap:
+  - apiVersion: v1
+    created: "2024-05-02T13:05:32.744019474Z"
+    digest: cc0942f6703293f5615630d7cd5abaa8ae8b3c5274715e5fd3410b010d36876d
+    name: ldap
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/ldap-0.0.2/ldap-0.0.2.tgz
+    version: 0.0.2
+  overprovisioning:
+  - apiVersion: v1
+    created: "2024-05-02T13:05:32.879617186Z"
+    digest: 5ac1e23e6a3044fdc80263352f78661265b9e12a7af12f289ad9376402cd94fd
+    name: overprovisioning
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/overprovisioning-0.0.2/overprovisioning-0.0.2.tgz
+    version: 0.0.2
+generated: "2024-05-02T13:05:32.879624039Z"
