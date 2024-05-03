@@ -24,6 +24,13 @@ entries:
     version: 0.0.1
   ldap:
   - apiVersion: v1
+    created: "2024-05-03T13:15:35.127413839Z"
+    digest: 04248ed27e3f5288555a2d2ac5397837b9fc68b1e5b3f830acd5725abc4159b2
+    name: ldap
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/ldap-0.0.3/ldap-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2024-05-02T13:05:32.744019474Z"
     digest: cc0942f6703293f5615630d7cd5abaa8ae8b3c5274715e5fd3410b010d36876d
     name: ldap
@@ -84,4 +91,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-03T13:08:19.261860205Z"
+generated: "2024-05-03T13:15:35.127441501Z"
