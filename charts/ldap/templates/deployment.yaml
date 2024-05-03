@@ -6,7 +6,7 @@ metadata:
   labels:
     app: ldap
 spec:
-  replicas: {{ .Values.ldap.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: ldap
@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
       - name: ldap
-        image: {{ .Values.ldap.image.repository }}:{{ .Values.ldap.image.tag }}
-        imagePullPolicy: {{ .Values.ldap.image.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{ toYaml .Values.ldap.resources | nindent 10 }}
+          {{ toYaml .Values.resources | nindent 10 }}
         ports:
           - containerPort: 389
             name: tcp
@@ -32,17 +32,17 @@ spec:
           mountPath: /usr/local/etc/haproxy/haproxy.cfg
           subPath: haproxy.cfg
       terminationGracePeriodSeconds: 10
-      {{- if .Values.ldap.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.ldap.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.ldap.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-        {{ toYaml .Values.ldap.tolerations | nindent 8 }}
+        {{ toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.ldap.affinity }}
+      {{- if .Values.affinity }}
       affinity:
-        {{ toYaml .Values.ldap.affinity | nindent 8 }}
+        {{ toYaml .Values.affinity | nindent 8 }}
       {{- end }}
       volumes:
       - name: ldap-config

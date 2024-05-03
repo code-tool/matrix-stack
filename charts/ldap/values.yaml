@@ -1,0 +1,16 @@
+image:
+  repository: "haproxy"
+  tag: "2.3.6"
+  pullPolicy: IfNotPresent
+replicas: 1
+servers: []
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 100m
+  limits:
+    memory: 1Gi
+    cpu: 2
+nodeSelector: {}
+tolerations: []
+affinity: {}
