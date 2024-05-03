@@ -10,10 +10,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ .Values.server_name }}
-      secretName: {{ .Values.server_name }}
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.host }}
   rules:
-  - host: {{ .Values.server_name }}
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - pathType: ImplementationSpecific

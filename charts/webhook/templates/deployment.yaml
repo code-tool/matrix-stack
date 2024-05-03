@@ -6,7 +6,7 @@ metadata:
   labels:
     app: webhook
 spec:
-  replicas: {{ .Values.matrixWebHook.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: webhook
@@ -17,34 +17,34 @@ spec:
     spec:
       containers:
       - name: webhook
-        image: {{ .Values.matrixWebHook.image.repository }}:{{ .Values.matrixWebHook.image.tag }}
-        imagePullPolicy: {{ .Values.matrixWebHook.image.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{ toYaml .Values.matrixWebHook.resources | nindent 10 }}
+          {{ toYaml .Values.resources | nindent 10 }}
         args: ["-vvvvvvvvvvvvvvvvvvvvv"]
         env:
         - name: MATRIX_URL
-          value: "https://{{ .Values.server_name }}"
+          value: "https://{{ .Values.ingress.host }}"
         - name: MATRIX_ID
-          value: "{{ .Values.matrixWebHook.matrix.id }}"
+          value: "{{ .Values.matrix.id }}"
         - name: MATRIX_PW
-          value: "{{ .Values.matrixWebHook.matrix.password }}"
+          value: "{{ .Values.matrix.password }}"
         - name: API_KEY
-          value: "{{ .Values.matrixWebHook.matrix.apiKey }}"
+          value: "{{ .Values.matrix.apiKey }}"
         ports:
           - containerPort: 4785
             name: webhook
             protocol: TCP
       terminationGracePeriodSeconds: 10
-      {{- if .Values.matrixWebHook.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.matrixWebHook.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.matrixWebHook.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-        {{ toYaml .Values.matrixWebHook.tolerations | nindent 8 }}
+        {{ toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.matrixWebHook.affinity }}
+      {{- if .Values.affinity }}
       affinity:
-        {{ toYaml .Values.matrixWebHook.affinity | nindent 8 }}
+        {{ toYaml .Values.affinity | nindent 8 }}
       {{- end }}
