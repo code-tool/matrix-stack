@@ -55,6 +55,13 @@ entries:
     version: 0.0.2
   redis:
   - apiVersion: v1
+    created: "2024-05-03T13:32:15.023901962Z"
+    digest: 738793e70d1403ac3145b00315a2bb3c5285b66655686a342a0f2647f979cd8d
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.3/redis-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2024-05-02T13:07:12.90720864Z"
     digest: 472efa9dc1722a7ee70bdae20967be2aff3efb4515076a66498953a9be2b6589
     name: redis
@@ -99,4 +106,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-03T13:23:12.550191879Z"
+generated: "2024-05-03T13:32:15.023921328Z"
