@@ -49,6 +49,13 @@ entries:
     version: 0.0.2
   tls:
   - apiVersion: v1
+    created: "2024-05-03T12:41:05.911018259Z"
+    digest: df7f40e6e4e14f2d62e5fa10e06ac26914b5207b3469c0c55f418ed4f9f77848
+    name: tls
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/tls-0.0.3/tls-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2024-05-02T13:07:13.22250975Z"
     digest: c510b90b77cc084abcc4be4e441ffe325a4774292864a9f3f98a2234358633e4
     name: tls
@@ -70,4 +77,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-03T12:33:45.532525013Z"
+generated: "2024-05-03T12:41:05.91103491Z"
