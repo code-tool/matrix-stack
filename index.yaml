@@ -57,10 +57,17 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2024-05-03T12:33:45.532510125Z"
+    digest: 928c9345410a7aafb13e0bf5169401632a499b5c66827a368186ab9315322888
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.3/webhook-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2024-05-02T13:07:13.350294594Z"
     digest: e745a95d8d547daad5fbdb00c23bb675366cccccab0c93732749a18a8f9a238b
     name: webhook
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-02T13:07:13.350315052Z"
+generated: "2024-05-03T12:33:45.532525013Z"
