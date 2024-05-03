@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
       - name: coturn
-        image: {{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}
-        imagePullPolicy: {{ .Values.coturn.image.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{ toYaml .Values.coturn.resources | nindent 10 }}
+          {{ toYaml .Values.resources | nindent 10 }}
         args:
         - --external-ip='$(detect-external-ip)'
         ports:
@@ -39,17 +39,17 @@ spec:
         - name: coturn-tls
           mountPath: /etc/tls
       terminationGracePeriodSeconds: 10
-      {{- if .Values.coturn.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.coturn.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.coturn.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-        {{ toYaml .Values.coturn.tolerations | nindent 8 }}
+        {{ toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.coturn.affinity }}
+      {{- if .Values.affinity }}
       affinity:
-        {{ toYaml .Values.coturn.affinity | nindent 8 }}
+        {{ toYaml .Values.affinity | nindent 8 }}
       {{- end }}
       volumes:
       - name: coturn-config

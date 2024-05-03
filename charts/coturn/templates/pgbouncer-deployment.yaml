@@ -6,7 +6,7 @@ metadata:
   labels:
     app: coturn-pgbouncer
 spec:
-  replicas: {{ .Values.coturn.pgbouncer.replicas }}
+  replicas: {{ .Values.pgbouncer.replicas }}
   selector:
     matchLabels:
       app: coturn-pgbouncer
@@ -17,43 +17,43 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        mage: {{ .Values.coturn.pgbouncer.image.repository }}:{{ .Values.coturn.pgbouncer.image.tag }}
-        imagePullPolicy: {{ .Values.coturn.pgbouncer.image.pullPolicy }}
+        mage: {{ .Values.pgbouncer.image.repository }}:{{ .Values.pgbouncer.image.tag }}
+        imagePullPolicy: {{ .Values.pgbouncer.image.pullPolicy }}
         resources:
-          {{ toYaml .Values.coturn.pgbouncer.resources | nindent 10 }}
+          {{ toYaml .Values.pgbouncer.resources | nindent 10 }}
         env:
           - name: PGBOUNCER_PORT
             value: "5432"
           - name: POSTGRESQL_HOST
-            value: {{ .Values.coturn.postgres.host | quote }}
+            value: {{ .Values.postgres.host | quote }}
           - name: PGBOUNCER_DATABASE
-            value: {{ .Values.coturn.postgres.dbname | quote }}
+            value: {{ .Values.postgres.dbname | quote }}
           - name: POSTGRESQL_USERNAME
-            value: {{ .Values.coturn.postgres.user | quote }}
+            value: {{ .Values.postgres.user | quote }}
           - name: POSTGRESQL_PASSWORD
-            value: {{ .Values.coturn.postgres.password | quote }}
+            value: {{ .Values.postgres.password | quote }}
           - name: PGBOUNCER_AUTH_TYPE
-            value: {{ .Values.coturn.pgbouncer.authType | quote }}
+            value: {{ .Values.pgbouncer.authType | quote }}
           - name: PGBOUNCER_MAX_CLIENT_CONN
-            value: {{ .Values.coturn.pgbouncer.maxClientConn | quote }}
+            value: {{ .Values.pgbouncer.maxClientConn | quote }}
           - name: PGBOUNCER_DEFAULT_POOL_SIZE
-            value: {{ .Values.coturn.pgbouncer.poolSize | quote }}
+            value: {{ .Values.pgbouncer.poolSize | quote }}
           - name: PGBOUNCER_POOL_MODE
-            value: {{ .Values.coturn.pgbouncer.poolMode | quote }}
+            value: {{ .Values.pgbouncer.poolMode | quote }}
         ports:
           - containerPort: 5432
             name: pgbouncer
             protocol: TCP
-      {{- if .Values.coturn.pgbouncer.nodeSelector }}
+      {{- if .Values.pgbouncer.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.coturn.pgbouncer.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.pgbouncer.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.coturn.pgbouncer.tolerations }}
+      {{- if .Values.pgbouncer.tolerations }}
       tolerations:
-        {{ toYaml .Values.coturn.pgbouncer.tolerations | nindent 8 }}
+        {{ toYaml .Values.pgbouncer.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.coturn.pgbouncer.affinity }}
+      {{- if .Values.pgbouncer.affinity }}
       affinity:
-        {{ toYaml .Values.coturn.pgbouncer.affinity | nindent 8 }}
+        {{ toYaml .Values.pgbouncer.affinity | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 10

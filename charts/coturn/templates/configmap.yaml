@@ -7,12 +7,12 @@ metadata:
     app: coturn
 data:
   turnserver.conf: |
-    server-name={{ .Values.server_name }}
-    realm={{ .Values.server_name }}
-    static-auth-secret={{ .Values.coturn.sharedSecret }}
+    server-name={{ ..Values.serverName }}
+    realm={{ ..Values.serverName }}
+    static-auth-secret={{ .Values.sharedSecret }}
     use-auth-secret
-    cli-password={{ .Values.coturn.cliPassword }}
-    psql-userdb="host=coturn-pgbouncer dbname={{ .Values.coturn.postgres.dbname }} user={{ .Values.coturn.postgres.user }} password={{ .Values.coturn.postgres.password }} connect_timeout=30"
+    cli-password={{ .Values.cliPassword }}
+    psql-userdb="host=coturn-pgbouncer dbname={{ .Values.postgres.dbname }} user={{ .Values.postgres.user }} password={{ .Values.postgres.password }} connect_timeout=30"
     cert=/etc/tls/tls.crt
     pkey=/etc/tls/tls.key
     no-loopback-peers

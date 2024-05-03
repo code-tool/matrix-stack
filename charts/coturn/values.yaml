@@ -1,0 +1,42 @@
+image:
+  repository: "instrumentisto/coturn"
+  tag: "4.5.2"
+  pullPolicy: IfNotPresent
+replicas: 1
+# shared between turn and synapse
+sharedSecret: ''
+cliPassword: ''
+resources:
+  requests:
+    memory: 5Gi
+    cpu: 3
+  limits:
+    memory: 7Gi
+    cpu: 4
+nodeSelector: {}
+tolerations: []
+affinity: {}
+postgres:
+  host: ""
+  dbname: "coturn"
+  user: "coturn"
+  password: ""
+
+pgbouncer:
+  image:
+    repository: "bitnami/pgbouncer"
+    tag: "1.21.0-debian-11-r5"
+    pullPolicy: IfNotPresent
+  replicas: 3
+  authType: "md5"
+  maxClientConn: "8192"
+  poolSize: "20"
+  poolMode: "transaction"
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 2
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # TODO: add postgres section and move pgbouncer to separate chart
