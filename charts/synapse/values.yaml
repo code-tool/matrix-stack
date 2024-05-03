@@ -1,0 +1,365 @@
+---
+synapse:
+  serverName: NOT-CONFIGURED
+  image:
+    # TODO: use ghcr.io
+    repository: "matrixdotorg/synapse"
+    tag: "v1.103.0"
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
+  # this workers can scale in runtime
+  autoscalingWorkers:
+    federation_sender: 2
+    client_reader: 3
+    event_creator: 2
+    media_repository: 2
+  # this workers will scale after deploy
+  deployScalingWorkers:
+    event_persister: 2
+    pusher: 1
+  presence: true
+  postgres:
+    cp_max: 10
+    cp_min: 5
+    host: "NOT-CONFIGURED4"
+    dbname: "synapse"
+    user: "synapse"
+    password: "NOT-CONFIGURED"
+  pgbouncer:
+    image:
+      repository: "bitnami/pgbouncer"
+      tag: "1.21.0-debian-11-r5"
+      pullPolicy: IfNotPresent
+    replicas: 1
+    authType: "md5"
+    maxClientConn: "8192"
+    poolSize: "20"
+    poolMode: "transaction"
+    resources:
+      requests:
+        memory: 128m
+        cpu: 0.1
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+rc_message:
+  per_second: 100
+  burst_count: 300
+
+federation_domain_whitelist: []
+
+federation_metrics_domains: []
+
+password_enabled: false
+password_providers: []
+
+oidc_providers: []
+
+idp_metadata: []
+
+registration_shared_secret: NOT-CONFIGURED
+
+media_storage_providers: {}
+
+experimentalFeatures:
+  msc3967:
+    enabled: true
+  msc3861:
+    enabled: true
+    issuer: NOT-CONFIGURED
+    client_id: NOT-CONFIGURED
+    client_auth_method: client_secret_basic
+    client_secret: NOT-CONFIGURED
+    admin_token: NOT-CONFIGURED
+    account_management_url: NOT-CONFIGURED
+
+ingress:
+  masterRoutes:
+    - "/_matrix/"
+    - "/_synapse/"
+  federationSenderRoutes:
+    # Federation requests
+    - "/_matrix/federation/v1/event/"                                           # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+    - "/_matrix/federation/v1/state/"
+    - "/_matrix/federation/v1/state_ids/"
+    - "/_matrix/federation/v1/backfill/"
+    - "/_matrix/federation/v1/get_missing_events/"
+    - "/_matrix/federation/v1/publicRooms"
+    - "/_matrix/federation/v1/query/"
+    - "/_matrix/federation/v1/make_join/"
+    - "/_matrix/federation/v1/make_leave/"
+    - "/_matrix/federation/(v1|v2)/send_join/"
+    - "/_matrix/federation/(v1|v2)/send_leave/"
+    - "/_matrix/federation/(v1|v2)/invite/"
+    - "/_matrix/federation/v1/event_auth/"
+    - "/_matrix/federation/v1/timestamp_to_event/"
+    - "/_matrix/federation/v1/exchange_third_party_invite/"
+    - "/_matrix/federation/v1/user/devices/"
+    - "/_matrix/key/v2/query"
+    - "/_matrix/federation/v1/hierarchy/"
+    # Inbound federation transaction request
+    - "/_matrix/federation/v1/send/"
+  accountData:
+    # Account data requests
+    - "/_matrix/client/(r0|v3|unstable)/.*/tags"                                # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+    - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
+  presence:
+    # Presence requests
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
+  mediaRepository:
+    - "/_matrix/media/"                                                         # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
+    - "/_synapse/admin/v1/purge_media_cache$"
+    - "/_synapse/admin/v1/room/.*/media.*$"
+    - "/_synapse/admin/v1/user/.*/media.*$"
+    - "/_synapse/admin/v1/media/.*$"
+    - "/_synapse/admin/v1/quarantine_media/.*$"
+    - "/_synapse/admin/v1/users/.*/media$"
+  toDevice:
+    - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"                          # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
+  typing:
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"                 # https://matrix-org.github.io/synapse/latest/workers.html#the-typing-stream
+  receipts:
+    # Receipts requests
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+  keys:
+    # Encryption requests
+    - "/_matrix/client/(r0|v3|unstable)/keys/query$"                            # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+    - "/_matrix/client/(r0|v3|unstable)/keys/changes$"
+    - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
+    - "/_matrix/client/(r0|v3|unstable)/room_keys/"
+    - "/_matrix/client/(r0|v3|unstable)/keys/upload/"
+  eventCreator:
+    # Event sending requests
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact"                 # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/join/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/knock/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/profile/"
+  matrixAuthentication:
+    - "/_matrix/client/(.*)/(login|logout|refresh)"
+  clientReaderStickyRoutes:
+    # Sync requests
+    - "/_matrix/client/(r0|v3)/sync$"
+    - "/_matrix/client/(api/v1|r0|v3)/events$"
+    - "/_matrix/client/(api/v1|r0|v3)/initialSync$"
+    - "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$"
+    # Pagination
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$"
+  clientReaderRoutes:
+    # Client API requests
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$"                     # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$"
+    - "/_matrix/client/v1/rooms/.*/hierarchy$"
+    - "/_matrix/client/(v1|unstable)/rooms/.*/relations/"
+    - "/_matrix/client/v1/rooms/.*/threads$"
+    - "/_matrix/client/unstable/im.nheko.summary/rooms/.*/summary$"
+    - "/_matrix/client/(r0|v3|unstable)/account/3pid$"
+    - "/_matrix/client/(r0|v3|unstable)/account/whoami$"
+    - "/_matrix/client/(r0|v3|unstable)/devices$"
+    - "/_matrix/client/versions$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$"
+    - "/_matrix/client/v1/rooms/.*/timestamp_to_event$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/search$"
+    - "/_matrix/client/(r0|v3|unstable)/user/.*/filter(/|$)"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$"
+    - "/_matrix/client/(r0|v3|unstable)/capabilities$"
+    - "/_matrix/client/(r0|v3|unstable)/notifications$"
+    # Registration/login requests
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
+    #- "/_matrix/client/(r0|v3|unstable)/register$"
+    #- "/_matrix/client/(r0|v3|unstable)/register/available$"
+    #- "/_matrix/client/v1/register/m.login.registration_token/validity$"
+    #- "/_matrix/client/(r0|v3|unstable)/password_policy$"
+    # User directory search requests
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/user_directory/search$"
+
+admin:
+  serverName: NOT-CONFIGURED
+  image:
+    repository: "awesometechnologies/synapse-admin"
+    tag: "0.9.2"
+    pullPolicy: IfNotPresent
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+slidingSyncProxy:
+  enabled: true
+  replicaCount: 1
+  podAnnotations: {}
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  image:
+    repository: ghcr.io/matrix-org/sliding-sync
+    tag: v0.99.15
+  service:
+    type: ClusterIP
+    port: 80
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: false
+  ingress:
+    enabled: true
+    host: NOT-CONFIGURED
+  env:
+    SYNCV3_DB: NOT-CONFIGURED
+    SYNCV3_SERVER: NOT-CONFIGURED
+    SYNCV3_SECRET: NOT-CONFIGURED
+
+envoyProxy:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 80
+  replicaCount: 1
+  image:
+    repository: envoyproxy/envoy
+    tag: v1.27.4
+    pullPolicy: IfNotPresent
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+matrixAuthentication:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 80
+  replicaCount: 1
+  image:
+    repository: ghcr.io/matrix-org/matrix-authentication-service
+    tag: 0.9.0
+    pullPolicy: IfNotPresent
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: false
+  ingress:
+    enabled: true
+    host: NOT-CONFIGURED
+  config:
+    clients: []
+    database:
+      host: NOT-CONFIGURED
+      port: 5432
+      username: mas_user
+      password: NOT-CONFIGURED
+      database: mas
+      max_connections: 10
+      min_connections: 0
+      connect_timeout: 30
+      idle_timeout: 600
+      max_lifetime: 1800
+    secrets:
+      encryption: NOT-CONFIGURED
+      keys: []
+    #secrets: {}
+    #  encryption: 64key
+    #  keys:
+    #    - kid: qWE4rT6YUI
+    #      key: |
+    #        -----BEGIN RSA PRIVATE KEY-----
+    #        -----END RSA PRIVATE KEY-----
+    passwords:
+      enabled: false
+      schemes:
+        - version: 1
+          algorithm: argon2id
+    upstream_oauth2:
+    #  google:
+    #    - id: NOT-CONFIGURED
+    #      client_id: "NOT-CONFIGURED"
+    #      client_secret: "NOT-CONFIGURED"
+      providers: []
+  configYaml: |
+    telemetry:
+      tracing:
+        exporter: none
+        propagators: []
+      metrics:
+        exporter: prometheus
+      sentry:
+        dsn: null
+    templates:
+      path: /usr/local/share/mas-cli/templates/
+      assets_manifest: /usr/local/share/mas-cli/manifest.json
+      translations_path: /usr/local/share/mas-cli/translations/
+    email:
+      from: '"Authentication Service" <root@localhost>'
+      reply_to: '"Authentication Service" <root@localhost>'
+      transport: blackhole
+    policy:
+      wasm_module: /usr/local/share/mas-cli/policy.wasm
+      client_registration_entrypoint: client_registration/violation
+      register_entrypoint: register/violation
+      authorization_grant_entrypoint: authorization_grant/violation
+      password_entrypoint: password/violation
+      email_entrypoint: email/violation
+      data: null
+    branding:
+      service_name: null
+      policy_uri: null
+      tos_uri: null
+      imprint: null
+      logo_uri: null
+    experimental:
+      access_token_ttl: 300
+      compat_token_ttl: 300
+
+form_secret: "NOT-CONFIGURED"
+
+macaroon_secret_key: "NOT-CONFIGURED"
+
+turn_uris: []
+#  - "turn:turn.test.com?transport=udp"
+#  - "turn:turn.test.com?transport=tcp"
+
+signing_key: NOT-CONFIGURED
+
+root_redirect_url: NOT-CONFIGURED
