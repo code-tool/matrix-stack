@@ -1,0 +1,17 @@
+image:
+  repository: "redis"
+  tag: "7.2.4"
+  pullPolicy: IfNotPresent
+resources:
+  requests:
+    cpu: 2
+    memory: 5000Mi
+nodeSelector: {}
+tolerations: []
+affinity: {}
+exporter:
+  enabled: true
+  image:
+    repository: "oliver006/redis_exporter"
+    tag: "v1.59.0"
+    pullPolicy: IfNotPresent
