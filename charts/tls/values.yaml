@@ -1,0 +1,6 @@
+tls_crt: |
+ -----BEGIN CERTIFICATE-----
+ -----END CERTIFICATE-----
+tls_key: |
+ -----BEGIN PRIVATE KEY-----
+ -----END PRIVATE KEY-----
