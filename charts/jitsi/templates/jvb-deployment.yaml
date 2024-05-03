@@ -21,10 +21,10 @@ spec:
       #dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: jvb
-          image: {{ .Values.jitsi.jvb.image.repository }}:{{ .Values.jitsi.jvb.image.tag }}
-          imagePullPolicy: {{ .Values.jitsi.jvb.image.pullPolicy }}
+          image: {{ .Values.jvb.image.repository }}:{{ .Values.jvb.image.tag }}
+          imagePullPolicy: {{ .Values.jvb.image.pullPolicy }}
           resources:
-            {{ toYaml .Values.jitsi.jvb.resources | nindent 12 }}
+            {{ toYaml .Values.jvb.resources | nindent 12 }}
           env:
             - name: XMPP_SERVER
               value: prosody
@@ -35,39 +35,39 @@ spec:
             - name: XMPP_INTERNAL_MUC_DOMAIN
               value: internal-muc.meet.jitsi
             - name: JVB_STUN_SERVERS
-              value: {{ join "," .Values.jitsi.jvb.stunServers | quote }}
+              value: {{ join "," .Values.jvb.stunServers | quote }}
             - name: JICOFO_AUTH_USER
-              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+              value: {{ .Values.jicofo.authUser | quote }}
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "false"
             - name: JVB_AUTH_USER
-              value: {{ .Values.jitsi.jvb.authUser | quote }}
+              value: {{ .Values.jvb.authUser | quote }}
             - name: JVB_PORT
               value: "30300"
             - name: JVB_TCP_PORT
               value: "30301"
             - name: JVB_AUTH_PASSWORD
-              value: {{ .Values.jitsi.jvb.authPassword | quote }}
+              value: {{ .Values.jvb.authPassword | quote }}
             - name: JICOFO_AUTH_PASSWORD
-              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+              value: {{ .Values.jicofo.authPassword | quote }}
             - name: JVB_BREWERY_MUC
               value: jvbbrewery
             - name: TZ
-              value: {{ .Values.jitsi.timeZone }}
+              value: {{ .Values.timeZone }}
             - name: PUBLIC_URL
-              value: https://{{ .Values.jitsi.serverName }}
-            {{- if .Values.jitsi.jvb.extraEnvs }}
-            {{- toYaml .Values.jitsi.jvb.extraEnvs | nindent 12 }}
+              value: https://{{ .Values.serverName }}
+            {{- if .Values.jvb.extraEnvs }}
+            {{- toYaml .Values.jvb.extraEnvs | nindent 12 }}
             {{- end }}
-      {{- if .Values.jitsi.jvb.nodeSelector }}
+      {{- if .Values.jvb.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.jitsi.jvb.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.jvb.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.jvb.tolerations }}
+      {{- if .Values.jvb.tolerations }}
       tolerations:
-        {{ toYaml .Values.jitsi.jvb.tolerations | nindent 8 }}
+        {{ toYaml .Values.jvb.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.jvb.affinity }}
+      {{- if .Values.jvb.affinity }}
       affinity:
-        {{ toYaml .Values.jitsi.jvb.affinity | nindent 8 }}
+        {{ toYaml .Values.jvb.affinity | nindent 8 }}
       {{- end }}

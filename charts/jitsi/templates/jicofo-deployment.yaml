@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
         - name: jicofo
-          image: {{ .Values.jitsi.jicofo.image.repository }}:{{ .Values.jitsi.jicofo.image.tag }}
-          imagePullPolicy: {{ .Values.jitsi.jicofo.image.pullPolicy }}
+          image: {{ .Values.jicofo.image.repository }}:{{ .Values.jicofo.image.tag }}
+          imagePullPolicy: {{ .Values.jicofo.image.pullPolicy }}
           resources:
-            {{ toYaml .Values.jitsi.jicofo.resources | nindent 12 }}
+            {{ toYaml .Values.jicofo.resources | nindent 12 }}
           env:
             - name: XMPP_SERVER
               value: prosody
@@ -35,27 +35,27 @@ spec:
             - name: XMPP_INTERNAL_MUC_DOMAIN
               value: internal-muc.meet.jitsi
             - name: JICOFO_COMPONENT_SECRET
-              value: {{ .Values.jitsi.jicofo.componentSecret | quote }}
+              value: {{ .Values.jicofo.componentSecret | quote }}
             - name: JICOFO_AUTH_USER
-              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+              value: {{ .Values.jicofo.authUser | quote }}
             - name: JICOFO_AUTH_PASSWORD
-              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+              value: {{ .Values.jicofo.authPassword | quote }}
             - name: TZ
-              value: {{ .Values.jitsi.timeZone }}
+              value: {{ .Values.timeZone }}
             - name: JVB_BREWERY_MUC
               value: jvbbrewery
-            {{- if .Values.jitsi.jicofo.extraEnvs }}
-            {{- toYaml .Values.jitsi.jicofo.extraEnvs | nindent 12 }}
+            {{- if .Values.jicofo.extraEnvs }}
+            {{- toYaml .Values.jicofo.extraEnvs | nindent 12 }}
             {{- end }}
-      {{- if .Values.jitsi.jicofo.nodeSelector }}
+      {{- if .Values.jicofo.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.jitsi.jicofo.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.jicofo.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.jicofo.tolerations }}
+      {{- if .Values.jicofo.tolerations }}
       tolerations:
-        {{ toYaml .Values.jitsi.jicofo.tolerations | nindent 8 }}
+        {{ toYaml .Values.jicofo.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.jicofo.affinity }}
+      {{- if .Values.jicofo.affinity }}
       affinity:
-        {{ toYaml .Values.jitsi.jicofo.affinity | nindent 8 }}
+        {{ toYaml .Values.jicofo.affinity | nindent 8 }}
       {{- end }}

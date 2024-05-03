@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
         - name: prosody
-          image: {{ .Values.jitsi.prosody.image.repository }}:{{ .Values.jitsi.prosody.image.tag }}
-          imagePullPolicy: {{ .Values.jitsi.prosody.image.pullPolicy }}
+          image: {{ .Values.prosody.image.repository }}:{{ .Values.prosody.image.tag }}
+          imagePullPolicy: {{ .Values.prosody.image.pullPolicy }}
           resources:
-            {{ toYaml .Values.jitsi.prosody.resources | nindent 12 }}
+            {{ toYaml .Values.prosody.resources | nindent 12 }}
           env:
             - name: XMPP_DOMAIN
               value: meet.jitsi
@@ -35,31 +35,31 @@ spec:
             - name: XMPP_CROSS_DOMAIN
               value: "true"
             - name: JICOFO_COMPONENT_SECRET
-              value: {{ .Values.jitsi.jicofo.componentSecret | quote }}
+              value: {{ .Values.jicofo.componentSecret | quote }}
             - name: JVB_AUTH_USER
-              value: {{ .Values.jitsi.jvb.authUser | quote }}
+              value: {{ .Values.jvb.authUser | quote }}
             - name: JVB_AUTH_PASSWORD
-              value: {{ .Values.jitsi.jvb.authPassword | quote }}
+              value: {{ .Values.jvb.authPassword | quote }}
             - name: JICOFO_AUTH_USER
-              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+              value: {{ .Values.jicofo.authUser | quote }}
             - name: JICOFO_AUTH_PASSWORD
-              value: {{ .Values.jitsi.jicofo.authPassword | quote }}
+              value: {{ .Values.jicofo.authPassword | quote }}
             - name: TZ
-              value: {{ .Values.jitsi.timeZone }}
+              value: {{ .Values.timeZone }}
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "false"
-            {{- if .Values.jitsi.prosody.extraEnvs }}
-            {{- toYaml .Values.jitsi.prosody.extraEnvs | nindent 12 }}
+            {{- if .Values.prosody.extraEnvs }}
+            {{- toYaml .Values.prosody.extraEnvs | nindent 12 }}
             {{- end }}
-      {{- if .Values.jitsi.prosody.nodeSelector }}
+      {{- if .Values.prosody.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.jitsi.prosody.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.prosody.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.prosody.tolerations }}
+      {{- if .Values.prosody.tolerations }}
       tolerations:
-        {{ toYaml .Values.jitsi.prosody.tolerations | nindent 8 }}
+        {{ toYaml .Values.prosody.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.prosody.affinity }}
+      {{- if .Values.prosody.affinity }}
       affinity:
-        {{ toYaml .Values.jitsi.prosody.affinity | nindent 8 }}
+        {{ toYaml .Values.prosody.affinity | nindent 8 }}
       {{- end }}

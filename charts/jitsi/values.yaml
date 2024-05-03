@@ -1,0 +1,67 @@
+serverName: ''
+timeZone: Europe/Amsterdam
+jicofo:
+  replicas: 1
+  image:
+    repository: "jitsi/jicofo"
+    tag: "stable-8960"
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  componentSecret: ''
+  authUser: focus
+  authPassword: ''
+  extraEnvs: []
+  #- name: VIDEOQUALITY_ENFORCE_PREFERRED_CODEC
+  #  value: "1"
+  #- name: P2P_PREFERRED_CODEC
+  #  value: "VP8"
+  #- name: VIDEOQUALITY_PREFERRED_CODEC
+  #  value: "VP8"
+jvb:
+  replicas: 1
+  image:
+    repository: "jitsi/jvb"
+    tag: "stable-8960"
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations:
+    - key: "network"
+      operator: "Equal"
+      value: "public"
+      effect: "NoSchedule"
+  affinity: {}
+  authUser: jvb
+  authPassword: ''
+  stunServers:
+    - "stun.l.google.com:19302"
+    - "stun1.l.google.com:19302"
+    - "stun2.l.google.com:19302"
+    - "stun3.l.google.com:19302"
+    - "stun4.l.google.com:19302"
+  extraEnvs: []
+prosody:
+  replicas: 1
+  image:
+    repository: "jitsi/prosody"
+    tag: "stable-8960"
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: {}
+web:
+  replicas: 1
+  image:
+    repository: "jitsi/web"
+    tag: "stable-8960"
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: []

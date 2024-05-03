@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{ .Values.jitsi.serverName }}
+    - host: {{ .Values.serverName }}
       http:
         paths:
           - pathType: ImplementationSpecific
@@ -35,5 +35,5 @@ spec:
             path: /colibri-ws
   tls:
     - hosts:
-        - {{ .Values.jitsi.serverName }}
+        - {{ .Values.serverName }}
       secretName: tls

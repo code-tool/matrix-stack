@@ -19,15 +19,15 @@ spec:
     spec:
       containers:
         - name: web
-          image: {{ .Values.jitsi.web.image.repository }}:{{ .Values.jitsi.web.image.tag }}
-          imagePullPolicy: {{ .Values.jitsi.web.image.pullPolicy }}
+          image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
+          imagePullPolicy: {{ .Values.web.image.pullPolicy }}
           resources:
-            {{ toYaml .Values.jitsi.web.resources | nindent 12 }}
+            {{ toYaml .Values.web.resources | nindent 12 }}
           env:
             - name: XMPP_SERVER
               value: prosody
             - name: JICOFO_AUTH_USER
-              value: {{ .Values.jitsi.jicofo.authUser | quote }}
+              value: {{ .Values.jicofo.authUser | quote }}
             - name: XMPP_DOMAIN
               value: meet.jitsi
             - name: XMPP_AUTH_DOMAIN
@@ -39,11 +39,11 @@ spec:
             - name: XMPP_MUC_DOMAIN
               value: muc.meet.jitsi
             - name: TZ
-              value: {{ .Values.jitsi.timeZone }}
+              value: {{ .Values.timeZone }}
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "false"
             - name: PUBLIC_URL
-              value: https://{{ .Values.jitsi.serverName }}
+              value: https://{{ .Values.serverName }}
             - name: ENABLE_LOBBY
               value: "0"
             - name: ENABLE_WELCOME_PAGE
@@ -56,18 +56,18 @@ spec:
               value: "VP9"
             - name: VIDEOQUALITY_PREFERRED_CODEC
               value: "VP9"
-            {{- if .Values.jitsi.web.extraEnvs }}
-            {{- toYaml .Values.jitsi.web.extraEnvs | nindent 12 }}
+            {{- if .Values.web.extraEnvs }}
+            {{- toYaml .Values.web.extraEnvs | nindent 12 }}
             {{- end }}
-      {{- if .Values.jitsi.web.nodeSelector }}
+      {{- if .Values.web.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.jitsi.web.nodeSelector | nindent 8 }}
+        {{ toYaml .Values.web.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.web.tolerations }}
+      {{- if .Values.web.tolerations }}
       tolerations:
-        {{ toYaml .Values.jitsi.web.tolerations | nindent 8 }}
+        {{ toYaml .Values.web.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.jitsi.web.affinity }}
+      {{- if .Values.web.affinity }}
       affinity:
-        {{ toYaml .Values.jitsi.web.affinity | nindent 8 }}
+        {{ toYaml .Values.web.affinity | nindent 8 }}
       {{- end }}
