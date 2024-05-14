@@ -363,3 +363,6 @@ turn_uris: []
 signing_key: NOT-CONFIGURED
 
 root_redirect_url: NOT-CONFIGURED
+
+coturn:
+  sharedSecret: ''
