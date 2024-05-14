@@ -7,8 +7,8 @@ metadata:
     app: coturn
 data:
   turnserver.conf: |
-    server-name={{ ..Values.serverName }}
-    realm={{ ..Values.serverName }}
+    server-name={{ .Values.serverName }}
+    realm={{ .Values.serverName }}
     static-auth-secret={{ .Values.sharedSecret }}
     use-auth-secret
     cli-password={{ .Values.cliPassword }}
