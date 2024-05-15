@@ -10,8 +10,8 @@ synapse:
     enabled: true
   # this workers can scale in runtime
   autoscalingWorkers:
-    federation_sender: 2
-    client_reader: 3
+    federation_sender: 1
+    client_reader: 2
     event_creator: 2
     media_repository: 2
   # this workers will scale after deploy
