@@ -2,6 +2,13 @@ apiVersion: v1
 entries:
   coturn:
   - apiVersion: v1
+    created: "2024-05-15T06:41:43.14322679Z"
+    digest: 4c0f718a94c2bfd8d3992e75f95b982a057080de0b3ee3ab74e0d59928ac1cfc
+    name: coturn
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/coturn-0.0.4/coturn-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v1
     created: "2024-05-14T22:20:45.002529058Z"
     digest: 62659abf99748e0254bf20edd236499da29d9d410ed23e5ae4a6c345fd11fb5b
     name: coturn
@@ -39,6 +46,13 @@ entries:
     version: 0.0.1
   ldap:
   - apiVersion: v1
+    created: "2024-05-15T06:41:43.24258999Z"
+    digest: aa6461450a62bbc0f92a3e9d79841560507b60ce44028429bc6a93c3576891d8
+    name: ldap
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/ldap-0.0.4/ldap-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v1
     created: "2024-05-03T13:15:35.127413839Z"
     digest: 04248ed27e3f5288555a2d2ac5397837b9fc68b1e5b3f830acd5725abc4159b2
     name: ldap
@@ -62,6 +76,13 @@ entries:
     version: 0.0.2
   redis:
   - apiVersion: v1
+    created: "2024-05-15T06:41:43.360454784Z"
+    digest: 78ce775fcad2a97449bd2344caff95caca724606263d5cab55b68a2ce5285193
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.4/redis-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v1
     created: "2024-05-03T13:32:15.023901962Z"
     digest: 738793e70d1403ac3145b00315a2bb3c5285b66655686a342a0f2647f979cd8d
     name: redis
@@ -76,6 +97,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
   synapse:
+  - apiVersion: v1
+    created: "2024-05-15T06:41:43.493709808Z"
+    digest: a2645758c83130d99053dac6429ee7fe9056604bd1738aebcccfd1be060329d6
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.0.5/synapse-0.0.5.tgz
+    version: 0.0.5
   - apiVersion: v1
     created: "2024-05-14T22:34:58.051428437Z"
     digest: ab8bf2a20aaba0ace4826c34f340396c5bd1f35b30993af725a3c078f24badec
@@ -114,6 +142,13 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2024-05-15T06:41:43.614351608Z"
+    digest: eb20650ac61c6bbdefab9c60da98f572eaa809fcf0caf56e9b1df55a42447621
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.4/webhook-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v1
     created: "2024-05-03T12:33:45.532510125Z"
     digest: 928c9345410a7aafb13e0bf5169401632a499b5c66827a368186ab9315322888
     name: webhook
@@ -127,4 +162,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-14T22:34:58.051458183Z"
+generated: "2024-05-15T06:41:43.614419966Z"
