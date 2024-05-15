@@ -186,7 +186,7 @@ admin:
   serverName: NOT-CONFIGURED
   image:
     repository: "awesometechnologies/synapse-admin"
-    tag: "0.9.2"
+    tag: "0.10.0"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
