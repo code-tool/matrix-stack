@@ -36,10 +36,7 @@ synapse:
     maxClientConn: "8192"
     poolSize: "20"
     poolMode: "transaction"
-    resources:
-      requests:
-        memory: 128m
-        cpu: 0.1
+    resources: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}

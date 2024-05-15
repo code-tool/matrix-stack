@@ -6,13 +6,7 @@ replicas: 1
 # shared between turn and synapse
 sharedSecret: ''
 cliPassword: ''
-resources:
-  requests:
-    memory: 5Gi
-    cpu: 3
-  limits:
-    memory: 7Gi
-    cpu: 4
+resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
