@@ -34,3 +34,5 @@ pgbouncer:
   tolerations: []
   affinity: {}
   # TODO: add postgres section and move pgbouncer to separate chart
+
+loadBalancerIP: ''

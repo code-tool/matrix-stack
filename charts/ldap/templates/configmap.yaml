@@ -15,5 +15,7 @@ data:
       mode tcp
       balance roundrobin
       {{- if .Values.servers }}
-      {{ .Values.servers | nindent 6 }}
+      {{- range .Values.servers }}
+      {{ . }}
+      {{- end }}
       {{- end }}

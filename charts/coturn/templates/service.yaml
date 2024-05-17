@@ -16,3 +16,6 @@ spec:
     port: 5349
     targetPort: 5349
   type: LoadBalancer
+  {{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  {{- end }}

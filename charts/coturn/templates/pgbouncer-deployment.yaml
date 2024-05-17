@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        mage: {{ .Values.pgbouncer.image.repository }}:{{ .Values.pgbouncer.image.tag }}
+        image: {{ .Values.pgbouncer.image.repository }}:{{ .Values.pgbouncer.image.tag }}
         imagePullPolicy: {{ .Values.pgbouncer.image.pullPolicy }}
         resources:
           {{ toYaml .Values.pgbouncer.resources | nindent 10 }}
