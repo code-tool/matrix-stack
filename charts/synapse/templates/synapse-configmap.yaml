@@ -69,7 +69,7 @@ data:
     dynamic_thumbnails: false
     max_upload_size: 100M
     email: ~
-    enable_3pid_changes: false
+    enable_3pid_changes: {{ $.Values.synapse.enable_3pid_changes }}
     enable_group_creation: false
     enable_registration: false
     enable_room_list_search: true
@@ -143,8 +143,8 @@ data:
     enable_metrics: true
     federation_domain_whitelist: {{- $federation_domain_whitelist | toYaml | nindent 6 }}
     federation_metrics_domains:  {{- $federation_metrics_domains | toYaml | nindent 6 }}
-    allow_profile_lookup_over_federation: false
-    allow_device_name_lookup_over_federation: false
+    allow_profile_lookup_over_federation: {{ $.Values.synapse.allow_profile_lookup_over_federation }}
+    allow_device_name_lookup_over_federation: {{ $.Values.synapse.allow_device_name_lookup_over_federation }}
     instance_map:
       main:
         host: synapse-master-0.synapse-master
@@ -255,7 +255,7 @@ data:
     use_presence: {{ $.Values.synapse.presence }}
     user_directory:
       enabled: true
-      search_all_users: false
+      search_all_users: {{ $.Values.synapse.search_all_users }}
       prefer_local_users: true
     web_client_location: "https://{{ $.Values.synapse.serverName }}/"
     {{- if $.Values.matrixAuthentication.enabled }}

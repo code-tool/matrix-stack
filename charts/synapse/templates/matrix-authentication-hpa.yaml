@@ -1,3 +1,4 @@
+{{- if .Values.matrixAuthentication.enabled }}
 {{- if .Values.matrixAuthentication.autoscaling.enabled }}
 ---
 {{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
@@ -30,4 +31,5 @@ spec:
         name: memory
         targetAverageUtilization: {{ .Values.matrixAuthentication.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
+{{- end }}
 {{- end }}
