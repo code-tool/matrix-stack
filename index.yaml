@@ -2,6 +2,13 @@ apiVersion: v1
 entries:
   coturn:
   - apiVersion: v1
+    created: "2024-05-20T07:16:36.045332867Z"
+    digest: 1f06dde49088c89be21827d3b1938ead77392f18d4ab0a0554a8261df502fb6a
+    name: coturn
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/coturn-0.0.5/coturn-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v1
     created: "2024-05-15T06:41:43.14322679Z"
     digest: 4c0f718a94c2bfd8d3992e75f95b982a057080de0b3ee3ab74e0d59928ac1cfc
     name: coturn
@@ -45,6 +52,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.0.1/jitsi-0.0.1.tgz
     version: 0.0.1
   ldap:
+  - apiVersion: v1
+    created: "2024-05-20T07:16:36.257886623Z"
+    digest: 519ce4bfff3a8a143eb9db77ac38fa6ee2a3704c104a7d124e5bce38ff114da3
+    name: ldap
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/ldap-0.0.5/ldap-0.0.5.tgz
+    version: 0.0.5
   - apiVersion: v1
     created: "2024-05-15T06:41:43.24258999Z"
     digest: aa6461450a62bbc0f92a3e9d79841560507b60ce44028429bc6a93c3576891d8
@@ -97,6 +111,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
   synapse:
+  - apiVersion: v1
+    created: "2024-05-20T07:16:36.432156076Z"
+    digest: ec52a70c41004e66a0d42c267ba286a26bea29943da750d19c51707714479247
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.0.11/synapse-0.0.11.tgz
+    version: 0.0.11
   - apiVersion: v1
     created: "2024-05-15T10:51:40.373669907Z"
     digest: ae6a723d4d81a1f7b12191f56cfb5e5e230a29ec8242e4a97c7c7a431016554b
@@ -197,4 +218,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-05-15T10:51:40.373728486Z"
+generated: "2024-05-20T07:16:36.432237438Z"
