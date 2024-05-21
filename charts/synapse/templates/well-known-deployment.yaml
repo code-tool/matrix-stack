@@ -35,9 +35,11 @@ spec:
         - name: well-known-config
           subPath: server
           mountPath: /usr/share/nginx/html/.well-known/matrix/server
+        {{- if .Values.openid_configuration }}
         - name: well-known-config
           subPath: openid-configuration
           mountPath: /usr/share/nginx/html/.well-known/matrix/openid-configuration
+        {{- end }}
       terminationGracePeriodSeconds: 10
       volumes:
       - name: well-known-config

@@ -22,9 +22,22 @@ data:
       "m.homeserver": {
         "base_url": "https://{{ .Values.synapse.serverName }}"
       },
+      {{- if .Values.experimentalFeatures.msc3575.enabled }}
       "org.matrix.msc3575.proxy": {
         "url": "https://{{ .Values.slidingSyncProxy.ingress.host }}"
       },
+      {{- end }}
+      {{- if .Values.experimentalFeatures.msc2965.enabled }}
+      "org.matrix.msc2965.authentication": {
+        "issuer": "https://{{ .Values.matrixAuthentication.ingress.host }}/",
+        "account": "https://{{ .Values.matrixAuthentication.ingress.host }}/account"
+      },
+      {{- end }}
+      {{- if .Values.identity_server_vector }}
+      "m.identity_server": {
+        "base_url":"https://vector.im"
+      },
+      {{- end }}
       "jitsi": {
         "preferredDomain": "meet.jit.si"
       },
@@ -33,10 +46,6 @@ data:
       },
       "io.element.e2ee": {
         "default":true
-      },
-      "org.matrix.msc2965.authentication": {
-         "issuer": "https://{{ .Values.matrixAuthentication.ingress.host }}/",
-         "account": "https://{{ .Values.matrixAuthentication.ingress.host }}/account"
       }
     }
 
@@ -44,6 +53,7 @@ data:
     {
       "m.server": "{{ .Values.synapse.serverName }}:443"
     }
+  {{- if .Values.openid_configuration }}
   openid-configuration: |
     {
       "issuer": "https://{{ .Values.synapse.serverName }}",
@@ -52,3 +62,4 @@ data:
       "jwks_uri": "https://{{ .Values.matrixAuthentication.ingress.host }}/oauth2/keys.json",
       "registration_endpoint": "https://{{ .Values.matrixAuthentication.ingress.host }}/oauth2/registration"
     }
+  {{- end }}

@@ -65,7 +65,14 @@ registration_shared_secret: NOT-CONFIGURED
 
 media_storage_providers: []
 
+identity_server_vector: false
+openid_configuration: true
 experimentalFeatures:
+  # TODO: check feature codes
+  msc3575:
+    enabled: true
+  msc2965:
+    enabled: true
   msc3967:
     enabled: true
   msc3861:
