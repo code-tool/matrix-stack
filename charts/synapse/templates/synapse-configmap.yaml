@@ -260,7 +260,14 @@ data:
     web_client_location: "https://{{ $.Values.synapse.serverName }}/"
     {{- if $.Values.matrixAuthentication.enabled }}
     # https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service
-    experimental_features: {{ $.Values.experimentalFeatures | toYaml | nindent 6 }}
+    experimental_features:
+    {{- if $.Values.experimentalFeatures.msc3861.enabled }}
+      msc3861: {{ $.Values.experimentalFeatures.msc3861 | toYaml | nindent 8 }}
+    {{- end }}
+    {{- if $.Values.experimentalFeatures.msc3967.enabled }}
+      msc3967:
+        enabled: true
+    {{- end }}
     {{- end }}
 
   log.config: |
