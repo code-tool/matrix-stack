@@ -20,7 +20,7 @@ local function get_auth_token(auth_header, path)
 
     local _, _, token_param = string.find(path, "access_token=([^&]+)")
     if token_param ~= nil then
-        return parse_username_from_token(auth_header)
+        return parse_username_from_token(token_param)
     end
 
     return auth_header
