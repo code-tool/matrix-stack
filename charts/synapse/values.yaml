@@ -202,6 +202,8 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/notifications$"
     # User directory search requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/user_directory/search$"
+    # TODO: check search url
+    # "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
 
 admin:
   serverName: NOT-CONFIGURED
@@ -251,6 +253,9 @@ slidingSyncProxy:
 
 envoyProxy:
   enabled: true
+  admin:
+    port: 9901
+  metrics: true
   service:
     type: ClusterIP
     port: 80

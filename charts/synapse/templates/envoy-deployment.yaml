@@ -19,6 +19,11 @@ spec:
       labels:
         {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 8 }}
       annotations:
+        {{- if .Values.envoyProxy.metrics }}
+        prometheus.io/port: "9901"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/stats/prometheus"
+        {{- end }}
         checksum/config: {{ .Files.Get "scripts/envoy.yaml" | sha256sum }}
       {{- with .Values.envoyProxy.podAnnotations }}
         {{- toYaml . | nindent 8 }}

@@ -12,5 +12,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: {{ .Values.envoyProxy.admin.port }}
+      targetPort: http-admin
+      protocol: TCP
+      name: http-admin
   selector:
     {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 4 }}
