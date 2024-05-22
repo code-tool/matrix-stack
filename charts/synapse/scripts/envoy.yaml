@@ -84,7 +84,7 @@ static_resources:
                               headers:add("X-Hash-Key", synapse.get_hash_key_from_request(headers))
                               return
                             end
-                            
+
                             headers:add("X-Hash-Key", headers:get("x-request-id"))
                           end
                   - name: envoy.filters.http.router
@@ -96,6 +96,16 @@ static_resources:
       type: STRICT_DNS
       dns_lookup_family: V4_ONLY
       lb_policy: RING_HASH
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+          - priority: HIGH
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
       load_assignment:
         cluster_name: httpd
         endpoints:
