@@ -1,0 +1,112 @@
+diff --git a/matrix_webhook/app.py b/matrix_webhook/app.py
+index 46c91bb..b8d6005 100644
+--- a/matrix_webhook/app.py
++++ b/matrix_webhook/app.py
+@@ -26,6 +26,8 @@ async def main(event):
+         LOGGER.info(msg)
+         utils.CLIENT.access_token = conf.MATRIX_TOKEN
+
++    invitation_watcher = utils.watch_for_invitation()
++
+     server = web.Server(handler.matrix_webhook)
+     runner = web.ServerRunner(server)
+     await runner.setup()
+@@ -44,6 +46,7 @@ async def main(event):
+     await event.wait()
+
+     # Cleanup
++    invitation_watcher.cancel()
+     await runner.cleanup()
+     await utils.CLIENT.close()
+
+diff --git a/matrix_webhook/formatters.py b/matrix_webhook/formatters.py
+index 63040bf..e61f387 100644
+--- a/matrix_webhook/formatters.py
++++ b/matrix_webhook/formatters.py
+@@ -1,6 +1,7 @@
+ """Formatters for matrix webhook."""
+
+ import re
++from . import utils
+
+
+ def grafana(data, headers):
+@@ -111,3 +112,32 @@ def grn(data, headers):
+     )
+
+     return data
++
++
++def slack(data, headers):
++    """Pretty-print a slack notification."""
++    text = ""
++    if "text" in data:
++        text = text + "<div>" + utils.format_url(data["text"]) + "</div>\n"
++    if "attachments" in data and len(data["attachments"]):
++        for attachment in data["attachments"]:
++            text = text + "<div>"
++            if "title_link" in attachment and "title" in attachment:
++                text = text + "<h4><a href=\"" + attachment["title_link"] + "\">" + attachment["title"] + "</a></h4>\n"
++            elif "title" in attachment:
++                text = text + "<h4>" + utils.format_url(attachment["title"]) + "</h4>\n"
++            if "text" in attachment:
++                text = text + utils.format_url(attachment["text"]) + "\n"
++
++            if "fields" in attachment and len(attachment["fields"]):
++                for field in attachment["fields"]:
++                    text = text + "<div>"
++                    if "title" in field:
++                        text = text + "<h5>" + utils.format_url(field["title"]) + "</h5>\n"
++                    if "value" in field:
++                        text = text + utils.format_url(str(field["value"])) + "\n"
++                    text = text + "</div>"
++            text = text + "</div>"
++    data["body"] = text
++    return data
++
+diff --git a/matrix_webhook/utils.py b/matrix_webhook/utils.py
+index 72172a7..940c7c1 100644
+--- a/matrix_webhook/utils.py
++++ b/matrix_webhook/utils.py
+@@ -5,11 +5,13 @@ from collections import defaultdict
+ from http import HTTPStatus
+
+ from aiohttp import web
+-from nio import AsyncClient
++from asyncio import create_task
++from nio import AsyncClient, InviteEvent, MatrixRoom
+ from nio.exceptions import LocalProtocolError
+ from nio.responses import JoinError, RoomSendError
+
+ from . import conf
++from re import sub
+
+ ERROR_MAP = defaultdict(
+     lambda: HTTPStatus.INTERNAL_SERVER_ERROR,
+@@ -21,6 +23,9 @@ ERROR_MAP = defaultdict(
+ LOGGER = logging.getLogger("matrix_webhook.utils")
+ CLIENT = AsyncClient(conf.MATRIX_URL, conf.MATRIX_ID)
+
++def format_url(data):
++    data = sub(r"(<(https?://[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+)\|([\w\s]+)>)", r'<a href="\2">\3</a>', data)
++    return sub(r"(<)(https?://[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+)(>)", r'<a href="\2">\2</a>', data)
+
+ def error_map(resp):
+     """Map response errors to HTTP status."""
+@@ -66,6 +71,16 @@ async def join_room(room_id):
+     return create_json_response(HTTPStatus.GATEWAY_TIMEOUT, "Homeserver not responding")
+
+
++async def accept_invitation(room: MatrixRoom, event: InviteEvent):
++    LOGGER.info(f"Got invite to room {room.room_id=}")
++    await CLIENT.join(room.room_id)
++
++
++def watch_for_invitation():
++    CLIENT.add_event_callback(accept_invitation, InviteEvent)
++    return create_task(CLIENT.sync_forever())
++
++
+ async def send_room_message(room_id, content):
+     """Send a message to a room."""
+     msg = f"Sending room message in {room_id=}: {content=}"

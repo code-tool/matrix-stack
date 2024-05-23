@@ -1,7 +1,7 @@
 replicas: 1
 image:
-  repository: "zerodotfive/matrix-webhook"
-  tag: "rawjson"
+  repository: "ghcr.io/code-tool/matrix-stack/webhook"
+  tag: "0.0.2"
   pullPolicy: IfNotPresent
 resources: {}
 nodeSelector: {}
