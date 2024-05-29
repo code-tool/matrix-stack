@@ -233,7 +233,7 @@ slidingSyncProxy:
   affinity: {}
   image:
     repository: ghcr.io/matrix-org/sliding-sync
-    tag: v0.99.15
+    tag: v0.99.18
   service:
     type: ClusterIP
     port: 80
