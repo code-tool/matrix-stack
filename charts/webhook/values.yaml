@@ -12,5 +12,6 @@ matrix:
   id: ""
   password: ""
   apiKey: ""
+  token: ""
 ingress:
   host: ""

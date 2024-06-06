@@ -31,6 +31,10 @@ spec:
           value: "{{ .Values.matrix.password }}"
         - name: API_KEY
           value: "{{ .Values.matrix.apiKey }}"
+        {{- if .Values.matrix.token }}
+        - name: MATRIX_TOKEN
+          value: "{{ .Values.matrix.token }}"
+        {{- end }}
         ports:
           - containerPort: 4785
             name: webhook
