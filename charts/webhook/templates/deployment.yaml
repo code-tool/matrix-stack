@@ -27,8 +27,10 @@ spec:
           value: "https://{{ .Values.ingress.host }}"
         - name: MATRIX_ID
           value: "{{ .Values.matrix.id }}"
+        {{- if .Values.matrix.password }}
         - name: MATRIX_PW
           value: "{{ .Values.matrix.password }}"
+        {{- end }}
         - name: API_KEY
           value: "{{ .Values.matrix.apiKey }}"
         {{- if .Values.matrix.token }}
