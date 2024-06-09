@@ -1,5 +1,5 @@
-{{- if .Values.synapse.autoscaling.enabled }}
-{{- range $worker, $count := .Values.synapse.autoscalingWorkers }}
+{{- range $worker, $options := .Values.synapse.autoscalingWorkers }}
+{{- if $options.autoscaling.enabled }}
 {{- $name := $worker | replace "_" "-"}}
 ---
 apiVersion: autoscaling/v2
@@ -11,8 +11,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: synapse-{{ $name }}
-  minReplicas: {{ $count }}
-  maxReplicas: 100
+  minReplicas: {{ $options.autoscaling.minReplicas }}
+  maxReplicas: {{ $options.autoscaling.maxReplicas }}
   metrics:
   - type: Resource
     resource:

@@ -56,10 +56,7 @@ containers:
 - name: synapse
   image: {{ .image.repository }}:{{ .image.tag }}
   imagePullPolicy: {{ .image.pullPolicy }}
-  resources:
-    requests:
-      memory: 2Gi
-      cpu: 1
+  resources: {{ .options.resources | default .resourcesDefaults | toYaml | nindent 4 }}
   {{- if has .worker (list "event_persister" "federation_sender" "client_reader" "event_creator" "account_data" "presence" "receipts" "keys" "typing" "background_worker" "pusher" "to_device") }}
   env:
   - name: "SYNAPSE_WORKER"

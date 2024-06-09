@@ -14,15 +14,79 @@ synapse:
   autoscaling:
     enabled: true
   # this workers can scale in runtime
+  resourcesDefaults:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
   autoscalingWorkers:
-    federation_sender: 1
-    client_reader: 2
-    event_creator: 2
-    media_repository: 2
+    federation_sender:
+      replicas: 1
+      resources: {}
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 10
+    client_reader:
+      replicas: 2
+      resources: {}
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 10
+    event_creator:
+      replicas: 2
+      resources: {}
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 10
+    media_repository:
+      replicas: 2
+      resources: {}
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 10
   # this workers will scale after deploy
   deployScalingWorkers:
-    event_persister: 2
-    pusher: 1
+    event_persister:
+      replicas: 2
+      resources: {}
+    pusher:
+      replicas: 1
+      resources: {}
+  # this workers will neewr scale, only vertical scaling is possible
+  singletonWorkers:
+    master:
+      replicas: 1
+      resources: {}
+    account_data:
+      replicas: 1
+      resources: {}
+    presence:
+      replicas: 1
+      resources: {}
+    typing:
+      replicas: 1
+      resources: {}
+    background_worker:
+      replicas: 1
+      resources: {}
+    receipts:
+      replicas: 1
+      resources: {}
+    keys:
+      replicas: 1
+      resources: {}
+    to_device:
+      replicas: 1
+      resources: {}
+    media_repository_background_jobs:
+      replicas: 1
+      resources: {}
   presence: true
   postgres:
     cp_max: 10
@@ -389,3 +453,9 @@ root_redirect_url: ''
 
 coturn:
   sharedSecret: ''
+
+wellKnown:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi

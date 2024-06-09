@@ -1,9 +1,5 @@
-{{- $workers := .Values.synapse.autoscalingWorkers | default (dict "federation_sender" 1 "client_reader" 1 "event_creator" 1 "media_repository" 1 ) -}}
-
-{{ $image := .Values.synapse.image }}
-
-{{- range $worker, $count := $workers }}
-{{ $name := $worker | replace "_" "-"}}
+{{- range $worker, $options := .Values.synapse.autoscalingWorkers }}
+{{- $name := $worker | replace "_" "-"}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -12,8 +8,8 @@ metadata:
   labels:
     {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
 spec:
-  {{- if not $.Values.synapse.autoscaling.enabled }}
-  replicas: {{ $count }}
+  {{- if not $options.autoscaling.enabled }}
+  replicas: {{ $options.replicas }}
   {{- end }}
   selector:
     matchLabels:
@@ -30,5 +26,5 @@ spec:
       labels:
         {{- include "synapse-workers.selectorLabels" $name | nindent 8 }}
     spec:
-      {{ include "synapse-workers.containers" (dict "name" $name "image" $image "worker" $worker) | nindent 6 }}
+      {{ include "synapse-workers.containers" (dict "name" $name "image" $.Values.synapse.image "worker" $worker "options" $options "resourcesDefaults" $.Values.synapse.resourcesDefaults) | nindent 6 }}
 {{ end }}

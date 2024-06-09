@@ -25,6 +25,8 @@ spec:
           - containerPort: 80
             name: http
             protocol: TCP
+        resources:
+          {{- toYaml .Values.wellKnown.resources | nindent 10 }}
         volumeMounts:
         - name: well-known-config
           subPath: default.conf

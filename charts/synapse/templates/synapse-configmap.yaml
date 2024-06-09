@@ -1,7 +1,4 @@
-{{- $autoscalingWorkers := .Values.synapse.autoscalingWorkers | default (dict "federation_sender" 1 "client_reader" 1 "event_creator" 1 "media_repository" 1 ) -}}
-{{- $deployScalingWorkers := merge (deepCopy $autoscalingWorkers) ( .Values.synapse.deployScalingWorkers | default (dict "event_persister" 1 "pusher" 1 )) -}}
-{{- $nonscaling_workers := dict "master" 1 "account_data" 1 "presence" 1 "typing" 1 "background_worker" 1 "receipts" 1 "keys" 1 "to_device" 1 "media_repository_background_jobs" 1 -}}
-{{- $workers := merge (deepCopy $deployScalingWorkers) (deepCopy $nonscaling_workers) -}}
+{{- $workers := merge (deepCopy .Values.synapse.autoscalingWorkers) (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
 
 {{- $registration_shared_secret := .Values.registration_shared_secret -}}
 {{- $form_secret := .Values.form_secret -}}
@@ -19,7 +16,7 @@
 {{- $password_enabled := .Values.password_enabled }}
 {{- $rc_message := .Values.rc_message -}}
 
-{{- range $worker, $count := $workers }}
+{{- range $worker, $options := $workers }}
 {{ $name := $worker | replace "_" "-"}}
 ---
 apiVersion: v1
@@ -150,7 +147,7 @@ data:
         host: synapse-master-0.synapse-master
         port: 9093
 
-      {{- range until ( $workers.event_persister | int) }}
+      {{- range until ( $workers.event_persister.replicas | int) }}
       synapse-event-persister-{{ . }}:
         host: synapse-event-persister-{{ . }}.synapse-event-persister
         port: 9093
@@ -188,12 +185,12 @@ data:
       receipts:
         - synapse-receipts-0
       events:
-        {{- range until ( $workers.event_persister | int) }}
+        {{- range until ( $workers.event_persister.replicas | int) }}
         - synapse-event-persister-{{ . }}
         {{- end }}
 
     pusher_instances:
-      {{- range until ( $workers.pusher | int) }}
+      {{- range until ( $workers.pusher.replicas | int) }}
       - synapse-pusher-{{ . }}
       {{- end }}
 

@@ -1,9 +1,4 @@
-{{- $autoscalingWorkers := .Values.synapse.autoscalingWorkers | default (dict "federation_sender" 1 "client_reader" 1 "event_creator" 1 "media_repository" 1 ) -}}
-{{- $deployScalingWorkers := merge (deepCopy $autoscalingWorkers) ( .Values.synapse.deployScalingWorkers | default (dict "event_persister" 1 "pusher" 1 )) -}}
-{{- $nonscaling_workers := dict "master" 1 "account_data" 1 "presence" 1 "typing" 1 "background_worker" 1 "receipts" 1 "keys" 1 "to_device" 1 "media_repository_background_jobs" 1 -}}
-{{- $workers := merge (deepCopy $deployScalingWorkers) (deepCopy $nonscaling_workers) -}}
-
-
+{{- $workers := merge (deepCopy .Values.synapse.autoscalingWorkers) (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
 {{- range $worker, $count := $workers }}
 {{ $name := $worker | replace "_" "-" }}
 ---
