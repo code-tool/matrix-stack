@@ -110,6 +110,11 @@ synapse:
     tolerations: []
     affinity: {}
 
+  redis:
+    enabled: true
+    host: redis
+    port: 6379
+
 rc_message:
   per_second: 100
   burst_count: 300

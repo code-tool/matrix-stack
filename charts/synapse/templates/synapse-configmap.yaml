@@ -217,9 +217,9 @@ data:
     start_pushers: False
     redaction_retention_period: ~
     redis:
-      enabled: true
-      host: "redis"
-      port: 6379
+      enabled: {{ $.Values.synapse.redis.enabled }}
+      host: {{ $.Values.synapse.redis.host | quote }}
+      port: {{ $.Values.synapse.redis.port }}
     registration_shared_secret: "{{ $registration_shared_secret }}"
     report_stats: true
     require_auth_for_profile_requests: true
