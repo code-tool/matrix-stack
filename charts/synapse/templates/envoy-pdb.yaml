@@ -1,0 +1,16 @@
+{{- if .Values.envoyProxy.podDisruptionBudget.ebabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: synapse-client-reader-envoy
+spec:
+  {{- if .Values.envoyProxy.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.envoyProxy.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.envoyProxy.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.envoyProxy.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 6 }}
+{{- end }}
