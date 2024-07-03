@@ -73,6 +73,10 @@ spec:
       affinity:
         {{ toYaml .Values.envoyProxy.affinity | nindent 8 }}
       {{- end }}
+      {{- if .Values.envoyProxy.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{ toYaml .Values.envoyProxy.topologySpreadConstraints | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           configMap:

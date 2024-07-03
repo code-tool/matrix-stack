@@ -278,7 +278,7 @@ admin:
   serverName: NOT-CONFIGURED
   image:
     repository: "awesometechnologies/synapse-admin"
-    tag: "0.10.0"
+    tag: "0.10.1"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
@@ -302,7 +302,7 @@ slidingSyncProxy:
   affinity: {}
   image:
     repository: ghcr.io/matrix-org/sliding-sync
-    tag: v0.99.18
+    tag: v0.99.19
   service:
     type: ClusterIP
     port: 80
@@ -328,10 +328,14 @@ envoyProxy:
   service:
     type: ClusterIP
     port: 80
-  replicaCount: 1
+  replicaCount: 2
+  podDisruptionBudget:
+    ebabled: true
+    #minAvailable: 1
+    maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
-    tag: v1.27.4
+    tag: v1.27.7
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
@@ -344,6 +348,15 @@ envoyProxy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  topologySpreadConstraints: []
+  # example
+  #topologySpreadConstraints:
+  #  - maxSkew: 1
+  #    topologyKey: failure-domain.beta.kubernetes.io/zone
+  #    whenUnsatisfiable: ScheduleAnyway
+  #    labelSelector:
+  #      matchLabels:
+  #        kubernetes.io/os: linux
 
 matrixAuthentication:
   enabled: true
