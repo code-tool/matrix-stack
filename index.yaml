@@ -90,6 +90,13 @@ entries:
     version: 0.0.2
   redis:
   - apiVersion: v1
+    created: "2024-07-05T20:35:08.239554889Z"
+    digest: 97e75f857ba716829ae81d610d7793a0023bd97cbbe34a0131f6e718159fb8c7
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.5/redis-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v1
     created: "2024-05-15T06:41:43.360454784Z"
     digest: 78ce775fcad2a97449bd2344caff95caca724606263d5cab55b68a2ce5285193
     name: redis
@@ -111,6 +118,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
   synapse:
+  - apiVersion: v1
+    created: "2024-07-05T20:35:08.381916627Z"
+    digest: 380a29c7785c7443acc433b447fab95a56c9b5fdb475a3959fbc1e71aa26ea6f
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.4.0/synapse-0.4.0.tgz
+    version: 0.4.0
   - apiVersion: v1
     created: "2024-07-03T07:20:11.565087343Z"
     digest: 90bd486e8c15304cfc788c0cfad82bca171edce25a479e6c43eb8eb4a41a4056
@@ -309,4 +323,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-07-03T07:20:11.565228575Z"
+generated: "2024-07-05T20:35:08.38206171Z"
