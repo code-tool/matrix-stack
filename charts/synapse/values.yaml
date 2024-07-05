@@ -100,7 +100,11 @@ synapse:
       repository: "bitnami/pgbouncer"
       tag: "1.21.0-debian-11-r5"
       pullPolicy: IfNotPresent
-    replicas: 1
+    replicas: 2
+    podDisruptionBudget:
+      ebabled: true
+      #minAvailable: 1
+      maxUnavailable: 1
     authType: "md5"
     maxClientConn: "8192"
     poolSize: "20"
@@ -109,6 +113,8 @@ synapse:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    priorityClassName: ''
+    topologySpreadConstraints: []
 
   redis:
     enabled: true
@@ -348,6 +354,7 @@ envoyProxy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  priorityClassName: ''
   topologySpreadConstraints: []
   # example
   #topologySpreadConstraints:
@@ -363,7 +370,11 @@ matrixAuthentication:
   service:
     type: ClusterIP
     port: 80
-  replicaCount: 1
+  replicaCount: 2
+  podDisruptionBudget:
+    ebabled: true
+    #minAvailable: 1
+    maxUnavailable: 1
   image:
     repository: ghcr.io/matrix-org/matrix-authentication-service
     tag: 0.9.0
@@ -379,6 +390,8 @@ matrixAuthentication:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  priorityClassName: ''
+  topologySpreadConstraints: []
   autoscaling:
     enabled: false
     minReplicas: 1

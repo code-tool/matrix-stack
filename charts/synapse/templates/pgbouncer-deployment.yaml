@@ -10,6 +10,11 @@ spec:
   selector:
     matchLabels:
       app: synapse-pgbouncer
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -55,5 +60,12 @@ spec:
       {{- if .Values.synapse.pgbouncer.affinity }}
       affinity:
         {{ toYaml .Values.synapse.pgbouncer.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.synapse.pgbouncer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{ toYaml .Values.synapse.pgbouncer.topologySpreadConstraints | nindent 8 }}
+      {{- end }}
+      {{- if .Values.synapse.pgbouncer.priorityClassName }}
+      priorityClassName: "{{ .Values.synapse.pgbouncer.priorityClassName }}"
       {{- end }}
       terminationGracePeriodSeconds: 10

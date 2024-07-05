@@ -1,0 +1,16 @@
+{{- if .Values.synapse.pgbouncer.podDisruptionBudget.ebabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: synapse-pgbouncer
+spec:
+  {{- if .Values.synapse.pgbouncer.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.synapse.pgbouncer.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.synapse.pgbouncer.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.synapse.pgbouncer.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: synapse-pgbouncer
+{{- end }}

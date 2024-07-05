@@ -110,6 +110,13 @@ spec:
       affinity:
         {{ toYaml .Values.matrixAuthentication.affinity | nindent 8 }}
       {{- end }}
+      {{- if .Values.matrixAuthentication.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{ toYaml .Values.matrixAuthentication.topologySpreadConstraints | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matrixAuthentication.priorityClassName }}
+      priorityClassName: "{{ .Values.matrixAuthentication.priorityClassName }}"
+      {{- end }}
       volumes:
         - name: config
           secret:

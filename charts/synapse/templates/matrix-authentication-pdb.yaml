@@ -1,0 +1,18 @@
+{{- if .Values.matrixAuthentication.enabled }}
+{{- if .Values.matrixAuthentication.podDisruptionBudget.ebabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: matrix-authentication
+spec:
+  {{- if .Values.matrixAuthentication.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.matrixAuthentication.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.matrixAuthentication.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.matrixAuthentication.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "matrix-authentication.selectorLabels" . | nindent 6 }}
+{{- end }}
+{{- end }}

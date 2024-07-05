@@ -6,6 +6,7 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+priorityClassName: ''
 exporter:
   enabled: true
   image:
