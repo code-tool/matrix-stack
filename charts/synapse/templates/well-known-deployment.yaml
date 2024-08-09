@@ -43,6 +43,18 @@ spec:
           mountPath: /usr/share/nginx/html/.well-known/matrix/openid-configuration
         {{- end }}
       terminationGracePeriodSeconds: 10
+      {{- if .Values.wellKnown.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.wellKnown.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.wellKnown.tolerations }}
+      tolerations:
+        {{ toYaml .Values.wellKnown.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.wellKnown.affinity }}
+      affinity:
+        {{ toYaml .Values.wellKnown.affinity | nindent 8 }}
+      {{- end }}
       volumes:
       - name: well-known-config
         configMap:
