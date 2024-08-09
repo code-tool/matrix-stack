@@ -126,6 +126,13 @@ entries:
     version: 0.0.2
   synapse:
   - apiVersion: v1
+    created: "2024-08-09T06:29:03.692007951Z"
+    digest: e9f30a442213b600ca2a64c771aa6abeff68e7d9edb93dabd568feee4a8d3a9f
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.4.4/synapse-0.4.4.tgz
+    version: 0.4.4
+  - apiVersion: v1
     created: "2024-08-09T06:21:16.182351297Z"
     digest: c6b677937fb1997cbbf0de25339d4e82e3ea1fa9225802ffddd3444ec6a7fbef
     name: synapse
@@ -351,4 +358,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-08-09T06:21:16.182525883Z"
+generated: "2024-08-09T06:29:03.692252216Z"
