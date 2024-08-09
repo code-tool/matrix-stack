@@ -489,6 +489,9 @@ coturn:
   sharedSecret: ''
 
 wellKnown:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
   resources:
     requests:
       cpu: 20m
