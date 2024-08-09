@@ -13,6 +13,9 @@ synapse:
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
   # this workers can scale in runtime
   resourcesDefaults:
     requests:

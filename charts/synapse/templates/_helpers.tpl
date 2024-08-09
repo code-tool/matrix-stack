@@ -75,6 +75,18 @@ containers:
   - name: synapse-{{ .name }}-config
     mountPath: /data
 terminationGracePeriodSeconds: 10
+{{- if .nodeSelector }}
+nodeSelector:
+  {{ toYaml .nodeSelector | nindent 2 }}
+{{- end }}
+{{- if .tolerations }}
+tolerations:
+  {{ toYaml .tolerations | nindent 2 }}
+{{- end }}
+{{- if .affinity }}
+affinity:
+  {{ toYaml .affinity | nindent 2 }}
+{{- end }}
 volumes:
 - name: synapse-{{ .name }}-config
   configMap:
