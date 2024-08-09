@@ -42,7 +42,7 @@ data:
         user_id: "*"
     allow_guest_access: false
     allow_per_room_profiles: false
-    allow_public_rooms_over_federation: false
+    allow_public_rooms_over_federation: {{ $.Values.synapse.allow_public_rooms_over_federation }}
     allow_public_rooms_without_auth: false
     auto_join_rooms:
       - "#general:{{ $.Values.synapse.serverName }}"

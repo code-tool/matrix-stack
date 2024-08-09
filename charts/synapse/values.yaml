@@ -6,6 +6,7 @@ synapse:
   allow_profile_lookup_over_federation: false
   allow_device_name_lookup_over_federation: false
   search_all_users: false
+  allow_public_rooms_over_federation: false
   # cfg --
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
