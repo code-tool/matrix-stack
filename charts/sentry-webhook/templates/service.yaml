@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentry-webhook
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+spec:
+  selector:
+    app: sentry-webhook
+  ports:
+  - name: sentry-webhook
+    port: 80
+    targetPort: {{ .Values.conf.APP_PORT }}

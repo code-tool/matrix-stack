@@ -1,0 +1,24 @@
+replicas: 1
+image:
+  repository: "matrixdotorg/matrix-sentry-webhooks"
+  tag: "v0.5.0"
+  pullPolicy: IfNotPresent
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+conf:
+  APP_PORT: 3000
+  SENTRY_CLIENT_SECRET: ""
+  MATRIX_HOMESERVER_URL: ""
+  MATRIX_ROOMS: ""
+  MATRIX_TOKEN: ""
+  MATRIX_USER: ""
+ingress:
+  host: ""
+  ingressClassName: nginx
+  tls: []
+  #tls:
+  #  - hosts:
+  #      - {{ .Values.ingress.host }}
+  #    secretName: {{ .Values.ingress.host }}

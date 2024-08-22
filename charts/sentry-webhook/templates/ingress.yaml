@@ -2,18 +2,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: webhook
-  annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  name: sentry-webhook
 spec:
   {{- if .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
-  tls:
-    - hosts:
-        - {{ .Values.ingress.host }}
-      secretName: {{ .Values.ingress.host }}
+  {{- if .Values.ingress.tls }}
+  tls: {{ toYaml .Values.ingress.tls | ninident 4 }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
@@ -21,7 +17,7 @@ spec:
       - pathType: ImplementationSpecific
         backend:
           service:
-            name: webhook
+            name: sentry-webhook
             port:
               number: 80
-        path: /webhook/(.*)
+        path: /

@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentry-webhook
+  labels:
+    app: sentry-webhook
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: sentry-webhook
+  template:
+    metadata:
+      labels:
+        app: sentry-webhook
+    spec:
+      containers:
+      - name: sentry-webhook
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{ toYaml .Values.resources | nindent 10 }}
+        env:
+        {{- range $n, $v := .Values.conf }}
+          - name: {{ $n }}
+            value: {{ $v | quote }}
+        {{- end }}
+        ports:
+          - containerPort: {{ .Values.conf.APP_PORT }}
+            name: sentry-webhook
+            protocol: TCP
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{ toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{ toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
