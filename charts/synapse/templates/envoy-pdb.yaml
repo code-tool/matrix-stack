@@ -4,10 +4,9 @@ kind: PodDisruptionBudget
 metadata:
   name: synapse-client-reader-envoy
 spec:
-  {{- if .Values.envoyProxy.podDisruptionBudget.minAvailable }}
+  {{- if and .Values.envoyProxy.podDisruptionBudget.minAvailable (not (hasKey .Values.envoyProxy.podDisruptionBudget "maxUnavailable")) }}
   minAvailable: {{ .Values.envoyProxy.podDisruptionBudget.minAvailable }}
-  {{- end }}
-  {{- if .Values.envoyProxy.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.envoyProxy.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.envoyProxy.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:

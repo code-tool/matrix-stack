@@ -12,11 +12,10 @@ spec:
   selector:
     matchLabels:
       {{- include "matrix-authentication.selectorLabels" . | nindent 6 }}
+  {{- if .Values.matrixAuthentication.updateStrategy }}
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+    {{ toYaml .Values.matrixAuthentication.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

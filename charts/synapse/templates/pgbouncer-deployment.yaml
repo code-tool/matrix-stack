@@ -10,11 +10,10 @@ spec:
   selector:
     matchLabels:
       app: synapse-pgbouncer
+  {{- if .Values.synapse.pgbouncer.updateStrategy }}
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+    {{ toYaml .Values.synapse.pgbouncer.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

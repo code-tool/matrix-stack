@@ -4,10 +4,9 @@ kind: PodDisruptionBudget
 metadata:
   name: synapse-pgbouncer
 spec:
-  {{- if .Values.synapse.pgbouncer.podDisruptionBudget.minAvailable }}
+  {{- if and .Values.synapse.pgbouncer.podDisruptionBudget.minAvailable (not (hasKey .Values.synapse.pgbouncer.podDisruptionBudget "maxUnavailable")) }}
   minAvailable: {{ .Values.synapse.pgbouncer.podDisruptionBudget.minAvailable }}
-  {{- end }}
-  {{- if .Values.synapse.pgbouncer.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.synapse.pgbouncer.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.synapse.pgbouncer.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:

@@ -11,14 +11,13 @@ spec:
   {{- if not $options.autoscaling.enabled }}
   replicas: {{ $options.replicas }}
   {{- end }}
+  {{- if $.Values.synapse.updateStrategy }}
+  strategy:
+    {{ toYaml $.Values.synapse.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "synapse-workers.selectorLabels" $name | nindent 6 }}
-  strategy:
-    rollingUpdate:
-      maxSurge: 50%
-      maxUnavailable: 50%
-    type: RollingUpdate
   template:
     metadata:
       annotations:

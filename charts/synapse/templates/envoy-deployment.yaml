@@ -9,11 +9,10 @@ spec:
   selector:
     matchLabels:
       {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 6 }}
+  {{- if .Values.envoyProxy.updateStrategy }}
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+    {{ toYaml .Values.envoyProxy.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

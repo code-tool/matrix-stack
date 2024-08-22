@@ -7,6 +7,10 @@ metadata:
     app: well-known
 spec:
   replicas: 1
+  {{- if .Values.wellKnown.updateStrategy }}
+  strategy:
+    {{ toYaml .Values.wellKnown.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: well-known

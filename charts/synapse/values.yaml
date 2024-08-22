@@ -17,6 +17,11 @@ synapse:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 25%
   # this workers can scale in runtime
   resourcesDefaults:
     requests:
@@ -107,8 +112,10 @@ synapse:
     replicas: 2
     podDisruptionBudget:
       ebabled: true
-      #minAvailable: 1
-      maxUnavailable: 1
+      # Define either 'minAvailable' or 'maxUnavailable', never both.
+      minAvailable: 1
+      # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
+      # maxUnavailable: 1
     authType: "md5"
     maxClientConn: "8192"
     poolSize: "20"
@@ -117,6 +124,11 @@ synapse:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 25%
     priorityClassName: ''
     topologySpreadConstraints: []
 
@@ -295,6 +307,7 @@ admin:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy: {}
 
 slidingSyncProxy:
   enabled: true
@@ -310,6 +323,11 @@ slidingSyncProxy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 25%
   image:
     repository: ghcr.io/matrix-org/sliding-sync
     tag: v0.99.19
@@ -341,8 +359,10 @@ envoyProxy:
   replicaCount: 2
   podDisruptionBudget:
     ebabled: true
-    #minAvailable: 1
-    maxUnavailable: 1
+    # Define either 'minAvailable' or 'maxUnavailable', never both.
+    minAvailable: 1
+    # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
+    # maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
     tag: v1.27.7
@@ -358,6 +378,11 @@ envoyProxy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 25%
   priorityClassName: ''
   topologySpreadConstraints: []
   # example
@@ -378,7 +403,10 @@ matrixAuthentication:
   podDisruptionBudget:
     ebabled: true
     #minAvailable: 1
-    maxUnavailable: 1
+    # Define either 'minAvailable' or 'maxUnavailable', never both.
+    minAvailable: 1
+    # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
+    # maxUnavailable: 1
   image:
     repository: ghcr.io/matrix-org/matrix-authentication-service
     tag: 0.9.0
@@ -394,6 +422,11 @@ matrixAuthentication:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 25%
   priorityClassName: ''
   topologySpreadConstraints: []
   autoscaling:
@@ -493,6 +526,7 @@ wellKnown:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  updateStrategy: {}
   resources:
     requests:
       cpu: 20m
