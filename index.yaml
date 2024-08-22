@@ -124,6 +124,14 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
+  sentry-webhook:
+  - apiVersion: v1
+    created: "2024-08-22T10:48:01.987192351Z"
+    digest: 7ee40447021da9fad8ba3b8f207adec3aa5686f6b4c36f65443d94bb7becce61
+    name: sentry-webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.0.1/sentry-webhook-0.0.1.tgz
+    version: 0.0.1
   synapse:
   - apiVersion: v1
     created: "2024-08-09T06:29:03.692007951Z"
@@ -317,6 +325,13 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2024-08-22T10:48:02.20945817Z"
+    digest: 674be7f59416be3ceab11fb7588626411152d0a5eb9cf91a5ea822b55004fc05
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.8/webhook-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v1
     created: "2024-06-07T14:13:31.993965046Z"
     digest: 625facc0ba0e308a2cbea2affe5ae12cb4d96b8f084202e76f3534cf18164ef8
     name: webhook
@@ -358,4 +373,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-08-09T06:29:03.692252216Z"
+generated: "2024-08-22T10:48:02.209595367Z"
