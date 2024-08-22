@@ -1,0 +1,10 @@
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+replicas: 1
+servers: []
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
