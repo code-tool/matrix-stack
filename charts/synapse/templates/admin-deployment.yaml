@@ -7,6 +7,10 @@ metadata:
     app: admin
 spec:
   replicas: {{ .Values.admin.replicas }}
+  {{- if .Values.admin.updateStrategy }}
+  strategy:
+    {{ toYaml .Values.admin.updateStrategy | nindent 6 }}
+  {{- end }}
   selector:
     matchLabels:
       app: admin

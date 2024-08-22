@@ -10,6 +10,10 @@ spec:
   {{- if not .Values.slidingSyncProxy.autoscaling.enabled }}
   replicas: {{ .Values.slidingSyncProxy.replicaCount }}
   {{- end }}
+  {{- if .Values.slidingSyncProxy.updateStrategy }}
+  strategy:
+    {{ toYaml .Values.slidingSyncProxy.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "sliding-sync-proxy.selectorLabels" . | nindent 6 }}

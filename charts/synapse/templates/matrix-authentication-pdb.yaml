@@ -5,10 +5,9 @@ kind: PodDisruptionBudget
 metadata:
   name: matrix-authentication
 spec:
-  {{- if .Values.matrixAuthentication.podDisruptionBudget.minAvailable }}
+  {{- if and .Values.matrixAuthentication.podDisruptionBudget.minAvailable (not (hasKey .Values.matrixAuthentication.podDisruptionBudget "maxUnavailable")) }}
   minAvailable: {{ .Values.matrixAuthentication.podDisruptionBudget.minAvailable }}
-  {{- end }}
-  {{- if .Values.matrixAuthentication.podDisruptionBudget.maxUnavailable }}
+  {{- else if .Values.matrixAuthentication.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ .Values.matrixAuthentication.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:
