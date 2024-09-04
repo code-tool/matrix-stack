@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ldap-sync
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.cronSchedule | quote }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+      backoffLimit: 1
+      parallelism: 1
+      template:
+        metadata:
+          labels:
+            cronjob: ldap-sync
+        spec:
+          activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+          serviceAccountName: ldap-sync
+          restartPolicy: Never
+          containers:
+            - name: backup
+              image: {{ printf "%s:%s".Values.image.repository .Values.image.tag | quote }}
+              command: ["/opt/matrix-ldap-sync/matrix-ldap-sync"]
+              #env: {}
+              resources:
+                {{ toYaml .Values.synapse.pgbouncer.resources | nindent 16 }}
+          {{- if .Values.nodeSelector }}
+          nodeSelector:
+            {{ toYaml .Values.nodeSelector | nindent 12 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+            {{ toYaml .Values.tolerations | nindent 12 }}
+          {{- end }}
+          {{- if .Values.affinity }}
+          affinity:
+            {{ toYaml .Values.affinity | nindent 12 }}
+          {{- end }}
