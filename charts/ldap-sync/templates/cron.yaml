@@ -24,9 +24,13 @@ spec:
             - name: backup
               image: {{ printf "%s:%s".Values.image.repository .Values.image.tag | quote }}
               command: ["/opt/matrix-ldap-sync/matrix-ldap-sync"]
-              #env: {}
               resources:
                 {{ toYaml .Values.synapse.pgbouncer.resources | nindent 16 }}
+              envFrom:
+                - configMapRef:
+                  name: ldap-sync
+                - secretRef:
+                  name: ldap-sync
           {{- if .Values.nodeSelector }}
           nodeSelector:
             {{ toYaml .Values.nodeSelector | nindent 12 }}

@@ -8,13 +8,14 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
-env:
+configs:
   LDAP_URL: ''
-  LDAP_BIND_DN: ''
-  LDAP_BIND_PASSWD: ''
   LDAP_BASE: ''
   LDAP_FILTER: ''
   SYNAPSE_HOMESERVER_URL: ''
+  DO_REAL_JOB: false
+secrets:
+  LDAP_BIND_DN: ''
+  LDAP_BIND_PASSWD: ''
   SYNAPSE_USER_ID: ''
   SYNAPSE_ACCESS_TOKEN: ''
-  DO_REAL_JOB: false
