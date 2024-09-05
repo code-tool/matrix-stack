@@ -1,0 +1,21 @@
+image:
+  repository: "jushcherbak/matrix-ldap-sync"
+  tag: "0.0.1"
+  pullPolicy: IfNotPresent
+cronSchedule: "0 2 * * *"
+activeDeadlineSeconds: 21600
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+configs:
+  LDAP_URL: ''
+  LDAP_BASE: ''
+  LDAP_FILTER: ''
+  SYNAPSE_HOMESERVER_URL: ''
+  DO_REAL_JOB: false
+secrets:
+  LDAP_BIND_DN: ''
+  LDAP_BIND_PASSWD: ''
+  SYNAPSE_USER_ID: ''
+  SYNAPSE_ACCESS_TOKEN: ''
