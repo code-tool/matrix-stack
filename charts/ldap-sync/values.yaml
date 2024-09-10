@@ -1,6 +1,6 @@
 image:
   repository: "jushcherbak/matrix-ldap-sync"
-  tag: "0.0.1"
+  tag: "0.0.2"
   pullPolicy: IfNotPresent
 cronSchedule: "0 2 * * *"
 activeDeadlineSeconds: 21600
