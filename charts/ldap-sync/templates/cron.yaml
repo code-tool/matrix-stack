@@ -22,15 +22,15 @@ spec:
           restartPolicy: Never
           containers:
             - name: backup
-              image: {{ printf "%s:%s".Values.image.repository .Values.image.tag | quote }}
+              image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
               command: ["/opt/matrix-ldap-sync/matrix-ldap-sync"]
               resources:
-                {{ toYaml .Values.synapse.pgbouncer.resources | nindent 16 }}
+                {{ toYaml .Values.resources | nindent 16 }}
               envFrom:
                 - configMapRef:
-                  name: ldap-sync
+                    name: ldap-sync
                 - secretRef:
-                  name: ldap-sync
+                    name: ldap-sync
           {{- if .Values.nodeSelector }}
           nodeSelector:
             {{ toYaml .Values.nodeSelector | nindent 12 }}

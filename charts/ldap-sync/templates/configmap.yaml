@@ -4,5 +4,5 @@ metadata:
   name: ldap-sync
 data:
 {{- range $k, $v := .Values.configs }}
-  {{ $k }}: {{ $v }}
+  {{ $k }}: {{ $v | quote }}
 {{- end }}
