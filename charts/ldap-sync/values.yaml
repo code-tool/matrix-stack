@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/code-tool/matrix-ldap-sync"
-  tag: "0.0.1"
+  tag: "0.1.1"
   pullPolicy: IfNotPresent
 cronSchedule: "*/20 * * * *"
 activeDeadlineSeconds: 1000
