@@ -22,7 +22,7 @@ spec:
           containers:
             - name: ldap-sync
               image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
-              args: [ "sync", "--log-level", "3" ]
+              args: [ "sync", "--log-level", "0" ]
               resources:
                 {{ toYaml .Values.resources | nindent 16 }}
               envFrom:

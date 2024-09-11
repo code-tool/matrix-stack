@@ -1,9 +1,9 @@
 image:
   repository: "jushcherbak/matrix-ldap-sync"
-  tag: "0.0.2"
+  tag: "0.1.0"
   pullPolicy: IfNotPresent
-cronSchedule: "0 2 * * *"
-activeDeadlineSeconds: 21600
+cronSchedule: "*/20 * * * *"
+activeDeadlineSeconds: 1000
 resources: {}
 nodeSelector: {}
 tolerations: []
