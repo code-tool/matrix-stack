@@ -20,9 +20,9 @@ spec:
           activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
           restartPolicy: Never
           containers:
-            - name: backup
+            - name: ldap-sync
               image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
-              command: ["/opt/matrix-ldap-sync/matrix-ldap-sync"]
+              args: [ "sync", "--log-level", "3" ]
               resources:
                 {{ toYaml .Values.resources | nindent 16 }}
               envFrom:
