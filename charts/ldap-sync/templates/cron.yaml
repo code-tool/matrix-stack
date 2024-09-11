@@ -18,7 +18,6 @@ spec:
             cronjob: ldap-sync
         spec:
           activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
-          serviceAccountName: ldap-sync
           restartPolicy: Never
           containers:
             - name: backup
