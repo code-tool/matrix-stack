@@ -82,6 +82,13 @@ entries:
     version: 0.0.2
   ldap-sync:
   - apiVersion: v1
+    created: "2024-09-11T06:33:43.776973731Z"
+    digest: d63a510e8deee02da28b14f115c79ed7e158fb4c479c99b4cb8743370f970aca
+    name: ldap-sync
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/ldap-sync-0.0.5/ldap-sync-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v1
     created: "2024-09-11T06:13:24.802224333Z"
     digest: 79b13f436ba555a72523f8dbf694baa160c7a534ebe493571fde0fdc0c8aad72
     name: ldap-sync
@@ -409,4 +416,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-09-11T06:13:24.802360229Z"
+generated: "2024-09-11T06:33:43.777083767Z"
