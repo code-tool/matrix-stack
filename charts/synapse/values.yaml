@@ -137,6 +137,9 @@ synapse:
     host: redis
     port: 6379
 
+  podMonitor:
+    enabled: false
+
 rc_message:
   per_second: 100
   burst_count: 300

@@ -1,0 +1,20 @@
+{{- if .Values.synapse.podMonitor.enabled }}
+{{- $workers := merge (deepCopy .Values.synapse.autoscalingWorkers) (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
+{{- range $worker, $count := $workers }}
+{{ $name := $worker | replace "_" "-" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: synapse-{{ $name }}
+  labels:
+    {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
+  podMetricsEndpoints:
+  - port: metrics
+    path: "/_synapse/metrics"
+---
+{{- end }}
+{{- end }}

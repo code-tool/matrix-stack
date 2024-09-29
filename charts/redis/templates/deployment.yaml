@@ -14,11 +14,6 @@ spec:
     metadata:
       labels:
         app: redis
-      {{- if .Values.exporter.enabled }}
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9121"
-      {{- end }}
     spec:
       containers:
       - name: redis

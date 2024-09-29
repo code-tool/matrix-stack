@@ -71,6 +71,9 @@ containers:
     - containerPort: 8008
       name: http
       protocol: TCP
+    - containerPort: 9092
+      name: metrics
+      protocol: TCP
   volumeMounts:
   - name: synapse-{{ .name }}-config
     mountPath: /data
