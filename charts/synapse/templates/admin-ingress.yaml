@@ -13,7 +13,7 @@ spec:
     - hosts:
         - {{ .Values.admin.ingress.serverName }}
       {{- if .Values.admin.ingress.secretName }}
-      secretName: tls
+      secretName: {{ .Values.admin.ingress.secretName }}
       {{- end }}
   rules:
     - host: {{ .Values.admin.ingress.serverName }}
