@@ -13,7 +13,9 @@ spec:
   tls:
     - hosts:
         - {{ .Values.matrixAuthentication.ingress.host }}
-      secretName: tls
+      {{- if .Values.matrixAuthentication.ingress.secretName }}
+      secretName: {{ .Values.matrixAuthentication.ingress.secretName }}
+      {{- end }}
   rules:
   - host: {{ .Values.matrixAuthentication.ingress.host }}
     http:
