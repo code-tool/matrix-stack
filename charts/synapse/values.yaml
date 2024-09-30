@@ -307,7 +307,7 @@ admin:
     serverName: NOT-CONFIGURED
   image:
     repository: "awesometechnologies/synapse-admin"
-    tag: "0.10.1"
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
