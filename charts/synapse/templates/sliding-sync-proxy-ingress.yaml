@@ -19,7 +19,9 @@ spec:
   tls:
     - hosts:
         - {{ .Values.slidingSyncProxy.ingress.host }}
-      secretName: tls
+      {{- if .Values.slidingSyncProxy.ingress.secretName }}
+      secretName: {{ .Values.slidingSyncProxy.ingress.secretName }}
+      {{- end }}
   rules:
   - host: {{ .Values.slidingSyncProxy.ingress.host }}
     http:
