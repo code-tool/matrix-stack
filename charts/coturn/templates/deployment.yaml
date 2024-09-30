@@ -57,4 +57,4 @@ spec:
           name: coturn-config
       - name: coturn-tls
         secret:
-          secretName: tls
+          secretName: {{ .Values.secretName }}
