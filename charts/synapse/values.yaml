@@ -179,6 +179,7 @@ experimentalFeatures:
     account_management_url: NOT-CONFIGURED
 
 ingress:
+  secretName: ''
   masterRoutes:
     - "/_matrix/"
     - "/_synapse/"
@@ -300,7 +301,10 @@ ingress:
     # "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
 
 admin:
-  serverName: NOT-CONFIGURED
+  ingress:
+    enabled: true
+    secretName: ''
+    serverName: NOT-CONFIGURED
   image:
     repository: "awesometechnologies/synapse-admin"
     tag: "0.10.1"
@@ -346,6 +350,7 @@ slidingSyncProxy:
   ingress:
     enabled: true
     host: NOT-CONFIGURED
+    secretName: ''
   env:
     SYNCV3_DB: NOT-CONFIGURED
     SYNCV3_SERVER: NOT-CONFIGURED
@@ -441,6 +446,7 @@ matrixAuthentication:
   ingress:
     enabled: true
     host: NOT-CONFIGURED
+    secretName: ''
   config:
     clients: []
     database:
