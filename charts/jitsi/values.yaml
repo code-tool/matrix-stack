@@ -1,4 +1,7 @@
-serverName: ''
+ingress:
+  serverName: ''
+  secretName: ''
+
 timeZone: Europe/Amsterdam
 jicofo:
   replicas: 1

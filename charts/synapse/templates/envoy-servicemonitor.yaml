@@ -1,0 +1,18 @@
+{{- if .Values.envoyProxy.metrics }}
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: envoy-service
+  labels:
+    {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 4 }}
+spec:
+  endpoints:
+  - interval: 60s
+    path: /stats/prometheus
+    port: http-admin
+  jobLabel: envoy-service
+  selector:
+    matchLabels:
+      {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 6 }}
+---
+{{- end }}

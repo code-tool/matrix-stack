@@ -10,7 +10,9 @@ spec:
   tls:
     - hosts:
         - {{ .Values.synapse.serverName }}
-      secretName: tls
+      {{- if .Values.ingress.secretName }}
+      secretName: {{ .Values.ingress.secretName }}
+      {{- end }}
   rules:
   - host: {{ .Values.synapse.serverName }}
     http:

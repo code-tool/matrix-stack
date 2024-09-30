@@ -15,4 +15,5 @@ matrix:
   token: ""
 ingress:
   host: ""
+  secretName: ""
   ingressClassName: nginx
