@@ -31,6 +31,13 @@ entries:
     version: 0.0.2
   jitsi:
   - apiVersion: v1
+    created: "2024-09-30T16:29:06.666402475Z"
+    digest: 962443d6fdae13afa5941858e3b6c7a02c9407d88de342dd059b1e778997f288
+    name: jitsi
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.1.0/jitsi-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v1
     created: "2024-05-03T13:08:19.261817506Z"
     digest: ab3c24f3e9291bd046034c66f061dffe676843ef7ac8683b8a93e4948d78a894
     name: jitsi
@@ -147,6 +154,13 @@ entries:
     version: 0.0.2
   redis:
   - apiVersion: v1
+    created: "2024-09-30T16:29:06.815392526Z"
+    digest: 8ee1adc2017e5100380708b7c9a901a864e31cedf29288b15e360c58080974c9
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.1.0/redis-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v1
     created: "2024-08-09T06:06:37.270389783Z"
     digest: 37beeea9863c69fb7d31bb32400774110143724f338be9dcd9e6204710643425
     name: redis
@@ -190,6 +204,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.0.1/sentry-webhook-0.0.1.tgz
     version: 0.0.1
   synapse:
+  - apiVersion: v1
+    created: "2024-09-30T16:29:06.973474006Z"
+    digest: 2c9b0cc0689f61a9591fd3b99d33a4ef21be137ef016d1a29eea945d2fb65cb2
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.5.0/synapse-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v1
     created: "2024-08-22T13:42:50.17856833Z"
     digest: 047d446ed72145370cc606b7172744f4de6b751fa2bcd094a632e4270e0a45d6
@@ -389,6 +410,13 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2024-09-30T16:29:07.130726684Z"
+    digest: 8c12755d9005f7f1e81f54a15941be43cbde3b8fb807be855d8910542bc86f16
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.1.0/webhook-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v1
     created: "2024-08-22T10:48:02.20945817Z"
     digest: 674be7f59416be3ceab11fb7588626411152d0a5eb9cf91a5ea822b55004fc05
     name: webhook
@@ -437,4 +465,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-09-11T20:22:38.809569781Z"
+generated: "2024-09-30T16:29:07.130984219Z"
