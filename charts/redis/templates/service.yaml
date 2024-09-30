@@ -14,6 +14,6 @@ spec:
     - name: redis-exporter
       port: 9121
       targetPort: redis-exporter
-    {{- ens }}
+    {{- end }}
   selector:
     app: redis
