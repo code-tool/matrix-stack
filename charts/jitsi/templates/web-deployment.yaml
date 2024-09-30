@@ -43,7 +43,7 @@ spec:
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "false"
             - name: PUBLIC_URL
-              value: https://{{ .Values.serverName }}
+              value: https://{{ .Values.ingress.serverName }}
             - name: ENABLE_LOBBY
               value: "0"
             - name: ENABLE_WELCOME_PAGE

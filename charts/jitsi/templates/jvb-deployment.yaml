@@ -55,7 +55,7 @@ spec:
             - name: TZ
               value: {{ .Values.timeZone }}
             - name: PUBLIC_URL
-              value: https://{{ .Values.serverName }}
+              value: https://{{ .Values.ingress.serverName }}
             {{- if .Values.jvb.extraEnvs }}
             {{- toYaml .Values.jvb.extraEnvs | nindent 12 }}
             {{- end }}
