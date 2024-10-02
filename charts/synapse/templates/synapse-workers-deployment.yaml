@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: synapse-{{ $name }}
   labels:
-    {{- if $.Values.podMonitor.enabled  }}
+    {{- if $.Values.synapse.podMonitor.enabled  }}
     scrapeMetrics9092: 'true'
     {{- end }}
     {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
