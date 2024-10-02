@@ -34,7 +34,6 @@ component: matrix-authentication
 Workers annotations
 */}}
 {{- define "synapse-workers.annotations" -}}
-scrapeMetrics9092: "true"
 prometheus.io/port: "9092"
 prometheus.io/scrape: "true"
 prometheus.io/path: "/_synapse/metrics"
