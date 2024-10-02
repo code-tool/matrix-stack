@@ -22,6 +22,9 @@ spec:
       annotations:
         {{- include "synapse-workers.annotations" $ | nindent 8 }}
       labels:
+        {{- if $.Values.synapse.podMonitor.enabled  }}
+        scrapeMetrics9092: 'true'
+        {{- end }}
         {{- include "synapse-workers.selectorLabels" $name | nindent 8 }}
     spec:
       {{ include "synapse-workers.containers" (dict "name" $name "image" $.Values.synapse.image "worker" $worker "options" $options "resourcesDefaults" $.Values.synapse.resourcesDefaults "nodeSelector" $.Values.synapse.nodeSelector "tolerations" $.Values.synapse.tolerations "affinity" $.Values.synapse.affinity) | nindent 6 }}
