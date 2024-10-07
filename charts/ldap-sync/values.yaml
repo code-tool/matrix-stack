@@ -8,6 +8,7 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+logLevel: 0
 configs:
   LDAP_URL: ''
   LDAP_BASE: ''
