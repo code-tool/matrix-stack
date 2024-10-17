@@ -1,0 +1,67 @@
+replicas: 1
+
+logLevel: 'info'  # error, warn, debug, info
+
+image:
+  repository: 'jushcherbak/matrix-alertmanager-receiver'
+  tag: '2024.10.16'
+  pullPolicy: IfNotPresent
+
+service:
+  targetPort: 12345
+
+# configuration for the Matrix connection
+matrix:
+  # FQDN of the homeserver
+  homeserverUrl: ''  # https://matrix.example.com
+  # ID of the user used by this service
+  userId: ''  # "@user:matrix.example.com"
+  # Access token for the user ID
+  accessToken: ''  # secret
+  # define short names for Matrix room ID
+  roomMapping: {}
+  # simple-name: "!qohfwef7qwerf:example.com"
+
+templating:
+  # mapping of ExternalURL values
+  externalUrlMapping: {}
+    # key is the original value taken from the Alertmanager payload
+    # value is the mapped value which will be available as '.ExternalURL' in templates
+    # "http://alertmanager:9093": https://alertmanager.example.com
+  # mapping of GeneratorURL values
+  generatorUrlMapping: {}
+    # key is the original value taken from the Alertmanager payload
+    # value is the mapped value which will be available as '.GeneratorURL' in templates
+    # "http://prometheus:8080": https://prometheus.example.com
+  # computation of arbitrary values based on matching alert annotations, labels, or status
+  # values will be evaluated top to bottom, last entry wins
+  computedValues:
+    - values: # always set 'color' to 'yellow'
+        color: yellow
+    - values: # set 'color' to 'orange' when alert label 'severity' is 'warning'
+        color: orange
+      when-matching-labels:
+        severity: warning
+    - values: # set 'color' to 'red' when alert label 'severity' is 'critical'
+        color: red
+      when-matching-labels:
+        severity: critical
+    - values: # set 'color' to 'green' when alert status is 'resolved'
+        color: green
+      when-matching-status: resolved
+
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+ingress:
+  enabled: false
+  host: ""
+  ingressClassName: ""
+  tls: []
+  #tls:
+  #  - hosts:
+  #      - {{ .Values.ingress.host }}
+  #    secretName: {{ .Values.ingress.host }}
