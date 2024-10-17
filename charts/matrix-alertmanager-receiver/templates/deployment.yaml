@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args: [
           "--config-path",
-          "/etc/matrix-alertmanager-receiver.yaml"
+          "/etc/matrix-alertmanager-receiver.yaml",
           "--log-level",
           {{ .Values.logLevel | quote }}
         ]

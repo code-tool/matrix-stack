@@ -17,7 +17,7 @@ data:
 
     matrix:
       homeserver-url: {{ .Values.matrix.homeserverUrl }}
-      user-id: {{ .Values.matrix.userId }}
+      user-id: {{ .Values.matrix.userId | quote }}
       access-token: {{ .Values.matrix.accessToken }}
       room-mapping:
       {{- range $k, $v := .Values.matrix.roomMapping  }}
@@ -25,14 +25,18 @@ data:
       {{- end }}
 
     templating:
+      {{- if .Values.templating.externalUrlMapping }}
       external-url-mapping:
-      {{- range $k, $v := .Values.templating.externalUrlMapping  }}
+      {{- range $k, $v := .Values.templating.externalUrlMapping }}
         {{ $k | quote }}: {{ $v }}
       {{- end }}
+      {{- end }}
 
+      {{- if .Values.templating.generatorUrlMapping }}
       generator-url-mapping:
-      {{- range $k, $v := .Values.templating.generatorUrlMapping  }}
+      {{- range $k, $v := .Values.templating.generatorUrlMapping }}
         {{ $k | quote }}: {{ $v }}
+      {{- end }}
       {{- end }}
 
       {{- if .Values.templating.computedValues }}
