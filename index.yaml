@@ -158,6 +158,16 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/ldap-sync-0.0.1/ldap-sync-0.0.1.tgz
     version: 0.0.1
+  matrix-alertmanager-receiver:
+  - apiVersion: v1
+    created: "2024-10-17T21:31:46.072550896Z"
+    digest: b34f5d9282f53cb7abf8d2dda624b6a24d9b6c5a7914a90de70f64fbbdd3cd2c
+    name: matrix-alertmanager-receiver
+    sources:
+    - https://github.com/metio/matrix-alertmanager-receiver
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/matrix-alertmanager-receiver-0.0.1/matrix-alertmanager-receiver-0.0.1.tgz
+    version: 0.0.1
   overprovisioning:
   - apiVersion: v1
     created: "2024-05-02T13:05:32.879617186Z"
@@ -535,4 +545,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-10-09T09:55:52.613728265Z"
+generated: "2024-10-17T21:31:46.072667963Z"
