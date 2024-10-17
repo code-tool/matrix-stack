@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-alertmanager-receiver
+  labels:
+    app: synapse
+    component: matrix-alertmanager-receiver
+data:
+  matrix-alertmanager-receiver.yaml: |
+
+    http:
+      port: {{ .Values.service.targetPort }}
+      alerts-path-prefix: /alerts
+      metrics-path: /metrics
+      metrics-enabled: true
+
+    matrix:
+      homeserver-url: {{ .Values.matrix.homeserverUrl }}
+      user-id: {{ .Values.matrix.userId }}
+      access-token: {{ .Values.matrix.accessToken }}
+      room-mapping:
+      {{- range $k, $v := .Values.matrix.roomMapping  }}
+        {{ $k }}: {{ $v | quote }}
+      {{- end }}
+
+    templating:
+      external-url-mapping:
+      {{- range $k, $v := .Values.templating.externalUrlMapping  }}
+        {{ $k | quote }}: {{ $v }}
+      {{- end }}
+
+      generator-url-mapping:
+      {{- range $k, $v := .Values.templating.generatorUrlMapping  }}
+        {{ $k | quote }}: {{ $v }}
+      {{- end }}
+
+      {{- if .Values.templating.computedValues }}
+      computed-values:
+        {{ toYaml .Values.templating.computedValues | nindent 8 }}
+      {{- end }}
+
+      # template for alerts in status 'firing'
+      firing-template: '
+        <p>
+          <strong><font color="{{`{{ .ComputedValues.color }}`}}">{{`{{ .Alert.Status | ToUpper }}`}}</font></strong>
+          {{`{{ if .Alert.Labels.name }}`}}
+            {{`{{ .Alert.Labels.name }}`}}
+          {{`{{ else if .Alert.Labels.alertname }}`}}
+            {{`{{ .Alert.Labels.alertname }}`}}
+          {{`{{ end }}`}}
+          >>
+          {{`{{ if .Alert.Labels.severity }}`}}
+            {{`{{ .Alert.Labels.severity | ToUpper }}`}}:
+          {{`{{ end }}`}}
+          {{`{{ if .Alert.Annotations.description }}`}}
+            {{`{{ .Alert.Annotations.description }}`}}
+          {{`{{ else if .Alert.Annotations.summary }}`}}
+            {{`{{ .Alert.Annotations.summary }}`}}
+          {{`{{ end }}`}}
+          >>
+          {{`{{ if .Alert.Annotations.runbook }}`}}
+            <a href="{{`{{ .Alert.Annotations.runbook }}`}}">Runbook</a> |
+          {{`{{ end }}`}}
+          {{`{{ if .Alert.Annotations.dashboard }}`}}
+            <a href="{{`{{ .Alert.Annotations.dashboard }}`}}">Dashboard</a> |
+          {{`{{ end }}`}}
+          <a href="{{`{{ .SilenceURL }}`}}">Silence</a>
+        </p>'
+
+      # template for alerts in status 'resolved', if not specified will use the firing-template
+      resolved-template: '
+        <strong><font color="{{`{{ .ComputedValues.color }}`}}">{{`{{ .Alert.Status | ToUpper }}`}}</font></strong>{{`{{ .Alert.Labels.name }}`}}'
