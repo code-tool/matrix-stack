@@ -307,7 +307,7 @@ admin:
     serverName: NOT-CONFIGURED
   image:
     repository: "awesometechnologies/synapse-admin"
-    tag: "0.10.2"
+    tag: "0.10.3"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
@@ -373,7 +373,7 @@ envoyProxy:
     # maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
-    tag: v1.27.7
+    tag: v1.31.2
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
@@ -417,7 +417,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/matrix-org/matrix-authentication-service
-    tag: 0.9.0
+    tag: 0.11.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
