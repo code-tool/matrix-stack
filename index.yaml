@@ -158,6 +158,16 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/ldap-sync-0.0.1/ldap-sync-0.0.1.tgz
     version: 0.0.1
+  livekit-jwt:
+  - apiVersion: v2
+    created: "2024-12-03T13:54:44.491965656Z"
+    digest: c917beb389fe15114ec2a396f0939e6224740c4c89201635a2094d4f0c7e48ba
+    name: livekit-jwt
+    sources:
+    - https://github.com/element-hq/lk-jwt-service
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/livekit-jwt-0.0.1/livekit-jwt-0.0.1.tgz
+    version: 0.0.1
   matrix-alertmanager-receiver:
   - apiVersion: v1
     created: "2024-10-17T21:31:46.072550896Z"
@@ -559,4 +569,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-12-03T10:34:31.309442303Z"
+generated: "2024-12-03T13:54:44.49207474Z"
