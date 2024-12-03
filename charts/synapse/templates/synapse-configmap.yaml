@@ -255,9 +255,17 @@ data:
       search_all_users: {{ $.Values.synapse.search_all_users }}
       prefer_local_users: true
     web_client_location: "https://{{ $.Values.synapse.serverName }}/"
-    {{- if $.Values.matrixAuthentication.enabled }}
+    # The maximum allowed duration by which sent events can be delayed, as
+    # per MSC4140.
+    max_event_delay_duration: 24h
+    {{- if or $.Values.matrixAuthentication.enabled $.Values.experimentalFeatures.msc3266.enabled }}
     # https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service
     experimental_features:
+      # MSC3266: Room summary API. Used for knocking over federation
+      # MSC3266 allows to request a room summary of rooms you are not joined. The summary contains the room join rules.
+      # We need that to decide if the user gets prompted with the option to knock ("Request to join call"), a cannot join error or the join view.
+      msc3266:
+        enabled: {{ $.Values.experimentalFeatures.msc3266.enabled }}
     {{- if $.Values.experimentalFeatures.msc3861.enabled }}
       msc3861: {{ $.Values.experimentalFeatures.msc3861 | toYaml | nindent 8 }}
     {{- end }}

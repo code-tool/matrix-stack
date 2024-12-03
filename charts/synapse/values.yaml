@@ -143,6 +143,11 @@ synapse:
 rc_message:
   per_second: 100
   burst_count: 300
+  # recommended for MSC3266
+  # This needs to match at least the heart-beat frequency plus a bit of headroom
+  # Currently the heart-beat is every 5 seconds which translates into a rate of 0.2s
+  # per_second: 0.5
+  # burst_count: 30
 
 federation_domain_whitelist: []
 
@@ -177,6 +182,8 @@ experimentalFeatures:
     client_secret: NOT-CONFIGURED
     admin_token: NOT-CONFIGURED
     account_management_url: NOT-CONFIGURED
+  msc3266:
+    enabled: false
 
 ingress:
   secretName: ''
