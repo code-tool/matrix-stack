@@ -7,6 +7,8 @@ synapse:
   allow_device_name_lookup_over_federation: false
   search_all_users: false
   allow_public_rooms_over_federation: false
+  # The maximum allowed duration by which sent events can be delayed, as per MSC4140.
+  max_event_delay_duration: ''  # 24h
   # cfg --
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
@@ -143,6 +145,11 @@ synapse:
 rc_message:
   per_second: 100
   burst_count: 300
+  # recommended for MSC3266
+  # This needs to match at least the heart-beat frequency plus a bit of headroom
+  # Currently the heart-beat is every 5 seconds which translates into a rate of 0.2s
+  # per_second: 0.5
+  # burst_count: 30
 
 federation_domain_whitelist: []
 
@@ -177,6 +184,8 @@ experimentalFeatures:
     client_secret: NOT-CONFIGURED
     admin_token: NOT-CONFIGURED
     account_management_url: NOT-CONFIGURED
+  msc3266:
+    enabled: false
 
 ingress:
   secretName: ''
@@ -543,3 +552,7 @@ wellKnown:
 
 resourceQuota:
   enabled: true
+
+livekitServer:
+  ingress:
+    host: ''

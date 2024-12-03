@@ -38,6 +38,14 @@ data:
         "base_url":"https://vector.im"
       },
       {{- end }}
+      {{- if .Values.experimentalFeatures.msc3266.enabled }}
+      "org.matrix.msc4143.rtc_foci": [
+          {
+              "type": "livekit",
+              "livekit_service_url": "https://{{ .Values.livekitServer.ingress.host }}"
+          }
+      ],
+      {{- end }}
       "jitsi": {
         "preferredDomain": "meet.jit.si"
       },
