@@ -7,6 +7,8 @@ synapse:
   allow_device_name_lookup_over_federation: false
   search_all_users: false
   allow_public_rooms_over_federation: false
+  # The maximum allowed duration by which sent events can be delayed, as per MSC4140.
+  max_event_delay_duration: ''  # 24h
   # cfg --
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
@@ -550,3 +552,7 @@ wellKnown:
 
 resourceQuota:
   enabled: true
+
+livekitServer:
+  ingress:
+    host: ''
