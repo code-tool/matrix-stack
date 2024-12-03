@@ -1,0 +1,31 @@
+{{- with .Values.service.lkJWT.networkPolicy }}
+{{- if and $.Values.service.lkJWT.enabled .enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "element-call.fullname" $ }}-lk-jwt
+  labels:
+    {{- include "element-call.labels" $ | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "element-call.selectorLabels" $ | nindent 6 }}
+      app.kubernetes.io/component: lk-jwt
+  policyTypes:
+    - Ingress
+    {{- if .egress.enabled }}
+    - Egress
+    {{- end }}
+  ingress:
+    - ports:
+        - port: 8080
+          protocol: TCP
+      from:
+        {{- toYaml .ingress.http | nindent 8 }}
+  {{- with .egress }}
+  egress:
+    {{- toYaml .extra | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

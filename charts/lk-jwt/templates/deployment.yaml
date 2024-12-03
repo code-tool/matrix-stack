@@ -1,0 +1,79 @@
+{{- $fullName := include "element-call.fullname" . -}}
+{{- with .Values.service.lkJWT }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}-lk-jwt
+  labels:
+    {{- include "element-call.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: lk-jwt
+spec:
+  {{- if not $.Values.autoscaling.enabled }}
+  replicas: {{ .replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "element-call.selectorLabels" $ | nindent 6 }}
+      app.kubernetes.io/component: lk-jwt
+  template:
+    metadata:
+      annotations:
+        secret-env-hash: {{ include (print $.Template.BasePath "/lk-jwt/secret.yaml") $ | sha256sum }}
+        {{- with .podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "element-call.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: lk-jwt
+        {{- with .podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "element-call.serviceAccountName" (dict "root" $ "ctx" . "suffix" "lk-jwt") }}
+      securityContext:
+        {{- toYaml .podSecurityContext | nindent 8 }}
+      containers:
+        - name: lk-jwt
+          securityContext:
+            {{- toYaml .securityContext | nindent 12 }}
+          {{- with .image }}
+          image: "{{ coalesce $.Values.global.image.registry .registry }}/{{ .repository }}:{{ .tag }}"
+          imagePullPolicy: {{ coalesce $.Values.global.image.pullPolicy .pullPolicy }}
+          {{- end }}
+          env:
+            - name: "LK_JWT_PORT"
+              value: "8080"
+            - name: "LIVEKIT_URL"
+              value: {{ .config.url }}
+          envFrom:
+            - secretRef:
+                name: {{ $fullName }}-lk-jwt
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}{{/* end-if .enabled */}}
+{{- end }}{{/* end-with .Values.service.lkJWT */}}
