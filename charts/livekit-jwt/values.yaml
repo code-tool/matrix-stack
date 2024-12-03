@@ -1,0 +1,54 @@
+config:
+  url:
+  key: key
+  secret: secret
+
+image:
+  repository: ghcr.io/element-hq/lk-jwt-service
+  tag: 0.0.1
+  pullPolicy: IfNotPresent
+
+replicas: 1
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 64Mi
+#  requests:
+#    cpu: 100m
+#    memory: 64Mi
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 25%
+priorityClassName: ''
+topologySpreadConstraints: []
+# example
+#topologySpreadConstraints:
+#  - maxSkew: 1
+#    topologyKey: failure-domain.beta.kubernetes.io/zone
+#    whenUnsatisfiable: ScheduleAnyway
+#    labelSelector:
+#      matchLabels:
+#        kubernetes.io/os: linux
