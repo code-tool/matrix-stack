@@ -15,6 +15,7 @@ helm repo add code-tool https://code-tool.github.io/matrix-stack/
 1. `sentry-webhook` - for webhook from sentry to matrix chat
 1. `webhook` - for webhook from slack-compatible clients to matrix chat
 1. `matrix-alertmanager-receiver` - for webhook from Prometheus Alertmanager to matrix chat
+1. `livekit-jwt` - for LiveKit management service
 
 
 ## Visualisation
