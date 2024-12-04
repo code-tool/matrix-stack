@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      run: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        run: {{ .Values.name }}
+    spec:
+      priorityClassName: {{ .Values.name }}
+      containers:
+      - name: reserve-resources
+        image: {{ .Values.image }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpu }}
