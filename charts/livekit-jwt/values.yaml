@@ -52,3 +52,10 @@ topologySpreadConstraints: []
 #    labelSelector:
 #      matchLabels:
 #        kubernetes.io/os: linux
+
+ingress:
+  enabled: false
+  annotations: {}
+  ingressClassName: nginx
+  serverName: ''
+  secretName: ''
