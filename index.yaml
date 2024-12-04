@@ -207,6 +207,13 @@ entries:
     version: 0.0.1
   overprovisioning:
   - apiVersion: v1
+    created: "2024-12-04T14:01:28.185283343Z"
+    digest: 2e68ad8ec729bff2743441955eedd13ae34129f3306f419192cacb5bbcd37763
+    name: overprovisioning
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/overprovisioning-0.0.3/overprovisioning-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2024-05-02T13:05:32.879617186Z"
     digest: 5ac1e23e6a3044fdc80263352f78661265b9e12a7af12f289ad9376402cd94fd
     name: overprovisioning
@@ -596,4 +603,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2024-12-04T10:32:28.359752197Z"
+generated: "2024-12-04T14:01:28.185491009Z"
