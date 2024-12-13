@@ -19,5 +19,4 @@ spec:
       - name: reserve-resources
         image: {{ .Values.image }}
         resources:
-          requests:
-            cpu: {{ .Values.resources.cpu }}
+          {{ toYaml .Values.resources | nindent 10 }}
