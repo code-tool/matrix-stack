@@ -2,7 +2,8 @@ name: "overprovisioning"
 replicas: 4
 maxUnavailable: 1
 resources:
-  cpu: "200m"
+  requests:
+    cpu: "200m"
 image: "k8s.gcr.io/pause"
 autoscaling:
   enabled: false
