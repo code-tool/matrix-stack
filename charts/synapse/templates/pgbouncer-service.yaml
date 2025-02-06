@@ -12,3 +12,9 @@ spec:
   - name: pgbouncer
     port: 5432
     targetPort: 5432
+  {{- if .Values.synapse.pgbouncer.sessionAffinityTimeoutSeconds }}
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: {{ .Values.synapse.pgbouncer.sessionAffinityTimeoutSeconds }}
+  {{- end }}

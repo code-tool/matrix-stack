@@ -112,6 +112,8 @@ synapse:
       tag: "1.21.0-debian-11-r5"
       pullPolicy: IfNotPresent
     replicas: 2
+    # set thish gt 0 if you want to enable serveice sessionAffinity by ClientIP
+    sessionAffinityTimeoutSeconds: 0
     podDisruptionBudget:
       ebabled: true
       # Define either 'minAvailable' or 'maxUnavailable', never both.
