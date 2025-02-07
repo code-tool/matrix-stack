@@ -341,6 +341,12 @@ slidingSyncProxy:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  podDisruptionBudget:
+    ebabled: true
+    # Define either 'minAvailable' or 'maxUnavailable', never both.
+    minAvailable: 1
+    # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
+    # maxUnavailable: 1
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
