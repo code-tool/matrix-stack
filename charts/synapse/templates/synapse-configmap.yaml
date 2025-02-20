@@ -219,7 +219,7 @@ data:
     retention: {{ toYaml $.Values.synapse.retention | nindent 6 }}
     {{- else }}
     retention: ~
-    {{-end }}
+    {{- end }}
     redaction_retention_period: ~
     redis:
       enabled: {{ $.Values.synapse.redis.enabled }}
