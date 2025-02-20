@@ -317,8 +317,8 @@ admin:
     secretName: ''
     serverName: NOT-CONFIGURED
   image:
-    repository: "awesometechnologies/synapse-admin"
-    tag: "0.10.3"
+    repository: "ghcr.io/etkecc/synapse-admin"
+    tag: "v0.10.3-etke37"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
