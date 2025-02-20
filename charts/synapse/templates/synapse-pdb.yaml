@@ -1,0 +1,26 @@
+!!! synapse-event-persister set pdb
+
+{{- range $worker, $options := .Values.synapse.autoscalingWorkers }}
+{{- $name := $worker | replace "_" "-"}}
+
+
+{{- $workers := merge (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
+{{- range $worker, $options := $workers }}
+{{ $name := $worker | replace "_" "-"}}
+
+
+{{- if .Values.slidingSyncProxy.podDisruptionBudget.ebabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: sliding-sync-proxy
+spec:
+  {{- if and .Values.slidingSyncProxy.podDisruptionBudget.minAvailable (not (hasKey .Values.slidingSyncProxy.podDisruptionBudget "maxUnavailable")) }}
+  minAvailable: {{ .Values.slidingSyncProxy.podDisruptionBudget.minAvailable }}
+  {{- else if .Values.slidingSyncProxy.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.slidingSyncProxy.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "synapse-workers.selectorLabels" $name | nindent 6 }}
+{{- end }}
