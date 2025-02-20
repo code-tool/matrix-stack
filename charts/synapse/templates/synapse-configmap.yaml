@@ -215,6 +215,11 @@ data:
     pid_file: /tmp/homeserver.pid
     push: ~
     start_pushers: False
+    {{- if $.Values.synapse.retention.enabled }}
+    retention: {{ toYaml $.Values.synapse.retention | nindent 6 }}
+    {{- else }}
+    retention: ~
+    {{-end }}
     redaction_retention_period: ~
     redis:
       enabled: {{ $.Values.synapse.redis.enabled }}
@@ -224,7 +229,6 @@ data:
     report_stats: true
     require_auth_for_profile_requests: true
     require_membership_for_aliases: true
-    retention: ~
     saml2_config: {{- $saml2_config | toYaml | nindent 6 }}
     signing_key_path: /data/signing.key
     soft_file_limit: 0

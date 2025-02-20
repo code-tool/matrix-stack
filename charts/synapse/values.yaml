@@ -144,6 +144,19 @@ synapse:
   podMonitor:
     enabled: false
 
+  retention:
+    enabled: false
+    default_policy:
+      min_lifetime: 1d
+      max_lifetime: 3y
+    allowed_lifetime_min: 1d
+    allowed_lifetime_max: 3y
+    purge_jobs:
+      - longest_max_lifetime: 3d
+        interval: 12h
+      - shortest_max_lifetime: 3d
+        interval: 1d
+
 rc_message:
   per_second: 100
   burst_count: 300
