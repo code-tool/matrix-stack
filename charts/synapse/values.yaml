@@ -433,8 +433,8 @@ matrixAuthentication:
     # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
     # maxUnavailable: 1
   image:
-    repository: ghcr.io/matrix-org/matrix-authentication-service
-    tag: 0.11.0
+    repository: ghcr.io/element-hq/matrix-authentication-service
+    tag: 0.13.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
