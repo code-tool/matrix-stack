@@ -238,6 +238,8 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   mediaRepository:
     - "/_matrix/media/"                                                         # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
+    - "/_matrix/client/v1/media/"
+    - "/_matrix/federation/v1/media/"
     - "/_synapse/admin/v1/purge_media_cache$"
     - "/_synapse/admin/v1/room/.*/media.*$"
     - "/_synapse/admin/v1/user/.*/media.*$"
