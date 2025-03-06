@@ -12,7 +12,8 @@ synapse:
   # cfg --
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
-    tag: "v1.124.0"
+    # varsion with git+https://github.com/davefatkin/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
+    tag: "v1.124.1"
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
