@@ -22,11 +22,6 @@ data:
       "m.homeserver": {
         "base_url": "https://{{ .Values.synapse.serverName }}"
       },
-      {{- if .Values.experimentalFeatures.msc3575.enabled }}
-      "org.matrix.msc3575.proxy": {
-        "url": "https://{{ .Values.slidingSyncProxy.ingress.host }}"
-      },
-      {{- end }}
       {{- if .Values.experimentalFeatures.msc2965.enabled }}
       "org.matrix.msc2965.authentication": {
         "issuer": "https://{{ .Values.matrixAuthentication.ingress.host }}/",
