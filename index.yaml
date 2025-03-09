@@ -2,6 +2,13 @@ apiVersion: v1
 entries:
   coturn:
   - apiVersion: v1
+    created: "2025-03-09T08:33:40.703787356Z"
+    digest: 393676566caa3f348a4fec3003d529a21a37aacc29f3ff382417aa38adda9e95
+    name: coturn
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/coturn-0.2.0/coturn-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
     created: "2024-09-30T21:01:43.109468687Z"
     digest: db95f13064d4b75f251f13aee5a9401befa93130cbd4d57588b5af3dbc6a19a1
     name: coturn
@@ -708,4 +715,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-03-09T08:28:18.0220032Z"
+generated: "2025-03-09T08:33:40.703966498Z"
