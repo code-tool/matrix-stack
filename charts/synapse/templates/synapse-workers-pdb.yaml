@@ -8,10 +8,10 @@ kind: PodDisruptionBudget
 metadata:
   name: synapse-{{ $name }}
 spec:
-  {{- if and .Values.synapse.deployScalingWorkersPdb.minAvailable (not (hasKey .Values.synapse.deployScalingWorkersPdb "maxUnavailable")) }}
-  minAvailable: {{ .Values.synapse.deployScalingWorkersPdb.minAvailable }}
-  {{- else if .Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
-  maxUnavailable: {{ .Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
+  {{- if and $.Values.synapse.deployScalingWorkersPdb.minAvailable (not (hasKey $.Values.synapse.deployScalingWorkersPdb "maxUnavailable")) }}
+  minAvailable: {{ $.Values.synapse.deployScalingWorkersPdb.minAvailable }}
+  {{- else if $.Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
+  maxUnavailable: {{ $.Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
   {{- end }}
   selector:
     matchLabels:
