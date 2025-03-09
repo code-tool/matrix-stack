@@ -63,6 +63,9 @@ synapse:
         minReplicas: 1
         maxReplicas: 10
   # this workers will scale after deploy
+  deployScalingWorkersPdb:
+    enabled: true
+    minAvailable: 1
   deployScalingWorkers:
     event_persister:
       replicas: 2

@@ -1,0 +1,20 @@
+{{- .Values.synapse.deployScalingWorkersPdb.enabled }}
+{{- $workers := merge (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
+{{- range $worker, $options := $workers }}
+{{ $name := $worker | replace "_" "-"}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: synapse-{{ $name }}
+spec:
+  {{- if and .Values.synapse.deployScalingWorkersPdb.minAvailable (not (hasKey .Values.synapse.deployScalingWorkersPdb "maxUnavailable")) }}
+  minAvailable: {{ .Values.synapse.deployScalingWorkersPdb.minAvailable }}
+  {{- else if .Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "synapse-workers.selectorLabels" $name | nindent 6 }}
+{{- end }}
+{{- end }}
