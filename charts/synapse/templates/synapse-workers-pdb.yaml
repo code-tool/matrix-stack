@@ -1,4 +1,4 @@
-{{- .Values.synapse.deployScalingWorkersPdb.enabled }}
+{{- if .Values.synapse.deployScalingWorkersPdb.enabled }}
 {{- $workers := merge (deepCopy .Values.synapse.deployScalingWorkers) (deepCopy .Values.synapse.singletonWorkers) -}}
 {{- range $worker, $options := $workers }}
 {{ $name := $worker | replace "_" "-"}}
