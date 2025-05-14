@@ -1,6 +1,6 @@
 image:
   repository: "haproxy"
-  tag: "2.3.6"
+  tag: "2.8.15"
   pullPolicy: IfNotPresent
 replicas: 1
 servers: []
