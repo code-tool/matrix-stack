@@ -18,3 +18,4 @@ ingress:
   host: ""
   secretName: ""
   ingressClassName: nginx
+  path: "/webhook/(.*)"

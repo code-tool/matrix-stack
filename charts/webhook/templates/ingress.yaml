@@ -26,4 +26,4 @@ spec:
             name: {{ .Values.name }}
             port:
               number: 80
-        path: /webhook/(.*)
+        path: {{ .Values.ingress.path }}
