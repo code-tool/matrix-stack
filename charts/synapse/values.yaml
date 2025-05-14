@@ -339,7 +339,7 @@ admin:
     serverName: NOT-CONFIGURED
   image:
     repository: "ghcr.io/etkecc/synapse-admin"
-    tag: "v0.10.3-etke37"
+    tag: "v0.10.4-etke40"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
