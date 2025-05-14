@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webhook
+  name: {{ .Values.name }}
   labels:
-    app: webhook
+    app: {{ .Values.name }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: webhook
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: webhook
+        app: {{ .Values.name }}
     spec:
       containers:
       - name: webhook

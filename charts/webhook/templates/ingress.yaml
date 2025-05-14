@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: webhook
+  name: {{ .Values.name }}
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
@@ -23,7 +23,7 @@ spec:
       - pathType: ImplementationSpecific
         backend:
           service:
-            name: webhook
+            name: {{ .Values.name }}
             port:
               number: 80
         path: /webhook/(.*)
