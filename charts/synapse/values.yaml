@@ -13,7 +13,7 @@ synapse:
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # varsion with git+https://github.com/davefatkin/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
-    tag: "v1.124.1"
+    tag: "v1.129.0"
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
