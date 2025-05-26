@@ -27,6 +27,12 @@ spec:
           - containerPort: 389
             name: tcp
             protocol: TCP
+        securityContext:
+          capabilities:
+            drop:
+            - "ALL"
+            add:
+            - "NET_BIND_SERVICE"
         volumeMounts:
         - name: ldap-config
           mountPath: /usr/local/etc/haproxy/haproxy.cfg
