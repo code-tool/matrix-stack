@@ -7,13 +7,6 @@ metadata:
   annotations:
     nginx.org/client-max-body-size: "50m"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/server-snippet: |
-      # dummy
-      {{- if .Values.root_redirect_url }}
-      location ~ ^/$ {
-         rewrite / {{ .Values.root_redirect_url }} permanent;
-      }
-      {{ end }}
 spec:
   ingressClassName: nginx
   tls:

@@ -221,6 +221,8 @@ data:
     retention: ~
     {{- end }}
     redaction_retention_period: ~
+    forgotten_room_retention_period: {{ $.Values.synapse.forgotten_room_retention_period }}
+    user_ips_max_age: {{ $.Values.synapse.user_ips_max_age }}
     redis:
       enabled: {{ $.Values.synapse.redis.enabled }}
       host: {{ $.Values.synapse.redis.host | quote }}

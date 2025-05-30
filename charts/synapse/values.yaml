@@ -148,6 +148,8 @@ synapse:
   podMonitor:
     enabled: false
 
+  forgotten_room_retention_period: 7d
+  user_ips_max_age: 1y
   retention:
     enabled: false
     default_policy:
@@ -564,8 +566,6 @@ turn_uris: []
 #  - "turn:turn.test.com?transport=tcp"
 
 signing_key: NOT-CONFIGURED
-
-root_redirect_url: ''
 
 coturn:
   sharedSecret: ''
