@@ -351,52 +351,6 @@ admin:
   affinity: {}
   updateStrategy: {}
 
-slidingSyncProxy:
-  enabled: true
-  replicaCount: 1
-  podAnnotations: {}
-  resources: {}
-  #  limits:
-  #    cpu: 100m
-  #    memory: 64Mi
-  #  requests:
-  #    cpu: 100m
-  #    memory: 64Mi
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  podDisruptionBudget:
-    ebabled: true
-    # Define either 'minAvailable' or 'maxUnavailable', never both.
-    minAvailable: 1
-    # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
-    # maxUnavailable: 1
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 25%
-  image:
-    repository: ghcr.io/matrix-org/sliding-sync
-    tag: v0.99.19
-  service:
-    type: ClusterIP
-    port: 80
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 10
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: false
-  ingress:
-    enabled: true
-    host: NOT-CONFIGURED
-    secretName: ''
-  env:
-    SYNCV3_DB: NOT-CONFIGURED
-    SYNCV3_SERVER: NOT-CONFIGURED
-    SYNCV3_SECRET: NOT-CONFIGURED
-
 envoyProxy:
   enabled: true
   admin:
