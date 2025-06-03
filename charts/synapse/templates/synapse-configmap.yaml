@@ -53,6 +53,7 @@ data:
     block_non_admin_invites: false
     event_cache_size: "10K"
     database:
+      txn_limit: {{ $.Values.synapse.postgres.txn_limit }}
       args:
         cp_max: {{ $.Values.synapse.postgres.cp_max }}
         cp_min: {{ $.Values.synapse.postgres.cp_min }}

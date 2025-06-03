@@ -104,8 +104,9 @@ synapse:
       resources: {}
   presence: true
   postgres:
-    cp_max: 10
-    cp_min: 5
+    cp_max: 100
+    cp_min: 10
+    txn_limit: 10000
     host: "NOT-CONFIGURED4"
     dbname: "synapse"
     user: "synapse"
