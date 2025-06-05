@@ -5,7 +5,7 @@ local function get_hash_key_from_path(path)
 end
 
 local function parse_username_from_token(token)
-    local _, _, username = string.find(token, "[^_]+_([^+]+)_.*$")
+    local _, _, username = string.find(token, "[^_]+_([^_]+)_.*$")
     if username ~= nil then
         return username
     end
