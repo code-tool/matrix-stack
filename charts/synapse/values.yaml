@@ -31,7 +31,6 @@ synapse:
       cpu: 50m
       memory: 128Mi
     limits:
-      cpu: 1000m
       memory: 2Gi
   autoscalingWorkers:
     federation_sender:
@@ -104,8 +103,8 @@ synapse:
       resources: {}
   presence: true
   postgres:
-    cp_max: 100
-    cp_min: 10
+    cp_max: 50
+    cp_min: 5
     txn_limit: 10000
     host: "NOT-CONFIGURED4"
     dbname: "synapse"
