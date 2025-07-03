@@ -59,7 +59,8 @@ affinity: {}
 ingress:
   enabled: false
   host: ""
-  ingressClassName: ""
+  commonAnnotations: {}
+  annotations: {}
   tls: []
   #tls:
   #  - hosts:
