@@ -1,6 +1,10 @@
 ingress:
   serverName: ''
   secretName: ''
+  commonAnnotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  annotations: {}
 
 timeZone: Europe/Amsterdam
 jicofo:
