@@ -5,9 +5,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: matrix-authentication
-  annotations:
-    nginx.org/client-max-body-size: "50m"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  {{- if or .Values.matrixAuthentication.ingress.annotations .Values.matrixAuthentication.ingress.commonAnnotations }}
+  {{ $annotations := merge .Values.matrixAuthentication.ingress.annotations .Values.matrixAuthentication.ingress.commonAnnotations }}
+  annotations: {{ toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: nginx
   tls:

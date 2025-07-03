@@ -3,8 +3,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: well-known
-  annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
+  {{- if or .Values.wellKnown.ingress.annotations .Values.wellKnown.ingress.commonAnnotations }}
+  {{ $annotations := merge .Values.wellKnown.ingress.annotations .Values.wellKnown.ingress.commonAnnotations }}
+  annotations: {{ toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: nginx
   tls:
