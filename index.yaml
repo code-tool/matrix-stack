@@ -358,6 +358,13 @@ entries:
     version: 0.0.2
   sentry-webhook:
   - apiVersion: v1
+    created: "2025-07-03T11:28:55.323509867Z"
+    digest: ecb47fb02c329bfe3e74ebffaf4d8a960d16728811d2295535d911d99c71104f
+    name: sentry-webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.1.1/sentry-webhook-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v1
     created: "2025-07-03T11:25:32.92613113Z"
     digest: eef9b46fafa2904b31adb2a5a3bc16d194e76c83b3239d12d626fa306eb482d6
     name: sentry-webhook
@@ -927,4 +934,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-07-03T11:28:18.693840165Z"
+generated: "2025-07-03T11:28:55.323742505Z"
