@@ -210,6 +210,11 @@ experimentalFeatures:
 
 ingress:
   secretName: ''
+  commonAnnotations:
+    nginx.org/client-max-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "320"
+  annotations: {}
   masterRoutes:
     - "/_matrix/"
     - "/_synapse/"
@@ -340,6 +345,10 @@ admin:
     enabled: true
     secretName: ''
     serverName: NOT-CONFIGURED
+    commonAnnotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 50m
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    annotations: {}
   image:
     repository: "ghcr.io/etkecc/synapse-admin"
     tag: "v0.11.0-etke42"
@@ -442,6 +451,10 @@ matrixAuthentication:
     enabled: true
     host: NOT-CONFIGURED
     secretName: ''
+    commonAnnotations:
+      nginx.org/client-max-body-size: "50m"
+      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    annotations:  {}
   config:
     clients: []
     database:
@@ -529,6 +542,10 @@ wellKnown:
   tolerations: []
   affinity: {}
   updateStrategy: {}
+  ingress:
+    commonAnnotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    annotations: {}
   resources:
     requests:
       cpu: 20m
