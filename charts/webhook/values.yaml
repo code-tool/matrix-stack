@@ -19,3 +19,7 @@ ingress:
   secretName: ""
   ingressClassName: nginx
   path: "/webhook/(.*)"
+  commonAnnotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  annotations: {}
