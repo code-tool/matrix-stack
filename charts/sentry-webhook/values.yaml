@@ -17,6 +17,8 @@ conf:
 ingress:
   host: ""
   ingressClassName: nginx
+  commonAnnotations: {}
+  annotations: {}
   tls: []
   #tls:
   #  - hosts:

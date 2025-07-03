@@ -3,6 +3,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: sentry-webhook
+  {{- if or .Values.ingress.annotations .Values.commonAnnotations }}
+  {{ $annotations := merge .Values.ingress.annotations .Values.ingress.commonAnnotations }}
+  annotations: {{ toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName }}
