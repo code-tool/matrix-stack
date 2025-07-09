@@ -11,7 +11,7 @@ metadata:
     {{- end }}
     {{- include "synapse-workers.selectorLabels" $name | nindent 4 }}
 spec:
-  {{- if not $options.autoscaling.enabled }}
+  {{- if and (not $options.autoscaling.enabled) (not $options.kedaAutoscaling.enabled) }}
   replicas: {{ $options.replicas }}
   {{- end }}
   {{- if $.Values.synapse.updateStrategy }}

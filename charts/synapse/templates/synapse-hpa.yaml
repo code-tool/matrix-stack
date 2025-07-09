@@ -1,6 +1,6 @@
 {{- range $worker, $options := .Values.synapse.autoscalingWorkers }}
 {{- $name := $worker | replace "_" "-"}}
-{{- if $options.autoscaling.enabled }}
+{{- if and $options.autoscaling.enabled (not $options.kedaAutoscaling.enabled) }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
