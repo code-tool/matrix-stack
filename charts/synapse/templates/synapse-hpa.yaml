@@ -1,6 +1,6 @@
 {{- range $worker, $options := .Values.synapse.autoscalingWorkers }}
-{{- if $options.autoscaling.enabled }}
 {{- $name := $worker | replace "_" "-"}}
+{{- if $options.autoscaling.enabled }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -19,7 +19,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 75
+        averageUtilization: 65
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
@@ -33,5 +33,24 @@ spec:
       - type: Pods
         value: 2
         periodSeconds: 15
+{{- end }}
+{{- if $options.kedaAutoscaling.enabled }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: synapse-{{ $name }}-cron
+spec:
+  scaleTargetRef:
+    name: synapse-{{ $name }}
+  minReplicaCount: {{ $options.kedaAutoscaling.minReplicaCount }}
+  cooldownPeriod: 300
+  triggers:
+  - type: cron
+    metadata:
+      timezone: {{ $options.kedaAutoscaling.timezone | quote }}
+      start: {{ $options.kedaAutoscaling.start | quote }}
+      end: {{ $options.kedaAutoscaling.end | quote }}
+      desiredReplicas: {{ $options.kedaAutoscaling.desiredReplicas | quote }}
 {{- end }}
 {{- end }}

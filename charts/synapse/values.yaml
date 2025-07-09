@@ -36,6 +36,15 @@ synapse:
     federation_sender:
       replicas: 1
       resources: {}
+      # https://keda.sh/docs/2.17/scalers/cron/
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 5
+        minReplicaCount: 2
+      # HPA
       autoscaling:
         enabled: true
         minReplicas: 1
@@ -43,6 +52,15 @@ synapse:
     client_reader:
       replicas: 2
       resources: {}
+      # https://keda.sh/docs/2.17/scalers/cron/
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 15
+        minReplicaCount: 5
+      # HPA
       autoscaling:
         enabled: true
         minReplicas: 1
@@ -50,6 +68,15 @@ synapse:
     event_creator:
       replicas: 2
       resources: {}
+      # https://keda.sh/docs/2.17/scalers/cron/
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 5
+        minReplicaCount: 2
+      # HPA
       autoscaling:
         enabled: true
         minReplicas: 1
@@ -57,6 +84,15 @@ synapse:
     media_repository:
       replicas: 2
       resources: {}
+      # https://keda.sh/docs/2.17/scalers/cron/
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 5
+        minReplicaCount: 2
+      # HPA
       autoscaling:
         enabled: true
         minReplicas: 1
