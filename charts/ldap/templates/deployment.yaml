@@ -17,6 +17,10 @@ spec:
       labels:
         app: ldap
     spec:
+      securityContext:
+        sysctls:
+        - name: "net.ipv4.ip_unprivileged_port_start"
+          value: "0"
       containers:
       - name: ldap
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
