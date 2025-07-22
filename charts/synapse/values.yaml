@@ -387,7 +387,7 @@ admin:
     annotations: {}
   image:
     repository: "ghcr.io/etkecc/synapse-admin"
-    tag: "v0.11.0-etke42"
+    tag: "v0.11.1-etke45"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
@@ -413,7 +413,7 @@ envoyProxy:
     # maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
-    tag: v1.31.8
+    tag: v1.31.10
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
@@ -457,7 +457,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/element-hq/matrix-authentication-service
-    tag: 0.16.0
+    tag: 0.18.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
