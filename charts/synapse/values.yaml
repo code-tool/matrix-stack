@@ -13,7 +13,7 @@ synapse:
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # varsion with git+https://github.com/davefatkin/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
-    tag: "v1.129.0"
+    tag: "v1.133.0"
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
@@ -371,6 +371,7 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$"
     - "/_matrix/client/(r0|v3|unstable)/capabilities$"
     - "/_matrix/client/(r0|v3|unstable)/notifications$"
+    - "/_synapse/admin/v1/rooms/"
     # User directory search requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/user_directory/search$"
     # TODO: check search url
