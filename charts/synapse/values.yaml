@@ -458,7 +458,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/element-hq/matrix-authentication-service
-    tag: 0.18.0
+    tag: 0.20.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
