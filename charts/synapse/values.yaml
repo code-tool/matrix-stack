@@ -13,7 +13,7 @@ synapse:
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # varsion with git+https://github.com/davefatkin/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
-    tag: "v1.133.0"
+    tag: "v1.137.0"
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
@@ -256,6 +256,7 @@ ingress:
     - "/_synapse/"
   federationSenderRoutes:
     # Federation requests
+    - "/_matrix/federation/v1/version$"
     - "/_matrix/federation/v1/event/"                                           # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
     - "/_matrix/federation/v1/state/"
     - "/_matrix/federation/v1/state_ids/"
@@ -276,7 +277,6 @@ ingress:
     - "/_matrix/federation/v1/user/devices/"
     - "/_matrix/key/v2/query"
     - "/_matrix/federation/v1/hierarchy/"
-    - "/_matrix/federation/v1/version"
     # Inbound federation transaction request
     - "/_matrix/federation/v1/send/"
   accountData:
@@ -311,6 +311,8 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
     - "/_matrix/client/(r0|v3|unstable)/room_keys/"
     - "/_matrix/client/(r0|v3|unstable)/keys/upload/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
   eventCreator:
     # Event sending requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact"                 # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
@@ -352,7 +354,9 @@ ingress:
     - "/_matrix/client/unstable/im.nheko.summary/summary/.*$"
     - "/_matrix/client/(r0|v3|unstable)/account/3pid$"
     - "/_matrix/client/(r0|v3|unstable)/account/whoami$"
-    - "/_matrix/client/(r0|v3|unstable)/devices$"
+    - "/_matrix/client/(r0|v3|unstable)/account/deactivate$"
+    - "/_matrix/client/(r0|v3)/delete_devices$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)"
     - "/_matrix/client/versions$"
     # api v1 ++
     - "/_matrix/client/(api/v1|r0|v3|unstable)/account/3pid$"
@@ -372,10 +376,16 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/capabilities$"
     - "/_matrix/client/(r0|v3|unstable)/notifications$"
     - "/_synapse/admin/v1/rooms/[^/]+$"
+    # ? "/_synapse/admin/v1/rooms/" # https://github.com/element-hq/synapse/blob/v1.133.0/docs/workers.md has error ?
     # User directory search requests
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/user_directory/search$"
-    # TODO: check search url
-    # "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
+    - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
+  # experimental_features.msc3861.enabled set to true
+  # TODO: decide if worker needed
+  #msc3861Routes:
+  #  - "/_synapse/admin/v2/users/[^/]+$"
+  #  - "/_synapse/admin/v1/username_available$"
+  #  - "/_synapse/admin/v1/users/[^/]+/_allow_cross_signing_replacement_without_uia$"
+  #  - "/_synapse/admin/v1/users/[^/]+/devices$"
 
 admin:
   ingress:
@@ -388,7 +398,7 @@ admin:
     annotations: {}
   image:
     repository: "ghcr.io/etkecc/synapse-admin"
-    tag: "v0.11.1-etke45"
+    tag: "v0.11.1-etke47"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
