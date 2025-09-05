@@ -266,8 +266,19 @@ data:
     # The maximum allowed duration by which sent events can be delayed, as per MSC4140.
     max_event_delay_duration: {{ $.Values.synapse.max_event_delay_duration }}
     {{- end }}
-    {{- if or $.Values.matrixAuthentication.enabled $.Values.experimentalFeatures.msc3266.enabled }}
+    {{- if or $.Values.matrixAuthentication.enabled }}
     # https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service
+    matrix_authentication_service:
+      # Enable the MAS integration
+      enabled: true
+      # The base URL where Synapse will contact MAS
+      {{- $defaultMasEndpoint := http://project.{{ .Release.Namespace }} }}
+      endpoint: {{ $.Values.synapse.matrixAuthenticationServiceEndpoint | default (printf "http://matrix-authentication.%s.svc:%s" $.Release.Namespace $.Values.matrixAuthentication.service.port) }}
+      # The shared secret used to authenticate MAS requests, must be the same as `matrix.secret` in the MAS configuration
+      # See https://element-hq.github.io/matrix-authentication-service/reference/configuration.html#matrix
+      secret: {{ $.Values.experimentalFeatures.msc3861.admin_token }}
+    {{- end }}
+    {{- if or $.Values.experimentalFeatures.msc3967.enabled $.Values.experimentalFeatures.msc3266.enabled }}
     experimental_features:
     {{- if $.Values.experimentalFeatures.msc3266.enabled }}
       # MSC3266: Room summary API. Used for knocking over federation
@@ -275,9 +286,6 @@ data:
       # We need that to decide if the user gets prompted with the option to knock ("Request to join call"), a cannot join error or the join view.
       msc3266:
         enabled: {{ $.Values.experimentalFeatures.msc3266.enabled }}
-    {{- end }}
-    {{- if $.Values.experimentalFeatures.msc3861.enabled }}
-      msc3861: {{ $.Values.experimentalFeatures.msc3861 | toYaml | nindent 8 }}
     {{- end }}
     {{- if $.Values.experimentalFeatures.msc3967.enabled }}
       msc3967:

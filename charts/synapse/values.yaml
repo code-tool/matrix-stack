@@ -1,6 +1,7 @@
 ---
 synapse:
   serverName: NOT-CONFIGURED
+  matrixAuthenticationServiceEndpoint: ''
   # cfg ++
   enable_3pid_changes: false
   allow_profile_lookup_over_federation: false
@@ -234,7 +235,8 @@ experimentalFeatures:
   msc3967:
     enabled: true
   msc3861:
-    enabled: true
+    # enabled by matrixAuthentication.enabled, deprecated section
+    # enabled: true
     issuer: NOT-CONFIGURED
     client_id: NOT-CONFIGURED
     client_auth_method: client_secret_basic
@@ -381,7 +383,7 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
   # experimental_features.msc3861.enabled set to true
   # TODO: decide if worker needed
-  #msc3861Routes:
+  #msc3861Routes / MAS additional routes:
   #  - "/_synapse/admin/v2/users/[^/]+$"
   #  - "/_synapse/admin/v1/username_available$"
   #  - "/_synapse/admin/v1/users/[^/]+/_allow_cross_signing_replacement_without_uia$"
