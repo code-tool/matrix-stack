@@ -272,7 +272,7 @@ data:
       # Enable the MAS integration
       enabled: true
       # The base URL where Synapse will contact MAS
-      endpoint: {{ $.Values.synapse.matrixAuthenticationServiceEndpoint | default (printf "http://matrix-authentication.%s.svc:%s" $.Release.Namespace ($.Values.matrixAuthentication.service.port | quote)) }}
+      endpoint: {{ $.Values.synapse.matrixAuthenticationServiceEndpoint | default (printf "http://matrix-authentication.%s.svc:%s" $.Release.Namespace ($.Values.matrixAuthentication.service.port | int)) }}
       # The shared secret used to authenticate MAS requests, must be the same as `matrix.secret` in the MAS configuration
       # See https://element-hq.github.io/matrix-authentication-service/reference/configuration.html#matrix
       secret: {{ $.Values.experimentalFeatures.msc3861.admin_token }}
