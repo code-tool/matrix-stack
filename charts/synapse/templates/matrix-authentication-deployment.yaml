@@ -27,44 +27,6 @@ spec:
       {{- end }}
     spec:
       terminationGracePeriodSeconds: 60
-      initContainers:
-        - name: database-migrate
-          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
-          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
-          env:
-            - name: "MAS_CONFIG"
-              value: "/etc/mas-config.yaml"
-          command:
-            - /usr/local/bin/mas-cli
-            - database
-            - migrate
-          resources:
-            {{- toYaml .Values.matrixAuthentication.resources | nindent 12 }}
-          volumeMounts:
-            - name: config
-              mountPath: "/etc/mas-config.yaml"
-              subPath: "mas-config.yaml"
-              readOnly: true
-        - name: config-sync
-          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
-          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
-          env:
-            - name: "MAS_CONFIG"
-              value: "/etc/mas-config.yaml"
-          command:
-            - /usr/local/bin/mas-cli
-            - config
-            - sync
-            {{- if .Values.matrixAuthentication.configSyncPrune }}
-            - --prune
-            {{- end }}
-          resources:
-            {{- toYaml .Values.matrixAuthentication.resources | nindent 12 }}
-          volumeMounts:
-            - name: config
-              mountPath: "/etc/mas-config.yaml"
-              subPath: "mas-config.yaml"
-              readOnly: true
       containers:
         - name: main
           image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}

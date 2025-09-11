@@ -1,0 +1,43 @@
+{{- if .Values.matrixAuthentication.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: matrix-authentication-db-migration
+  annotations:
+    {{- if .Values.argocd }}
+    argocd.argoproj.io/sync-wave: "-20"
+    argocd.argoproj.io/hook: "Sync"
+    {{- else }}
+    helm.sh/hook: "pre-install,pre-upgrade"
+    helm.sh/hook-weight: "-20"
+    {{- end }}
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-migration
+          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
+          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
+          env:
+            - name: "MAS_CONFIG"
+              value: "/etc/mas-config.yaml"
+          command:
+            - /usr/local/bin/mas-cli
+            - database
+            - migrate
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/mas-config.yaml"
+              subPath: "mas-config.yaml"
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: matrix-authentication
+            items:
+             - key: mas-config.yaml
+               path: mas-config.yaml
+{{- end }}

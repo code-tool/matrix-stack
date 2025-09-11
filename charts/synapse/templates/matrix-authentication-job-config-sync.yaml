@@ -1,0 +1,46 @@
+{{- if .Values.matrixAuthentication.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: matrix-authentication-config-sync
+  annotations:
+    {{- if .Values.argocd }}
+    argocd.argoproj.io/sync-wave: "-10"
+    argocd.argoproj.io/hook: "Sync"
+    {{- else }}
+    helm.sh/hook: "pre-install,pre-upgrade"
+    helm.sh/hook-weight: "-10"
+    {{- end }}
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: config-sync
+          image: {{ .Values.matrixAuthentication.image.repository }}:{{ .Values.matrixAuthentication.image.tag }}
+          imagePullPolicy: {{ .Values.matrixAuthentication.image.pullPolicy }}
+          env:
+            - name: "MAS_CONFIG"
+              value: "/etc/mas-config.yaml"
+          command:
+            - /usr/local/bin/mas-cli
+            - config
+            - sync
+            {{- if .Values.matrixAuthentication.configSyncPrune }}
+            - --prune
+            {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/mas-config.yaml"
+              subPath: "mas-config.yaml"
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: matrix-authentication
+            items:
+             - key: mas-config.yaml
+               path: mas-config.yaml
+{{- end }}

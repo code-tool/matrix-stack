@@ -606,3 +606,6 @@ resourceQuota:
 livekitServer:
   ingress:
     host: ''
+
+# switch between helm (helm.sh/hook) and argo (argocd.argoproj.io/sync-wave) anotations
+argocd: true
