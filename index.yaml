@@ -2,6 +2,13 @@ apiVersion: v1
 entries:
   coturn:
   - apiVersion: v1
+    created: "2025-10-06T06:58:22.781281276Z"
+    digest: 8b3bf9f3e3c682a0c2e96ee163251cc0b4938d1fa87457e7e0d3b6b175fe2554
+    name: coturn
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/coturn-0.4.0/coturn-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v1
     created: "2025-09-02T09:08:30.371149453Z"
     digest: 745f4755afdd8e17765484f50f0ca544a2adf2208c09a5b179c90c750811e872
     name: coturn
@@ -407,6 +414,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.0.1/sentry-webhook-0.0.1.tgz
     version: 0.0.1
   synapse:
+  - apiVersion: v1
+    created: "2025-10-06T06:58:22.928243435Z"
+    digest: 8d746a87446c70b62cc449192c5479e0264afc67d22e8e18533f36854d3b2789
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-0.30.0/synapse-0.30.0.tgz
+    version: 0.30.0
   - apiVersion: v1
     created: "2025-09-11T20:05:51.171476326Z"
     digest: 9551aad93cd0d0229df408d2a998599b6c63319970fff0abbf06512c423c84ad
@@ -1060,4 +1074,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-09-11T20:05:51.17193919Z"
+generated: "2025-10-06T06:58:22.928753042Z"
