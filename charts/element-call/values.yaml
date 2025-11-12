@@ -1,0 +1,38 @@
+image:
+  registry: ghcr.io
+  repository: element-hq/element-call
+  pullPolicy: IfNotPresent
+  tag: 0.16.1
+
+ingress:
+  enabled: false
+  className: ""
+  serverName: ""
+  secretName: ""
+  annotations: {}
+
+replicaCount: 1
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+resources: {}
+
+config: {}

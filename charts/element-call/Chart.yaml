@@ -1,0 +1,5 @@
+apiVersion: v2
+name: element-call
+version: 0.0.1
+sources:
+  - https://github.com/element-hq/element-call
