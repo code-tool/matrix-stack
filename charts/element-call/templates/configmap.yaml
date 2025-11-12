@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: element-call
+  labels:
+    {{- include "element-call.selectorLabels" . | nindent 4 }}
+data:
+  "config.json": |
+    {{- toJson .Values.elementCallConfig | nindent 4 }}
