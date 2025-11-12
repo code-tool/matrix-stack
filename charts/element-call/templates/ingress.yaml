@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: element-call
   labels:
-    {{- include "element-call.labels" . | nindent 4 }}
+    {{- include "element-call.selectorLabels" . | nindent 4 }}
   {{- if .Values.ingress.annotations }}
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
