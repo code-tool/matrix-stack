@@ -64,6 +64,16 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/coturn-0.0.2/coturn-0.0.2.tgz
     version: 0.0.2
+  element-call:
+  - apiVersion: v2
+    created: "2025-11-12T14:15:02.892779021Z"
+    digest: be58bb322b1f0ee3da0a7a1e1b8ca2b68f47c41684eb61685ca0b9700bf806d2
+    name: element-call
+    sources:
+    - https://github.com/element-hq/element-call
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.0.1/element-call-0.0.1.tgz
+    version: 0.0.1
   jitsi:
   - apiVersion: v1
     created: "2025-07-03T11:27:26.083823213Z"
@@ -1109,4 +1119,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-11-11T11:12:49.790889234Z"
+generated: "2025-11-12T14:15:02.893090461Z"
