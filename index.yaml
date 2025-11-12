@@ -267,6 +267,15 @@ entries:
     version: 0.0.1
   livekit-jwt:
   - apiVersion: v2
+    created: "2025-11-12T15:03:12.203158785Z"
+    digest: c223490bef62fc318c777b7c2a352892ba6880b48e79f6a52c8b07bffdfc49ac
+    name: livekit-jwt
+    sources:
+    - https://github.com/element-hq/lk-jwt-service
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/livekit-jwt-0.1.0/livekit-jwt-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
     created: "2024-12-04T10:32:28.359551072Z"
     digest: 5b8d413944c763ef5bf6c9bc7991c82f0c29c678809a762f9ccc408048124373
     name: livekit-jwt
@@ -1146,4 +1155,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-11-12T14:56:32.599538578Z"
+generated: "2025-11-12T15:03:12.203420923Z"
