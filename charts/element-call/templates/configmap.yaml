@@ -7,4 +7,4 @@ metadata:
     {{- include "element-call.selectorLabels" . | nindent 4 }}
 data:
   "config.json": |
-    {{- toJson .Values.elementCallConfig | nindent 4 }}
+    {{- toJson .Values.config | nindent 4 }}
