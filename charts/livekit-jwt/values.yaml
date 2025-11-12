@@ -4,8 +4,9 @@ config:
   secret: secret
 
 image:
-  repository: jushcherbak/livekit-jwt
-  tag: 0.0.1
+  registry: ghcr.io
+  repository: element-hq/lk-jwt-service
+  tag: 0.3.0
   pullPolicy: IfNotPresent
 
 replicas: 1

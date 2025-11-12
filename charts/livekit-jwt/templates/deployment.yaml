@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: livekit-jwt
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: "LK_JWT_PORT"
