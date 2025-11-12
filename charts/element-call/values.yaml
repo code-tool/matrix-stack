@@ -2,7 +2,7 @@ image:
   registry: ghcr.io
   repository: element-hq/element-call
   pullPolicy: IfNotPresent
-  tag: 0.16.1
+  tag: v0.16.1
 
 ingress:
   enabled: false
