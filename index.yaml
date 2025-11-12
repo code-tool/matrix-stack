@@ -66,6 +66,15 @@ entries:
     version: 0.0.2
   element-call:
   - apiVersion: v2
+    created: "2025-11-12T14:37:18.983312581Z"
+    digest: 25a83a01afa390b73a3a3459b99fad25b1c6ead48759fe46c6725cea6dcefdb5
+    name: element-call
+    sources:
+    - https://github.com/element-hq/element-call
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.0.2/element-call-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
     created: "2025-11-12T14:15:02.892779021Z"
     digest: be58bb322b1f0ee3da0a7a1e1b8ca2b68f47c41684eb61685ca0b9700bf806d2
     name: element-call
@@ -1119,4 +1128,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-11-12T14:15:02.893090461Z"
+generated: "2025-11-12T14:37:18.983692428Z"
