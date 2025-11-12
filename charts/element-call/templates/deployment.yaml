@@ -10,7 +10,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "element-call.selectorLabels" . | nindent 4 }}
+      {{- include "element-call.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- if .Values.podAnnotations }}
