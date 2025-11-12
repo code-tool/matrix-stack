@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "element-call.fullname" . }}
+  name: element-call
   labels:
-    {{- include "element-call.labels" . | nindent 4 }}
+    {{- include "element-call.selectorLabels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "element-call.fullname" . }}
+    name: element-call
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
