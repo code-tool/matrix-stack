@@ -199,6 +199,15 @@ synapse:
         interval: 12h
       - shortest_max_lifetime: 3d
         interval: 1d
+  # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html#caches
+  caches:
+    globalFactor: 1.0
+    cacheEntryTtl: '30m'
+    syncResponseCacheDuration: '2m'
+  cacheAutotuning:
+    maxCacheMemoryUsage: '1024M'
+    targetCacheMemoryUsage: '512M'
+    minCacheTtl: '5m'
 
 rc_message:
   per_second: 100

@@ -291,6 +291,15 @@ data:
         enabled: true
     {{- end }}
     {{- end }}
+    caches:
+      expire_caches: true
+      global_factor: {{ $.Values.synapse.caches.globalFactor }}
+      cache_entry_ttl: {{ $.Values.synapse.caches.cacheEntryTtl }}
+      sync_response_cache_duration: {{ $.Values.synapse.caches.syncResponseCacheDuration }}
+      cache_autotuning:
+        max_cache_memory_usage: {{ $.Values.synapse.cacheAutotuning.maxCacheMemoryUsage }}
+        target_cache_memory_usage: {{ $.Values.synapse.cacheAutotuning.targetCacheMemoryUsage }}
+        min_cache_ttl: {{ $.Values.synapse.cacheAutotuning.minCacheTtl }}
 
   log.config: |
     ---
