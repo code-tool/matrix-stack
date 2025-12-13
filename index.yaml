@@ -313,6 +313,15 @@ entries:
     version: 0.0.1
   matrix-alertmanager-receiver:
   - apiVersion: v1
+    created: "2025-12-13T12:13:36.231291262Z"
+    digest: a421cef9c012db9c057090cae988b9ad9d8809453a31fb922b925b37bd43cf29
+    name: matrix-alertmanager-receiver
+    sources:
+    - https://github.com/metio/matrix-alertmanager-receiver
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/matrix-alertmanager-receiver-0.2.0/matrix-alertmanager-receiver-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
     created: "2025-07-03T11:27:26.228835985Z"
     digest: ebe9373179dc94fdf883bd5a30ddedab3e9508d07ece95cbbc1730cdd57d5e9d
     name: matrix-alertmanager-receiver
@@ -1169,4 +1178,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-12-08T11:17:23.607405249Z"
+generated: "2025-12-13T12:13:36.231616881Z"
