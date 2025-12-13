@@ -3,8 +3,8 @@ replicas: 1
 logLevel: 'info'  # error, warn, debug, info
 
 image:
-  repository: 'jushcherbak/matrix-alertmanager-receiver'
-  tag: '2024.10.16'
+  repository: 'docker.io/metio/matrix-alertmanager-receiver'
+  tag: '2025.11.26'
   pullPolicy: IfNotPresent
 
 service:
