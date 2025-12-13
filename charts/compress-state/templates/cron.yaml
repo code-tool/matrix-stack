@@ -1,0 +1,68 @@
+{{- if .Values.cron.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "synapse-compress-state.fullname" . }}
+  labels:
+    app.kubernetes.io/name: synapse-compress-state
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.cron.schedule | quote }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.cron.activeDeadlineSeconds }}
+      backoffLimit: 1
+      parallelism: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: synapse-compress-state
+            app.kubernetes.io/instance: {{ .Release.Name }}
+          annotations:
+            argocd.argoproj.io/sync-wave: "5"
+        spec:
+          activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+          restartPolicy: Never
+          containers:
+            - name: compress
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.appVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              args:
+                - "--postgres-url=$(DATABASE_URL)"
+                - "--chunk-size={{ .Values.cmdArgs.chunkSize }}"
+                - "--min-state-groups={{ .Values.cmdArgs.minStateGroups }}"
+                {{- if .Values.cmdArgs.progress }}
+                - "--progress"
+                {{- end }}
+              #
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      {{- if .Values.existingSecret.name }}
+                      name: {{ .Values.existingSecret.name }}
+                      key: {{ .Values.existingSecret.databaseUrlKey }}
+                      {{- else }}
+                      name: {{ include "synapse-compress-state.fullname" . }}
+                      key: DATABASE_URL
+                      {{- end }}
+              resources:
+                {{ toYaml .Values.resources | nindent 16 }}
+          {{- if .Values.nodeSelector }}
+          nodeSelector:
+            {{ toYaml .Values.nodeSelector | nindent 12 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+            {{ toYaml .Values.tolerations | nindent 12 }}
+          {{- end }}
+          {{- if .Values.affinity }}
+          affinity:
+            {{ toYaml .Values.affinity | nindent 12 }}
+          {{- end }}
+{{- end }}

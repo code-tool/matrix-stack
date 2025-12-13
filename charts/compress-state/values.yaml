@@ -1,0 +1,39 @@
+enabled: false
+
+image:
+  repository: "ghcr.io/matrix-org/rust-synapse-compress-state"
+  # tag: latest
+  tag: "v0.1.4"
+  pullPolicy: IfNotPresent
+
+# postgresql://user:pass@localhost/synapse
+# or
+# user=postgres dbname=matrix-synapse host=/var/run/postgresql
+databaseUrl: ''
+
+existingSecret:
+  #name: synapse-db
+  name: ''
+  databaseUrlKey: database_url
+
+cmdArgs:
+  chunkSize: 500
+  minStateGroups: 100
+  progress: true
+
+# choose one of Job or CronJob
+cron:
+  enabled: false
+  schedule: "1 4 * * *"
+  activeDeadlineSeconds: 1000
+
+# choose one of Job or CronJob
+job:
+  enabled: false
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
