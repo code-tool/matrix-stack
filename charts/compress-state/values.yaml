@@ -1,5 +1,3 @@
-enabled: false
-
 image:
   repository: "ghcr.io/matrix-org/rust-synapse-compress-state"
   # tag: latest
