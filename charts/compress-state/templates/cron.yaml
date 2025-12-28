@@ -33,24 +33,19 @@ spec:
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.appVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               args:
-                - "--postgres-url=$(DATABASE_URL)"
+                - "--postgres-url=${DATABASE_URL}"
                 - "--chunk-size={{ .Values.cmdArgs.chunkSize }}"
                 - "--min-state-groups={{ .Values.cmdArgs.minStateGroups }}"
                 {{- if .Values.cmdArgs.progress }}
                 - "--progress"
                 {{- end }}
-              #
-              env:
-                - name: DATABASE_URL
-                  valueFrom:
-                    secretKeyRef:
-                      {{- if .Values.existingSecret.name }}
-                      name: {{ .Values.existingSecret.name }}
-                      key: {{ .Values.existingSecret.databaseUrlKey }}
-                      {{- else }}
-                      name: {{ include "synapse-compress-state.fullname" . }}
-                      key: DATABASE_URL
-                      {{- end }}
+              envFrom:
+                - secretRef:
+                    {{- if .Values.existingSecret.name }}
+                    name: {{ .Values.existingSecret.name }}
+                    {{- else }}
+                    name: {{ include "synapse-compress-state.fullname" . }}
+                    {{- end }}
               resources:
                 {{ toYaml .Values.resources | nindent 16 }}
           {{- if .Values.nodeSelector }}
