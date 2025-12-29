@@ -2,6 +2,8 @@ config:
   url:
   key: key
   secret: secret
+  # Comma-separated list of Matrix homeservers whose users are authorized with full access to LiveKit SFU features
+  fullAccessHomeservers: []
 
 image:
   registry: ghcr.io

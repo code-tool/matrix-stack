@@ -34,6 +34,10 @@ spec:
               value: "8080"
             - name: "LIVEKIT_URL"
               value: {{ .Values.config.url }}
+            {{- if .Values.config.fullAccessHomeservers }}
+            - name: "LIVEKIT_FULL_ACCESS_HOMESERVERS"
+              value: {{ join "," .Values.config.fullAccessHomeservers | quote }}
+            {{- end }}
           envFrom:
             - secretRef:
                 name: livekit-jwt
