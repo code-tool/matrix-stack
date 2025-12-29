@@ -29,4 +29,11 @@ spec:
                 name: livekit-jwt
                 port:
                   number: 80
+          - path: /get_token
+            pathType: Exact
+            backend:
+              service:
+                name: livekit-jwt
+                port:
+                  number: 80
 {{- end }}
