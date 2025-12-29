@@ -21,7 +21,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: compress
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.appVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - "--postgres-url=${DATABASE_URL}"
