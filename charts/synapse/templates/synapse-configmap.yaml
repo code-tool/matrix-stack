@@ -277,7 +277,11 @@ data:
       # See https://element-hq.github.io/matrix-authentication-service/reference/configuration.html#matrix
       secret: {{ $.Values.experimentalFeatures.msc3861.admin_token }}
     {{- end }}
-    {{- if or $.Values.experimentalFeatures.msc3967.enabled $.Values.experimentalFeatures.msc3266.enabled }}
+    {{- if or
+      $.Values.experimentalFeatures.msc3967.enabled
+      $.Values.experimentalFeatures.msc4222.enabled
+      $.Values.experimentalFeatures.msc4140.enabled
+      $.Values.experimentalFeatures.msc3266.enabled }}
     experimental_features:
     {{- if $.Values.experimentalFeatures.msc3266.enabled }}
       # MSC3266: Room summary API. Used for knocking over federation
