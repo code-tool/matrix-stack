@@ -283,12 +283,19 @@ data:
       # MSC3266: Room summary API. Used for knocking over federation
       # MSC3266 allows to request a room summary of rooms you are not joined. The summary contains the room join rules.
       # We need that to decide if the user gets prompted with the option to knock ("Request to join call"), a cannot join error or the join view.
-      msc3266:
-        enabled: {{ $.Values.experimentalFeatures.msc3266.enabled }}
+      msc3266_enabled: {{ $.Values.experimentalFeatures.msc3266.enabled }}
+    {{- end }}
+    {{- if $.Values.experimentalFeatures.msc4222.enabled }}
+      # MSC4222: Needed for syncv2 state_after. Allows clients to correctly track room state
+      msc4222_enabled: {{ $.Values.experimentalFeatures.msc4222.enabled }}
+    {{- end }}
+    {{- if $.Values.experimentalFeatures.msc4140.enabled }}
+      # MSC4140: Delayed events are required for proper call participation signalling.
+      # If disabled, you might get stuck calls in Matrix rooms.
+      msc4140_enabled: {{ $.Values.experimentalFeatures.msc4140.enabled }}
     {{- end }}
     {{- if $.Values.experimentalFeatures.msc3967.enabled }}
-      msc3967:
-        enabled: true
+      msc3967_enabled: true
     {{- end }}
     {{- end }}
     caches:

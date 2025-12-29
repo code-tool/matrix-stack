@@ -254,6 +254,10 @@ experimentalFeatures:
     account_management_url: NOT-CONFIGURED
   msc3266:
     enabled: false
+  msc4222:
+    enabled: false
+  msc4140:
+    enabled: false
 
 ingress:
   secretName: ''
