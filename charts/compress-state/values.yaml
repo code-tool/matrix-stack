@@ -16,7 +16,6 @@ existingSecret:
 cmdArgs:
   chunkSize: 500
   minStateGroups: 100
-  progress: true
 
 # choose one of Job or CronJob
 cron:

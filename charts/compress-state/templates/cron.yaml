@@ -33,12 +33,13 @@ spec:
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               args:
-                - "--postgres-url=${DATABASE_URL}"
-                - "--chunk-size={{ .Values.cmdArgs.chunkSize }}"
-                - "--min-state-groups={{ .Values.cmdArgs.minStateGroups }}"
-                {{- if .Values.cmdArgs.progress }}
-                - "--progress"
-                {{- end }}
+                - 'synapse_auto_compressor'
+                - '-p'
+                - '${DATABASE_URL}'
+                - '-c'
+                - {{ .Values.cmdArgs.chunkSize | quote }}
+                - '-n'
+                - {{ .Values.cmdArgs.minStateGroups | quote }}
               envFrom:
                 - secretRef:
                     {{- if .Values.existingSecret.name }}
