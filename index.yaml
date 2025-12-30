@@ -3,6 +3,18 @@ entries:
   compress-state:
   - apiVersion: v2
     appVersion: v0.1.4
+    created: "2025-12-30T13:40:55.43585642Z"
+    description: Run rust-synapse-compress-state as a Kubernetes Job/CronJob
+    digest: 7d0a949ba0658e345a245070810f9cfd7f3b729a09555cf39b8b8228e42d02dc
+    name: compress-state
+    sources:
+    - https://github.com/matrix-org/rust-synapse-compress-state
+    type: application
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/compress-state-1.0.0/compress-state-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.1.4
     created: "2025-12-30T13:07:14.900190169Z"
     description: Run rust-synapse-compress-state as a Kubernetes Job/CronJob
     digest: 602acd060e2cc8e420dd1369e2f0084e8f2372dbc8868d4ff3aa875e5d8cf072
@@ -1319,4 +1331,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2025-12-30T13:07:14.90051599Z"
+generated: "2025-12-30T13:40:55.436133819Z"
