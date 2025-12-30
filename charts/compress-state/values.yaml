@@ -14,13 +14,13 @@ existingSecret:
   name: ''
 
 cmdArgs:
-  chunkSize: 500
-  minStateGroups: 100
+  chunkSize: 10000
+  minStateGroups: 5000
 
 # choose one of Job or CronJob
 cron:
   enabled: false
-  schedule: "1 4 * * *"
+  schedule: "*/5 0-6 * * *"
   activeDeadlineSeconds: 1000
 
 # choose one of Job or CronJob
