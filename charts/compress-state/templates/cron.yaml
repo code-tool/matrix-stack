@@ -35,7 +35,7 @@ spec:
               args:
                 - 'synapse_auto_compressor'
                 - '-p'
-                - '${DATABASE_URL}'
+                - '$DATABASE_URL'
                 - '-c'
                 - {{ .Values.cmdArgs.chunkSize | quote }}
                 - '-n'
