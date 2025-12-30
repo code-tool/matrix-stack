@@ -23,14 +23,15 @@ spec:
         - name: compress
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-            - 'synapse_auto_compressor'
-            - '-p'
-            - '$DATABASE_URL'
+          command:
+            - '/bin/sh'
             - '-c'
-            - {{ .Values.cmdArgs.chunkSize | quote }}
-            - '-n'
-            - {{ .Values.cmdArgs.minStateGroups | quote }}
+          args:
+            - |
+              /usr/local/bin/synapse_auto_compressor \
+              -p $DATABASE_URL \
+              -c {{ .Values.cmdArgs.chunkSize }} \
+              -n {{ .Values.cmdArgs.minStateGroups }}
           envFrom:
             - secretRef:
                 {{- if .Values.existingSecret.name }}

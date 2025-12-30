@@ -3,7 +3,7 @@ apiVersion: v2
 name: compress-state
 description: Run rust-synapse-compress-state as a Kubernetes Job/CronJob
 type: application
-version: 0.1.1
+version: 1.0.0
 appVersion: "v0.1.4"
 sources:
   - https://github.com/matrix-org/rust-synapse-compress-state
