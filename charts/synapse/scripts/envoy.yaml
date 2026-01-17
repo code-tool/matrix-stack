@@ -36,8 +36,6 @@ layered_runtime:
             listener:
               httpd:
                 connection_limit: 49000
-        overload:
-          global_downstream_max_connections: 50000
 
 static_resources:
   listeners:
