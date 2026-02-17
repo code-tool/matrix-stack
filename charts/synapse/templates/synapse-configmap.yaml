@@ -206,6 +206,7 @@ data:
     {{- end }}
     media_instance_running_background_jobs: media-repository-background-jobs-0
     media_store_path: /tmp/media_store
+    enable_local_media_storage: false
     metrics_flags: ~
     oidc_providers: {{ $oidc_providers | toYaml | nindent 6 }}
     old_signing_keys: ~
