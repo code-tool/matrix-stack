@@ -4,7 +4,7 @@ logLevel: 'info'  # error, warn, debug, info
 
 image:
   repository: 'docker.io/metio/matrix-alertmanager-receiver'
-  tag: '2026.1.14'
+  tag: '2026.2.11'
   pullPolicy: IfNotPresent
 
 service:
