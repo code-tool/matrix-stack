@@ -1,0 +1,22 @@
+--- a/synapse/storage/databases/main/e2e_room_keys.py
++++ b/synapse/storage/databases/main/e2e_room_keys.py
+@@ -400,13 +400,16 @@ class EndToEndRoomKeyStore(EndToEndRoomKeyBackgroundStore):
+             # it doesn't exist.
+             return 0
+
+-        return await self.db_pool.simple_select_one_onecol(
+-            table="e2e_room_keys",
++        row = await self.db_pool.simple_select_one_onecol(
++            table="e2e_room_keys_counts",
+             keyvalues={"user_id": user_id, "version": version_int},
+-            retcol="COUNT(*)",
++            retcol="cnt",
+             desc="count_e2e_room_keys",
++            allow_none=True,
+         )
+
++        return row or 0
++
+     @trace
+     async def delete_e2e_room_keys(
+         self,
