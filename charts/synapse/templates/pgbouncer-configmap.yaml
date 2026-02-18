@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synapse-pgbouncer
+  metadata:
+    labels:
+      app: synapse-pgbouncer
+data:
+  pgbouncer.ini: |
+    [databases]
+    synapse=host={{ .Values.synapse.postgres.host }} port=5432 dbname={{ .Values.synapse.postgres.dbname }}
+    [pgbouncer]
+    listen_port=5432
+    listen_addr=0.0.0.0
+    unix_socket_dir=/tmp/
+    unix_socket_mode=0777
+    auth_file = /app/users/userlist.txt
+    server_reset_query = SELECT pg_advisory_unlock_all()
+    server_reset_query_always = 1
+    admin_users={{ .Values.synapse.postgres.user }}
+    pool_mode={{ .Values.synapse.pgbouncer.poolMode }}
+    auth_type={{ .Values.synapse.pgbouncer.authType }}
+    default_pool_size={{ .Values.synapse.pgbouncer.poolSize }}
+    max_client_conn={{ .Values.synapse.pgbouncer.maxClientConn }}
+{{- range $key, $val := .Values.synapse.pgbouncer.extraParameters }}
+    {{ $key }} = {{ $val }}
+{{- end }}

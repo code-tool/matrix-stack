@@ -25,29 +25,29 @@ spec:
         imagePullPolicy: {{ .Values.synapse.pgbouncer.image.pullPolicy }}
         resources:
           {{ toYaml .Values.synapse.pgbouncer.resources | nindent 10 }}
+        {{- if .Values.synapse.pgbouncer.extraEnvs }}
         env:
-          - name: PGBOUNCER_PORT
-            value: "5432"
-          - name: POSTGRESQL_HOST
-            value: {{ .Values.synapse.postgres.host | quote }}
-          - name: PGBOUNCER_DATABASE
-            value: {{ .Values.synapse.postgres.dbname | quote }}
-          - name: POSTGRESQL_USERNAME
-            value: {{ .Values.synapse.postgres.user | quote }}
-          - name: POSTGRESQL_PASSWORD
-            value: {{ .Values.synapse.postgres.password | quote }}
-          - name: PGBOUNCER_AUTH_TYPE
-            value: {{ .Values.synapse.pgbouncer.authType | quote }}
-          - name: PGBOUNCER_MAX_CLIENT_CONN
-            value: {{ .Values.synapse.pgbouncer.maxClientConn | quote }}
-          - name: PGBOUNCER_DEFAULT_POOL_SIZE
-            value: {{ .Values.synapse.pgbouncer.poolSize | quote }}
-          - name: PGBOUNCER_POOL_MODE
-            value: {{ .Values.synapse.pgbouncer.poolMode | quote }}
+        {{ toYaml .Values.synapse.pgbouncer.extraEnvs | trimSuffix "\n" | nindent 10 }}
+        {{- end }}
         ports:
           - containerPort: 5432
             name: pgbouncer
             protocol: TCP
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        volumeMounts:
+        - name: config
+          mountPath: /etc/pgbouncer/
+        - name: userlist
+          mountPath: /etc/userlist/
       {{- if .Values.synapse.pgbouncer.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.synapse.pgbouncer.nodeSelector | nindent 8 }}
@@ -68,3 +68,10 @@ spec:
       priorityClassName: "{{ .Values.synapse.pgbouncer.priorityClassName }}"
       {{- end }}
       terminationGracePeriodSeconds: 10
+      volumes:
+      - name: config
+        configMap:
+          name: synapse-pgbouncer
+      - name: userlist
+        secret:
+          secretName: synapse-pgbouncer
