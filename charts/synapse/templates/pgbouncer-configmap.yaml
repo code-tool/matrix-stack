@@ -2,9 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: synapse-pgbouncer
-  metadata:
-    labels:
-      app: synapse-pgbouncer
+  labels:
+    app: synapse-pgbouncer
 data:
   pgbouncer.ini: |
     [databases]
