@@ -151,7 +151,7 @@ synapse:
     password: "NOT-CONFIGURED"
   pgbouncer:
     image:
-      repository: "bghcr.io/icoretech/pgbouncer-docker"
+      repository: "ghcr.io/icoretech/pgbouncer-docker"
       tag: "1.24.1"
       pullPolicy: IfNotPresent
     replicas: 2
