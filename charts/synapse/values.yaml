@@ -13,8 +13,6 @@ synapse:
   # cfg --
   image:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
-    # varsion with git+https://github.com/davefatkin/synapse-s3-storage-provider.git#egg=synapse-s3-storage-provider
-    tag: "v1.146.0"
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
     # also this ghcr contains synapse:v1.146.0-e2e-optimized with e2e_room_key query patches
