@@ -15,8 +15,8 @@ synapse:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
-    # also this ghcr contains synapse:v1.142.1-e2e-optimized with e2e_room_key query patches
-    tag: "v1.142.1"
+    # also this ghcr contains synapse:v1.146.0-e2e-optimized with e2e_room_key query patches
+    tag: "v1.146.0"
     pullPolicy: IfNotPresent
   autoscaling:
     enabled: true
@@ -288,6 +288,9 @@ ingress:
   masterRoutes:
     - "/_matrix/"
     - "/_synapse/"
+  # TODO:
+  #cancellableDelayedEventsRoutes:  # msc4140
+  #  - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events/.*/restart$"  # https://github.com/element-hq/synapse/blob/develop/docs/upgrade.md#upgrading-to-v11440
   federationSenderRoutes:
     # Federation requests
     - "/_matrix/federation/v1/version$"
@@ -502,7 +505,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/element-hq/matrix-authentication-service
-    tag: 1.6.0
+    tag: 1.10.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
