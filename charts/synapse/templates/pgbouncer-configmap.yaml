@@ -7,7 +7,7 @@ metadata:
 data:
   pgbouncer.ini: |
     [databases]
-    synapse=host={{ .Values.synapse.postgres.host }} port=5432 dbname={{ .Values.synapse.postgres.dbname }}
+    {{ .Values.synapse.postgres.dbname }}=host={{ .Values.synapse.postgres.host }} port=5432 dbname={{ .Values.synapse.postgres.dbname }}
     [pgbouncer]
     listen_port=5432
     listen_addr=0.0.0.0

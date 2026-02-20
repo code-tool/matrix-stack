@@ -16,6 +16,9 @@ spec:
   {{- end }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pgbouncer-configmap.yaml") $ | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/pgbouncer-secret.yaml") $ | sha256sum }}
       labels:
         app: synapse-pgbouncer
     spec:
