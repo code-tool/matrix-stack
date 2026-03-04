@@ -145,6 +145,7 @@ synapse:
     cp_max: 50
     cp_min: 5
     txn_limit: 10000
+    port: 5432
     host: "NOT-CONFIGURED4"
     dbname: "synapse"
     user: "synapse"
