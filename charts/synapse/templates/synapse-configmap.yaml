@@ -51,7 +51,7 @@ data:
     autocreate_auto_join_rooms: true
     autocreate_auto_join_rooms_federated: false
     block_non_admin_invites: false
-    event_cache_size: "10K"
+    event_cache_size: {{ $.Values.synapse.eventCacheSize }}
     database:
       txn_limit: {{ $.Values.synapse.postgres.txn_limit }}
       args:
@@ -230,7 +230,7 @@ data:
       host: {{ $.Values.synapse.redis.host | quote }}
       port: {{ $.Values.synapse.redis.port }}
     registration_shared_secret: "{{ $registration_shared_secret }}"
-    report_stats: true
+    report_stats: {{ $.Values.synapse.reportStats }}
     require_auth_for_profile_requests: true
     require_membership_for_aliases: true
     saml2_config: {{- $saml2_config | toYaml | nindent 6 }}

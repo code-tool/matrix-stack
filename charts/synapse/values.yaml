@@ -196,6 +196,30 @@ synapse:
     #     secretKeyRef:
     #       key: my-secret-key
     #       name: my-secret
+  pgbouncerExporter:
+    enabled: false
+    podMonitor: false
+    host: 127.0.0.1
+    port: 5432
+    database: pgbouncer
+    sslmode: disable
+    connect_timeout: 10
+    image:
+      repository: prometheuscommunity/pgbouncer-exporter
+      tag: v0.12.0
+      pullPolicy: IfNotPresent
+    log:
+      # debug, info, warn, error
+      level: info
+      # logfmt or json
+      format: json
+    resources:
+      limits:
+        cpu: 250m
+        memory: 150Mi
+      requests:
+        cpu: 30m
+        memory: 40Mi
 
   redis:
     enabled: true
@@ -219,6 +243,7 @@ synapse:
         interval: 12h
       - shortest_max_lifetime: 3d
         interval: 1d
+  eventCacheSize: '10K'
   # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html#caches
   caches:
     globalFactor: 1.0
@@ -228,6 +253,7 @@ synapse:
     maxCacheMemoryUsage: '1024M'
     targetCacheMemoryUsage: '512M'
     minCacheTtl: '5m'
+  reportStats: false
 
 rc_message:
   per_second: 100
