@@ -11,4 +11,4 @@ spec:
   ports:
   - name: admin
     port: 80
-    targetPort: 80
+    targetPort: 8080
