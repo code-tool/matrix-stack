@@ -210,6 +210,13 @@ entries:
     version: 0.0.1
   jitsi:
   - apiVersion: v1
+    created: "2026-03-20T14:28:23.89750037Z"
+    digest: c32fa1fdb642d2749842963284e13f10989b30ca085fe14ce02b70b61abfc6a1
+    name: jitsi
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.3.0/jitsi-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
     created: "2025-07-03T11:27:26.083823213Z"
     digest: 5e6dbc0926e0fd0aa0ceb77695a92fd94c279bd66a8e149682c1514ca64824be
     name: jitsi
@@ -1473,4 +1480,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-03-20T14:25:03.14606495Z"
+generated: "2026-03-20T14:28:23.897809487Z"
