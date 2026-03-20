@@ -312,6 +312,25 @@ data:
         max_cache_memory_usage: {{ $.Values.synapse.cacheAutotuning.maxCacheMemoryUsage }}
         target_cache_memory_usage: {{ $.Values.synapse.cacheAutotuning.targetCacheMemoryUsage }}
         min_cache_ttl: {{ $.Values.synapse.cacheAutotuning.minCacheTtl }}
+    {{- if $.Values.synapse.opentracing.enabled }}
+    opentracing:
+      enabled: {{ $.Values.synapse.opentracing.enabled }}
+      {{- if $.Values.synapse.opentracing.homeserverWhitelist }}
+      homeserver_whitelist:
+      {{- range $.Values.synapse.opentracing.homeserverWhitelist }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if $.Values.synapse.opentracing.forceTracingForUsers }}
+      force_tracing_for_users:
+      {{- range $.Values.synapse.opentracing.forceTracingForUsers }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if $.Values.synapse.opentracing.jaegerConfig }}
+      jaeger_config: {{ toYaml $.Values.synapse.opentracing.jaegerConfig | nindent 8 }}
+      {{- end }}
+    {{- end }}
 
   log.config: |
     ---

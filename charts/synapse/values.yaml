@@ -254,6 +254,21 @@ synapse:
     targetCacheMemoryUsage: '512M'
     minCacheTtl: '5m'
   reportStats: false
+  opentracing:
+    enabled: false
+    homeserverWhitelist: [ '.*' ]
+    # - "mytrustedhomeserver.org"
+    #- "*.myotherhomeservers.com"
+    forceTracingForUsers: []
+    # - '@user1:server_name'
+    # - '@user2:server_name'
+    jaegerConfig:
+    #  local_agent:
+    #    reporting_host: ''
+    #  sampler:
+    #    type: const
+    #    param: 1
+    #  logging: false
 
 rc_message:
   per_second: 100
