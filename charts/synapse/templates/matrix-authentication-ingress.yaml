@@ -10,7 +10,9 @@ metadata:
   annotations: {{ toYaml $annotations | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: nginx
+  {{- if .Values.matrixAuthentication.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.matrixAuthentication.ingress.ingressClassName }}
+  {{- end }}
   tls:
     - hosts:
         - {{ .Values.matrixAuthentication.ingress.host }}

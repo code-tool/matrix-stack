@@ -8,7 +8,9 @@ metadata:
   annotations: {{ toYaml $annotations | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: nginx
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
   tls:
     - hosts:
         - {{ .Values.synapse.serverName }}
