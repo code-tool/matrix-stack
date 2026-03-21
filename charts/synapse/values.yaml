@@ -262,7 +262,7 @@ synapse:
     forceTracingForUsers: []
     # - '@user1:server_name'
     # - '@user2:server_name'
-    jaegerConfig:
+    jaegerConfig: {}
     #  local_agent:
     #    reporting_host: ''
     #  sampler:
