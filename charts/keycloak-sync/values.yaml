@@ -1,0 +1,28 @@
+image:
+  repository: "ghcr.io/code-tool/matrix-keycloak-sync"
+  tag: "0.0.1"
+  pullPolicy: IfNotPresent
+cronSchedule: "*/20 * * * *"
+activeDeadlineSeconds: 1000
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+configs:
+  mas:
+    db_name: ''
+    db_pass: ''
+    db_host: ''
+    db_port: ''
+  sync:
+    KC_URL: ''
+    KC_REALM: ''
+    KC_CLIENT_ID: ''
+    KC_ADMIN_USER: ''
+    KC_ADMIN_PASS: ''
+    KC_GROUP_NAME: ''
+    MATRIX_URL: ''
+    MATRIX_ADMIN_TOKEN: ''
+    MATRIX_SERVER_NAME: ''
+    DRY_RUN: ''
+  script_home: '/opt/sync'

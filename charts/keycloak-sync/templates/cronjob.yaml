@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.cronSchedule | quote }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+      backoffLimit: 1
+      parallelism: 1
+      template:
+        metadata:
+          labels:
+            cronjob: {{ .Chart.Name }}
+        spec:
+          activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+          restartPolicy: Never
+          containers:
+            - name: {{ .Chart.Name }}
+              image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - bash
+                - -c
+                - {{ printf "%s/keycloak_matrix_sync.sh" .Values.configs.script_home | quote }}
+              {{- if .Values.resources }}
+              resources:
+                {{ toYaml .Values.resources | nindent 16 }}
+              {{- end }}
+              volumeMounts:
+                - name: {{ .Chart.Name }}
+                  mountPath: "{{.Values.configs.script_home}}/keycloak_matrix_sync.conf"
+                  subPath: keycloak_matrix_sync.conf
+                - name: {{ .Chart.Name }}
+                  mountPath: "{{.Values.configs.script_home}}/mas-config.yaml"
+                  subPath: mas-database.yaml
+          volumes:
+            - name: {{ .Chart.Name }}
+              secret:
+                secretName: {{ .Chart.Name }}     
+          {{- if .Values.nodeSelector }}
+          nodeSelector:
+            {{ toYaml .Values.nodeSelector | nindent 12 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+            {{ toYaml .Values.tolerations | nindent 12 }}
+          {{- end }}
+          {{- if .Values.affinity }}
+          affinity:
+            {{ toYaml .Values.affinity | nindent 12 }}
+          {{- end }}
