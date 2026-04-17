@@ -1,0 +1,4 @@
+---
+name: keycloak-sync
+description: Master Helm chart for sync users from specific group in KeyCloak to Matrix
+version: 0.0.1
