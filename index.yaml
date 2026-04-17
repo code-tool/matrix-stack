@@ -258,6 +258,16 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.0.1/jitsi-0.0.1.tgz
     version: 0.0.1
+  keycloak-sync:
+  - apiVersion: v1
+    created: "2026-04-17T09:45:19.706601278Z"
+    description: Master Helm chart for sync users from specific group in KeyCloak
+      to Matrix
+    digest: 1652e8113f85a92d20d0324b6d51ed3f6386bef8f06fb7121aeebfaf9ed936a7
+    name: keycloak-sync
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/keycloak-sync-0.0.1/keycloak-sync-0.0.1.tgz
+    version: 0.0.1
   ldap:
   - apiVersion: v1
     created: "2025-07-22T09:44:01.646200678Z"
@@ -1501,4 +1511,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-03-21T15:08:26.736297882Z"
+generated: "2026-04-17T09:45:19.707068059Z"
