@@ -478,8 +478,8 @@ admin:
     annotations: {}
     ingressClassName: nginx
   image:
-    repository: "ghcr.io/etkecc/synapse-admin"
-    tag: "v0.11.4-etke54"
+    repository: "ghcr.io/etkecc/ketesa"
+    tag: "v1.2.1"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
