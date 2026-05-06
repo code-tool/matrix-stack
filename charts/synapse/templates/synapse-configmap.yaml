@@ -20,13 +20,19 @@
 {{ $name := $worker | replace "_" "-"}}
 ---
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: synapse-{{ $name }}-config
+  {{- if $.Values.argocd }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-30"
+    argocd.argoproj.io/hook: "Sync"
+  {{- else }}
   labels:
     app: synapse
     component: synapse-{{ $name }}
-data:
+type: Opaque
+stringData:
   homeserver.yaml: |
     ---
     server_name: {{ $.Values.synapse.serverName }}

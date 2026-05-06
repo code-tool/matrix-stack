@@ -92,6 +92,6 @@ affinity:
 {{- end }}
 volumes:
 - name: synapse-{{ .name }}-config
-  configMap:
-    name: synapse-{{ .name }}-config
+  secret:
+    secretName: synapse-{{ .name }}-config
 {{- end }}
