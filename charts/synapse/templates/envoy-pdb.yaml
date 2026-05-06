@@ -1,4 +1,4 @@
-{{- if .Values.envoyProxy.podDisruptionBudget.ebabled }}
+{{- if .Values.envoyProxy.podDisruptionBudget.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

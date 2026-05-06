@@ -1,4 +1,4 @@
-{{- if .Values.synapse.pgbouncer.podDisruptionBudget.ebabled }}
+{{- if .Values.synapse.pgbouncer.podDisruptionBudget.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

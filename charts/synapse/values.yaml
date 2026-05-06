@@ -159,7 +159,7 @@ synapse:
     # set thish gt 0 if you want to enable serveice sessionAffinity by ClientIP
     sessionAffinityTimeoutSeconds: 0
     podDisruptionBudget:
-      ebabled: true
+      enabled: true
       # Define either 'minAvailable' or 'maxUnavailable', never both.
       minAvailable: 1
       # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
@@ -498,7 +498,7 @@ envoyProxy:
     port: 80
   replicaCount: 2
   podDisruptionBudget:
-    ebabled: true
+    enabled: true
     # Define either 'minAvailable' or 'maxUnavailable', never both.
     minAvailable: 1
     # -- Maximum unavailable pods set in PodDisruptionBudget. If set, 'minAvailable' is ignored.
@@ -541,7 +541,7 @@ matrixAuthentication:
     port: 80
   replicaCount: 2
   podDisruptionBudget:
-    ebabled: true
+    enabled: true
     #minAvailable: 1
     # Define either 'minAvailable' or 'maxUnavailable', never both.
     minAvailable: 1
