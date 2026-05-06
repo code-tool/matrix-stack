@@ -1,11 +1,7 @@
 {{- if .Values.matrixAuthentication.enabled }}
 {{- if .Values.matrixAuthentication.autoscaling.enabled }}
 ---
-{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2
-{{- else }}
-apiVersion: autoscaling/v2beta1
-{{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: matrix-authentication
