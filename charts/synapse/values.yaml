@@ -676,6 +676,9 @@ wellKnown:
       nginx.ingress.kubernetes.io/use-regex: "true"
     annotations: {}
     ingressClassName: nginx
+  image:
+    repository: nginx
+    tag: 1.28.3
   resources:
     requests:
       cpu: 20m

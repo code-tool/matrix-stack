@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: well-known
-        image: nginx
+        image: {{ printf "%s:%s" .Values.wellKnown.image.repository .Values.wellKnown.image.tag }}
         imagePullPolicy: Always
         ports:
           - containerPort: 80
