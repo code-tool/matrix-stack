@@ -37,7 +37,7 @@ Workers annotations
 prometheus.io/port: "9092"
 prometheus.io/scrape: "true"
 prometheus.io/path: "/_synapse/metrics"
-checksum/config: {{ include (print $.Template.BasePath "/synapse-configmap.yaml") $ | sha256sum }}
+checksum/secret: {{ include (print $.Template.BasePath "/synapse-secret.yaml") $ | sha256sum }}
 {{- end }}
 
 {{/*
@@ -75,7 +75,7 @@ containers:
       name: metrics
       protocol: TCP
   volumeMounts:
-  - name: synapse-{{ .name }}-config
+  - name: synapse-{{ .name }}-secret
     mountPath: /data
 terminationGracePeriodSeconds: 10
 {{- if .nodeSelector }}
@@ -91,7 +91,7 @@ affinity:
   {{ toYaml .affinity | nindent 2 }}
 {{- end }}
 volumes:
-- name: synapse-{{ .name }}-config
+- name: synapse-{{ .name }}-secret
   secret:
-    secretName: synapse-{{ .name }}-config
+    secretName: synapse-{{ .name }}-secret
 {{- end }}
