@@ -27,7 +27,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-30"
     argocd.argoproj.io/hook: "Sync"
-  {{- else }}
+  {{- end }}
   labels:
     app: synapse
     component: synapse-{{ $name }}
