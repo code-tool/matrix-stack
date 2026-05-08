@@ -74,6 +74,7 @@ containers:
     - containerPort: 9092
       name: metrics
       protocol: TCP
+  {{- if not (has .worker (list "background_worker" "event_persister" "pusher")) }}
   startupProbe:
     httpGet:
       path: /health
@@ -91,6 +92,7 @@ containers:
       path: /health
       port: http
     periodSeconds: 10
+  {{- end }}
   volumeMounts:
   - name: synapse-{{ .name }}-secret
     mountPath: /data
