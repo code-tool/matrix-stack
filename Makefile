@@ -1,4 +1,4 @@
-VERSION=v1.149.1
+VERSION=v1.151.0
 
 all: build-main push-main build-e2e push-e2e
 
