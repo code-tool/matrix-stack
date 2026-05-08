@@ -17,7 +17,7 @@ RUN pip wheel --no-cache-dir --wheel-dir /wheels \
       git+https://gitlab.com/zerodotfive/googlesamlhandler.git@cb239e5d98bbe00465945c49661a9ca9ca134328
 
 # stage 2 : apply workers.patch
-FROM pipwheels as workers_patch
+FROM pipwheels AS workers_patch
 ARG PYTHON_PKG_VER
 COPY workers.patch /tmp/workers.patch
 RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/config/workers.py) \
@@ -25,7 +25,7 @@ RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/config
     && rm /tmp/workers.patch
 
 # stage 3 : apply e2e_room_keys.patch
-FROM pipwheels as e2e_patch
+FROM pipwheels AS e2e_patch
 ARG PYTHON_PKG_VER
 COPY e2e_room_keys.patch /tmp/e2e_room_keys.patch
 RUN patch $(ls /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/storage/databases/main/e2e_room_keys.py) \
@@ -33,7 +33,7 @@ RUN patch $(ls /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/stor
     && rm /tmp/e2e_room_keys.patch
 
 # stage 4 : base version with workers names
-FROM matrixdotorg/synapse:$SYNAPSE_PKG_VER as main
+FROM matrixdotorg/synapse:$SYNAPSE_PKG_VER AS main
 ARG PYTHON_PKG_VER
 RUN --mount=type=bind,from=pipwheels,source=/wheels,target=/wheels \
     pip install --no-cache-dir /wheels/*
@@ -42,7 +42,7 @@ COPY --from=workers_patch \
   /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/config/workers.py
 
 # stage 5 : base version with e2e_room_keys table optimization
-FROM main as e2e
+FROM main AS e2e
 ARG PYTHON_PKG_VER
 COPY --from=e2e_patch \
   /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/storage/databases/main/e2e_room_keys.py \
