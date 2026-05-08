@@ -74,6 +74,26 @@ containers:
     - containerPort: 9092
       name: metrics
       protocol: TCP
+    - containerPort: 8080
+      name: synapse-health
+      protocol: TCP
+  startupProbe:
+    httpGet:
+      path: /health
+      port: synapse-health
+    failureThreshold: 180
+    periodSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: synapse-health
+    failureThreshold: 3
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: synapse-health
+    periodSeconds: 10
   volumeMounts:
   - name: synapse-{{ .name }}-secret
     mountPath: /data
