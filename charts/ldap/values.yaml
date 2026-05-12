@@ -1,6 +1,6 @@
 image:
   repository: "haproxy"
-  tag: "2.8.15"
+  tag: "2.8.24"
   pullPolicy: IfNotPresent
 replicas: 1
 servers: []
@@ -8,3 +8,6 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+service:
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
