@@ -5,6 +5,10 @@ metadata:
   name: synapse-pgbouncer
   labels:
     app: synapse-pgbouncer
+  {{- with .Values.synapse.pgbouncer.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   selector:
     app: synapse-pgbouncer

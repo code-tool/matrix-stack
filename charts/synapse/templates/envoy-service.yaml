@@ -5,6 +5,10 @@ metadata:
   name:  synapse-client-reader-envoy
   labels:
     {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 4 }}
+  {{- with .Values.envoyProxy.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.envoyProxy.service.type }}
   ports:
