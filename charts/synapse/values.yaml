@@ -245,9 +245,9 @@ synapse:
     allowed_lifetime_max: 3y
     purge_jobs:
       - longest_max_lifetime: 3d
-        interval: 12h
+        interval: 2h
       - shortest_max_lifetime: 3d
-        interval: 1d
+        interval: 2h
   eventCacheSize: '10K'
   # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html#caches
   caches:
