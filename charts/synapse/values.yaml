@@ -425,6 +425,8 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$"
     # Pagination
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$"
+    # # Native Sliding Sync MSC3575
+    - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
   clientReaderRoutes:
     # Client API requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$"                     # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
