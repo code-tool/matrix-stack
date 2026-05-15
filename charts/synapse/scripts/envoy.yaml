@@ -273,6 +273,17 @@ static_resources:
                             timeout: 300s
                             auto_host_rewrite: true
                             cluster: httpd-client-reader
+                        # Federation and server-key APIs
+                        - match:
+                            safe_regex:
+                              regex: '^/_matrix/(federation/(v1|v2)|key/v2)/.*$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-federation-ip-hash
+                            hash_policy:
+                              - connection_properties:
+                                  source_ip: true
                         - match:
                             prefix: "/"
                           direct_response:
@@ -374,6 +385,30 @@ static_resources:
             max_retries: 3
       load_assignment:
         cluster_name: httpd-client-reader
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: synapse-client-reader-headless
+                      port_value: 8008
+    - name: httpd-federation-ip-hash
+      connect_timeout: 0.02s
+      type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: RING_HASH
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+          - priority: HIGH
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+      load_assignment:
+        cluster_name: httpd-federation-ip-hash
         endpoints:
           - lb_endpoints:
               - endpoint:
