@@ -122,6 +122,13 @@ synapse:
     presence:
       replicas: 1
       resources: {}
+    push_rules:
+      replicas: 1
+      resources: {}
+    # TODO: this sould be tested as deployScalingWorker
+    device_lists:
+      replicas: 1
+      resources: {}
     typing:
       replicas: 1
       resources: {}
@@ -371,6 +378,18 @@ ingress:
   # routes to presence stream writer singleton worker
   presence:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"
+  # https://element-hq.github.io/synapse/latest/workers.html?ref=element.io#the-push_rules-stream
+  # routes to push_rules stream writer singleton worker
+  pushRulesRoutes:
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
+  # https://element-hq.github.io/synapse/latest/workers.html?ref=element.io#the-device_lists-stream
+  # routes to device_lists stream writer multiple worker
+  deviceListsRoutes:
+    - "/_matrix/client/(r0|v3)/delete_devices$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)"
+    - "/_matrix/client/(r0|v3|unstable)/keys/upload(/|$)"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
   # TODO:
   #cancellableDelayedEventsRoutes:  # msc4140
   #  - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events/.*/restart$"  # https://github.com/element-hq/synapse/blob/develop/docs/upgrade.md#upgrading-to-v11440
@@ -416,8 +435,6 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
     - "/_matrix/client/(r0|v3|unstable)/room_keys/"
     - "/_matrix/client/(r0|v3|unstable)/keys/upload/"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
   eventCreator:
     # Event sending requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact"                 # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
@@ -462,8 +479,6 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/account/3pid$"
     - "/_matrix/client/(r0|v3|unstable)/account/whoami$"
     - "/_matrix/client/(r0|v3|unstable)/account/deactivate$"
-    - "/_matrix/client/(r0|v3)/delete_devices$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)"
     - "/_matrix/client/versions$"
     # api v1 ++
     - "/_matrix/client/(api/v1|r0|v3|unstable)/account/3pid$"

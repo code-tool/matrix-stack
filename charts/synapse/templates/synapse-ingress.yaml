@@ -75,6 +75,24 @@ spec:
               number: 80
             name: synapse-presence
 {{- end }}
+{{- range $route := .Values.ingress.pushRulesRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-push-rules
+{{- end }}
+{{- range $route := .Values.ingress.deviceListsRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-device-lists
+{{- end }}
 {{- range $route := .Values.ingress.clientReaderStickyRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
