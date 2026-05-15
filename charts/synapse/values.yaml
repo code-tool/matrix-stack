@@ -395,6 +395,41 @@ ingress:
   #threadSubscriptionsRoutes:
   #  - "/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$"
   #  - "/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$"
+  # TODO: implement this for 1.152, should be stream writer multiple worker
+  # https://element-hq.github.io/synapse/latest/workers.html#the-quarantined_media_changes-stream
+  #quarantinedMediaRoutes:
+  #  - "/_synapse/admin/v1/quarantine_media/.*$" # move here from media worker in 1.152
+  # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
+  # room worker, consistent hash by room_id, unlimited scale
+  roomRoutes:
+    # client-server: any request with room id in url
+    - '/_matrix/client/.*?!(?<room>[A-Za-z0-9._=\-\/]+):[A-Za-z0-9.\-]+'
+  # room (!sic) worker, consistent hash by room_id, unlimited scale, federation specific, should be after masterOverridesRoutes
+  roomFederationRoutes:
+    # federation: state_ids and get_missing_events
+    - '/_matrix/federation/v[12]/(?:state_ids|get_missing_events)/(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(:|%3A)[A-Za-z0-9.\-]+'
+  mediaRepository:
+    - "/_matrix/media/"
+    - "/_matrix/client/v1/media/"
+    - "/_matrix/federation/v1/media/"
+    - "/_synapse/admin/v1/purge_media_cache$"
+    - "/_synapse/admin/v1/room/.*/media.*$"
+    - "/_synapse/admin/v1/user/.*/media.*$"
+    - "/_synapse/admin/v1/media/.*$"
+    - "/_synapse/admin/v1/quarantine_media/.*$" # remove in 1.152
+    - "/_synapse/admin/v1/users/.*/media$"
+  # sync workers, unlimited scale, sticky per user
+  syncRoutes:
+    #- "/_matrix/client/(api/v1|r0|v3)/initialSync$" # extra routes, not combined
+    #- "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$" # extra routes, not combined
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)$"
+    # # Native Sliding Sync MSC3575
+    - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
+  # User directory search requests
+  # TODO: use separate generic worker, configured with single instance
+  # `update_user_directory_from_worker: worker-name`
+  #userDirectoryRoutes:
+  #    - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
   federationSenderRoutes:
     # Federation requests
     - "/_matrix/federation/v1/version$"
@@ -420,16 +455,6 @@ ingress:
     - "/_matrix/federation/v1/hierarchy/"
     # Inbound federation transaction request
     - "/_matrix/federation/v1/send/"
-  mediaRepository:
-    - "/_matrix/media/"                                                         # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
-    - "/_matrix/client/v1/media/"
-    - "/_matrix/federation/v1/media/"
-    - "/_synapse/admin/v1/purge_media_cache$"
-    - "/_synapse/admin/v1/room/.*/media.*$"
-    - "/_synapse/admin/v1/user/.*/media.*$"
-    - "/_synapse/admin/v1/media/.*$"
-    - "/_synapse/admin/v1/quarantine_media/.*$"
-    - "/_synapse/admin/v1/users/.*/media$"
   keys:
     # Encryption requests
     - "/_matrix/client/(r0|v3|unstable)/keys/query$"                            # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
@@ -460,12 +485,8 @@ ingress:
     # Sync requests
     - "/_matrix/client/(r0|v3)/sync$"
     - "/_matrix/client/(api/v1|r0|v3)/events$"
-    - "/_matrix/client/(api/v1|r0|v3)/initialSync$"
-    - "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$"
     # Pagination
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$"
-    # # Native Sliding Sync MSC3575
-    - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
   clientReaderRoutes:
     # Client API requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$"                     # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
@@ -500,9 +521,6 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/capabilities$"
     - "/_matrix/client/(r0|v3|unstable)/notifications$"
     - "/_synapse/admin/v1/rooms/[^/]+$"
-    # ? "/_synapse/admin/v1/rooms/" # https://github.com/element-hq/synapse/blob/v1.133.0/docs/workers.md has error ?
-    # User directory search requests
-    - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
   # experimental_features.msc3861.enabled set to true
   # TODO: decide if worker needed
   #msc3861Routes / MAS additional routes:

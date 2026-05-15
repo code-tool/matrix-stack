@@ -30,6 +30,15 @@ spec:
               number: 80
             name: synapse-master
 {{- end }}
+{{- range $route := .Values.ingress.roomFederationRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-room-envoy
+{{- end }}
 {{- range $route := .Values.ingress.typing }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -93,6 +102,26 @@ spec:
               number: 80
             name: synapse-device-lists
 {{- end }}
+{{- range $route := .Values.ingress.roomRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            # !
+            name: synapse-room-envoy
+{{- end }}
+{{- range $route := .Values.ingress.syncRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            # !
+            name: synapse-sync-envoy
+{{- end }}
 {{- range $route := .Values.ingress.clientReaderStickyRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -111,6 +140,15 @@ spec:
               number: 80
             name: synapse-client-reader
 {{- end }}
+{{- range $route := .Values.ingress.mediaRepository }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-media-repository
+{{- end }}
 {{- if not .Values.matrixAuthentication.enabled }}
 {{- range $route := .Values.ingress.clientReaderRegister }}
       - path: {{ $route }}
@@ -121,15 +159,6 @@ spec:
               number: 80
             name: synapse-client-reader
 {{- end }}
-{{- end }}
-{{- range $route := .Values.ingress.mediaRepository }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-media-repository
 {{- end }}
 {{- range $route := .Values.ingress.keys }}
       - path: {{ $route }}
