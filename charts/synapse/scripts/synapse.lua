@@ -59,6 +59,26 @@ local function get_access_token_from_request(headers)
     return get_access_token(headers:get("authorization"), path)
 end
 
+local function log_hash_fallback(request_handle, headers, fallback_type, request_id)
+    request_handle:logWarn(
+        "synapse_envoy_" .. fallback_type .. "_hash_fallback: method="
+        .. tostring(headers:get(":method"))
+        .. " path="
+        .. tostring(headers:get(":path"))
+        .. " authority="
+        .. tostring(headers:get(":authority"))
+        .. " request_id="
+        .. tostring(request_id)
+    )
+end
+
+local function set_request_id_hash_key_with_fallback_log(request_handle, headers, fallback_type)
+    local request_id = headers:get("x-request-id")
+
+    log_hash_fallback(request_handle, headers, fallback_type, request_id)
+    headers:add("X-Hash-Key", request_id)
+end
+
 local function get_option(options, key, default)
     if options ~= nil and options[key] ~= nil then
         return options[key]
@@ -205,5 +225,6 @@ end
 return {
     get_access_token_from_request = get_access_token_from_request,
     get_room_id_from_request = get_room_id_from_request,
+    set_request_id_hash_key_with_fallback_log = set_request_id_hash_key_with_fallback_log,
     get_user_identifier_from_request = get_user_identifier_from_request
 }

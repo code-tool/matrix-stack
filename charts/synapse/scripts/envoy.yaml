@@ -325,7 +325,7 @@ static_resources:
                                 return
                               end
 
-                              headers:add("X-Hash-Key", headers:get("x-request-id"))
+                              synapse.set_request_id_hash_key_with_fallback_log(request_handle, headers, "user")
                             end
                         room_hash:
                           inline_string: |
@@ -341,7 +341,7 @@ static_resources:
                                 return
                               end
 
-                              headers:add("X-Hash-Key", headers:get("x-request-id"))
+                              synapse.set_request_id_hash_key_with_fallback_log(request_handle, headers, "room")
                             end
                         unmatched_route_log:
                           inline_string: |

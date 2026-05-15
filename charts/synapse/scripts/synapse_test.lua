@@ -10,20 +10,32 @@ end
 
 local function new_headers(values)
     return {
+        add = function(_, key, value)
+            values[key] = value
+        end,
         get = function(_, key)
             return values[key]
-        end
+        end,
+        values = values
     }
 end
 
 local function new_request_handle(values, http_call)
+    local headers = new_headers(values)
+    local logs = {}
+
     return {
         headers = function()
-            return new_headers(values)
+            return headers
         end,
         httpCall = http_call,
-        logWarn = function() end,
-        logErr = function() end
+        logWarn = function(_, message)
+            table.insert(logs, message)
+        end,
+        logErr = function(_, message)
+            table.insert(logs, message)
+        end,
+        logs = logs
     }
 end
 
@@ -146,6 +158,27 @@ local function test_missing_token_returns_nil()
     )
 end
 
+local function test_hash_fallback_logs_and_sets_request_id()
+    local request_handle = new_request_handle({
+        [":method"] = "GET",
+        [":path"] = "/_matrix/client/v3/sync",
+        [":authority"] = "matrix.example.org",
+        ["x-request-id"] = "request-1"
+    }, function()
+        error("fallback should not call whoami")
+    end)
+    local headers = request_handle:headers()
+
+    synapse.set_request_id_hash_key_with_fallback_log(request_handle, headers, "user")
+
+    assert_equal(headers.values["X-Hash-Key"], "request-1", "fallback should set X-Hash-Key")
+    assert_equal(
+        request_handle.logs[1],
+        "synapse_envoy_user_hash_fallback: method=GET path=/_matrix/client/v3/sync authority=matrix.example.org request_id=request-1",
+        "fallback should log request details"
+    )
+end
+
 local tests = {
     test_room_id_from_encoded_path,
     test_access_token_from_authorization_header,
@@ -153,7 +186,8 @@ local tests = {
     test_whoami_lookup_returns_localpart,
     test_whoami_lookup_is_cached,
     test_whoami_failure_falls_back_to_token,
-    test_missing_token_returns_nil
+    test_missing_token_returns_nil,
+    test_hash_fallback_logs_and_sets_request_id
 }
 
 for _, test in ipairs(tests) do
