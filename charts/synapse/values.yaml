@@ -444,7 +444,7 @@ ingress:
     #- "/_matrix/client/(api/v1|r0|v3|unstable)/profile"
     #- "/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate)"
   federationReaderRoutes:
-    /_matrix/(federation/(v1|v2)|key/v2)/
+    - "/_matrix/(federation/(v1|v2)|key/v2)/"
   matrixAuthentication:
     - "/_matrix/client/(.*)/(login|logout|refresh)"
   # experimental_features.msc3861.enabled set to true
