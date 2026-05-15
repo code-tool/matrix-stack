@@ -66,6 +66,15 @@ spec:
               number: 80
             name: synapse-receipts
 {{- end }}
+{{- range $route := .Values.ingress.presence }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-presence
+{{- end }}
 {{- range $route := .Values.ingress.clientReaderStickyRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -94,15 +103,6 @@ spec:
               number: 80
             name: synapse-client-reader
 {{- end }}
-{{- end }}
-{{- range $route := .Values.ingress.presence }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-presence
 {{- end }}
 {{- range $route := .Values.ingress.mediaRepository }}
       - path: {{ $route }}

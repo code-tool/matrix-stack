@@ -128,6 +128,7 @@ synapse:
     background_worker:
       replicas: 1
       resources: {}
+    # TODO: this sould be tested as deployScalingWorker
     receipts:
       replicas: 1
       resources: {}
@@ -366,6 +367,10 @@ ingress:
   receipts:
     - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
     - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+  # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
+  # routes to presence stream writer singleton worker
+  presence:
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"
   # TODO:
   #cancellableDelayedEventsRoutes:  # msc4140
   #  - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events/.*/restart$"  # https://github.com/element-hq/synapse/blob/develop/docs/upgrade.md#upgrading-to-v11440
@@ -394,9 +399,6 @@ ingress:
     - "/_matrix/federation/v1/hierarchy/"
     # Inbound federation transaction request
     - "/_matrix/federation/v1/send/"
-  presence:
-    # Presence requests
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   mediaRepository:
     - "/_matrix/media/"                                                         # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
     - "/_matrix/client/v1/media/"
