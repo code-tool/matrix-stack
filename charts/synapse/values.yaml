@@ -352,6 +352,10 @@ ingress:
   # routes to typing stream writer singleton worker
   typing:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
+  # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
+  # routes to to_device stream writer singleton worker
+  toDevice:
+    - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"
   # TODO:
   #cancellableDelayedEventsRoutes:  # msc4140
   #  - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events/.*/restart$"  # https://github.com/element-hq/synapse/blob/develop/docs/upgrade.md#upgrading-to-v11440
@@ -397,8 +401,6 @@ ingress:
     - "/_synapse/admin/v1/media/.*$"
     - "/_synapse/admin/v1/quarantine_media/.*$"
     - "/_synapse/admin/v1/users/.*/media$"
-  toDevice:
-    - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"                          # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
   receipts:
     # Receipts requests
     - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
