@@ -36,6 +36,8 @@ synapse:
     limits:
       memory: 2Gi
   autoscalingWorkers:
+    # TODO:
+    #federation_reader:
     federation_sender:
       replicas: 1
       resources: {}
@@ -63,22 +65,6 @@ synapse:
         end: "0 19 * * *"
         desiredReplicas: 15
         minReplicaCount: 5
-      # HPA
-      autoscaling:
-        enabled: true
-        minReplicas: 1
-        maxReplicas: 10
-    event_creator:
-      replicas: 2
-      resources: {}
-      # https://keda.sh/docs/2.17/scalers/cron/
-      kedaAutoscaling:
-        enabled: false
-        timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
-        desiredReplicas: 5
-        minReplicaCount: 2
       # HPA
       autoscaling:
         enabled: true
@@ -137,9 +123,6 @@ synapse:
       resources: {}
     # TODO: this sould be tested as deployScalingWorker
     receipts:
-      replicas: 1
-      resources: {}
-    keys:
       replicas: 1
       resources: {}
     to_device:
@@ -430,97 +413,40 @@ ingress:
   # `update_user_directory_from_worker: worker-name`
   #userDirectoryRoutes:
   #    - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
-  federationSenderRoutes:
-    # Federation requests
-    - "/_matrix/federation/v1/version$"
-    - "/_matrix/federation/v1/event/"                                           # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
-    - "/_matrix/federation/v1/state/"
-    - "/_matrix/federation/v1/state_ids/"
-    - "/_matrix/federation/v1/backfill/"
-    - "/_matrix/federation/v1/get_missing_events/"
-    - "/_matrix/federation/v1/publicRooms"
-    - "/_matrix/federation/v1/query/"
-    - "/_matrix/federation/v1/make_join/"
-    - "/_matrix/federation/v1/make_leave/"
-    - "/_matrix/federation/(v1|v2)/send_join/"
-    - "/_matrix/federation/(v1|v2)/send_leave/"
-    - "/_matrix/federation/v1/make_knock/"
-    - "/_matrix/federation/v1/send_knock/"
-    - "/_matrix/federation/(v1|v2)/invite/"
-    - "/_matrix/federation/v1/event_auth/"
-    - "/_matrix/federation/v1/timestamp_to_event/"
-    - "/_matrix/federation/v1/exchange_third_party_invite/"
-    - "/_matrix/federation/v1/user/devices/"
-    - "/_matrix/key/v2/query"
-    - "/_matrix/federation/v1/hierarchy/"
-    # Inbound federation transaction request
-    - "/_matrix/federation/v1/send/"
-  keys:
-    # Encryption requests
-    - "/_matrix/client/(r0|v3|unstable)/keys/query$"                            # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
-    - "/_matrix/client/(r0|v3|unstable)/keys/changes$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
-    - "/_matrix/client/(r0|v3|unstable)/room_keys/"
-    - "/_matrix/client/(r0|v3|unstable)/keys/upload/"
-  eventCreator:
-    # Event sending requests
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact"                 # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/join/"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/knock/"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/profile/"
-  matrixAuthentication:
-    - "/_matrix/client/(.*)/(login|logout|refresh)"
+  # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
+  # scalable unlimited by least_conn lb algo
+  clientReaderRoutes:
+    # Encryption and room-key APIs
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/)"
+    # MSC3814 dehydrated device
+    - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device$"
+    - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device/[^/]*/events$"
+    # Room reads (non-room_worker)
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(joined_members|context/.*|members|state|hierarchy|relations/|event/|aliases|timestamp_to_event|redact|send|state/|(join|invite|leave|ban|unban|kick))"
+    # Discovery and generic APIs
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/(createRoom|publicRooms|versions|voip/turnServer|joined_rooms|search|directory/room/.*|capabilities)"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/user/.*/filter(/|$)"
+    # MatrixRTC (MSC4143)
+    - "/_matrix/client/unstable/org.matrix.msc4143/rtc/transports$"
   # disabled if MAS is enabled
   clientReaderRegister:
-    # Registration/login requests
+    # OLD Registration/login requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
     - "/_matrix/client/(r0|v3|unstable)/register$"
     - "/_matrix/client/(r0|v3|unstable)/register/available$"
     - "/_matrix/client/v1/register/m.login.registration_token/validity$"
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
-  clientReaderStickyRoutes:
-    # Sync requests
-    - "/_matrix/client/(r0|v3)/sync$"
-    - "/_matrix/client/(api/v1|r0|v3)/events$"
-    # Pagination
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$"
-  clientReaderRoutes:
-    # Client API requests
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$"                     # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$"
-    - "/_matrix/client/v1/rooms/.*/hierarchy$"
-    - "/_matrix/client/(v1|unstable)/rooms/.*/relations/"
-    - "/_matrix/client/v1/rooms/.*/threads$"
-    - "/_matrix/client/unstable/im.nheko.summary/summary/.*$"
-    - "/_matrix/client/(r0|v3|unstable)/account/3pid$"
-    - "/_matrix/client/(r0|v3|unstable)/account/whoami$"
-    - "/_matrix/client/(r0|v3|unstable)/account/deactivate$"
-    - "/_matrix/client/versions$"
-    # api v1 ++
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/account/3pid$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/account/whoami$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/sync$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/devices"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys"
-    # api v1 --
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$"
-    - "/_matrix/client/v1/rooms/.*/timestamp_to_event$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/search$"
-    - "/_matrix/client/(r0|v3|unstable)/user/.*/filter(/|$)"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$"
-    - "/_matrix/client/(r0|v3|unstable)/capabilities$"
-    - "/_matrix/client/(r0|v3|unstable)/notifications$"
-    - "/_synapse/admin/v1/rooms/[^/]+$"
+    # NEW Registration/login requests to validate
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/login"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/register(/available|/m.login.registration_token/validity|)?"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/password_policy"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/profile"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate)"
+  federationReaderRoutes:
+    /_matrix/(federation/(v1|v2)|key/v2)/
+  matrixAuthentication:
+    - "/_matrix/client/(.*)/(login|logout|refresh)"
   # experimental_features.msc3861.enabled set to true
   # TODO: decide if worker needed
   #msc3861Routes / MAS additional routes:

@@ -122,15 +122,6 @@ spec:
             # !
             name: synapse-sync-envoy
 {{- end }}
-{{- range $route := .Values.ingress.clientReaderStickyRoutes }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-client-reader-envoy
-{{- end }}
 {{- range $route := .Values.ingress.clientReaderRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -138,16 +129,7 @@ spec:
           service:
             port:
               number: 80
-            name: synapse-client-reader
-{{- end }}
-{{- range $route := .Values.ingress.mediaRepository }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-media-repository
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- if not .Values.matrixAuthentication.enabled }}
 {{- range $route := .Values.ingress.clientReaderRegister }}
@@ -160,25 +142,7 @@ spec:
             name: synapse-client-reader
 {{- end }}
 {{- end }}
-{{- range $route := .Values.ingress.keys }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-keys
-{{- end }}
-{{- range $route := .Values.ingress.eventCreator }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-event-creator
-{{- end }}
-{{- range $route := .Values.ingress.federationSenderRoutes }}
+{{- range $route := .Values.ingress.federationReaderRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
         backend:
@@ -197,6 +161,15 @@ spec:
               number: 80
             name: matrix-authentication
 {{- end }}
+{{- end }}
+{{- range $route := .Values.ingress.mediaRepository }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-media-repository
 {{- end }}
 {{- range $route := .Values.ingress.masterRoutes }}
       - path: {{ $route }}

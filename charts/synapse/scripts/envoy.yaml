@@ -414,7 +414,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: synapse-client-reader-headless
+                      address: synapse-federation-headless
                       port_value: 8008
     - name: httpd-room-hash
       connect_timeout: 0.02s
@@ -438,7 +438,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: synapse-client-reader-headless
+                      address: synapse-room-headless
                       port_value: 8008
     - name: httpd-user-hash
       connect_timeout: 0.02s
@@ -462,5 +462,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: synapse-client-reader-headless
+                      address: synapse-sync-headless
                       port_value: 8008

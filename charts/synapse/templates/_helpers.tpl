@@ -57,7 +57,7 @@ containers:
   image: {{ .image.repository }}:{{ .image.tag }}
   imagePullPolicy: {{ .image.pullPolicy }}
   resources: {{ .options.resources | default .resourcesDefaults | toYaml | nindent 4 }}
-  {{- if has .worker (list "event_persister" "federation_sender" "client_reader" "event_creator" "account_data" "presence" "receipts" "keys" "typing" "background_worker" "pusher" "to_device") }}
+  {{- if has .worker (list "event_persister" "federation_sender" "client_reader" "account_data" "presence" "receipts" "typing" "background_worker" "pusher" "to_device") }}
   env:
   - name: "SYNAPSE_WORKER"
     value: "synapse.app.generic_worker"
@@ -74,7 +74,7 @@ containers:
     - containerPort: 9092
       name: metrics
       protocol: TCP
-  {{- if not (has .worker (list "background_worker" "event_persister" "pusher" "keys")) }}
+  {{- if not (has .worker (list "background_worker" "event_persister" "pusher")) }}
   startupProbe:
     httpGet:
       path: /health
