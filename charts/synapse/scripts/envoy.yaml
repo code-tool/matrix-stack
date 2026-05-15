@@ -58,38 +58,124 @@ static_resources:
                       domains: ["*"]
                       routes:
                         - match:
+                            safe_regex:
+                              regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)(?:\?.*)?$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-token-hash
+                            hash_policy:
+                              - header:
+                                  header_name: X-Hash-Key
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              name: token_hash
+                        - match:
+                            safe_regex:
+                              regex: '^/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync(?:\?.*)?$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-token-hash
+                            hash_policy:
+                              - header:
+                                  header_name: X-Hash-Key
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              name: token_hash
+                        - match:
+                            safe_regex:
+                              regex: '^/_matrix/client/.*(?:%21|!)[A-Za-z0-9._=/-]+(?::|%3[Aa])[A-Za-z0-9.-]+.*$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-room-hash
+                            hash_policy:
+                              - header:
+                                  header_name: X-Hash-Key
+                          typed_per_filter_config:
+                            envoy.filters.http.lua:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                              name: room_hash
+                        - match:
                             prefix: "/"
                           route:
                             timeout: 300s
                             auto_host_rewrite: true
                             cluster: httpd
-                            hash_policy:
-                              - header:
-                                  header_name: X-Hash-Key
                 http_filters:
-                  - name: lua_filter_with_custom_name_0
+                  - name: envoy.filters.http.lua
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
                       default_source_code:
                         inline_string: |
-                          local synapse = require("lib.synapse")
-
                           function envoy_on_request(request_handle)
-                            local headers = request_handle:headers()
-                            local hash_key = synapse.get_hash_key_from_request(headers)
-
-                            if hash_key ~= nil then
-                              headers:add("X-Hash-Key", synapse.get_hash_key_from_request(headers))
-                              return
-                            end
-
-                            headers:add("X-Hash-Key", headers:get("x-request-id"))
+                            return
                           end
+                      source_codes:
+                        token_hash:
+                          inline_string: |
+                            package.path = package.path .. ";/usr/lib/?.lua"
+                            local synapse = require("synapse")
+
+                            function envoy_on_request(request_handle)
+                              local headers = request_handle:headers()
+                              local hash_key = synapse.get_access_token_from_request(headers)
+
+                              if hash_key ~= nil then
+                                headers:add("X-Hash-Key", hash_key)
+                                return
+                              end
+
+                              headers:add("X-Hash-Key", headers:get("x-request-id"))
+                            end
+                        room_hash:
+                          inline_string: |
+                            package.path = package.path .. ";/usr/lib/?.lua"
+                            local synapse = require("synapse")
+
+                            function envoy_on_request(request_handle)
+                              local headers = request_handle:headers()
+                              local hash_key = synapse.get_room_id_from_request(headers)
+
+                              if hash_key ~= nil then
+                                headers:add("X-Hash-Key", hash_key)
+                                return
+                              end
+
+                              headers:add("X-Hash-Key", headers:get("x-request-id"))
+                            end
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
   clusters:
     - name: httpd
+      connect_timeout: 0.02s
+      type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+          - priority: HIGH
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+      load_assignment:
+        cluster_name: httpd
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: synapse-client-reader-headless
+                      port_value: 8008
+    - name: httpd-room-hash
       connect_timeout: 0.02s
       type: STRICT_DNS
       dns_lookup_family: V4_ONLY
@@ -105,7 +191,31 @@ static_resources:
             max_requests: 8192
             max_retries: 3
       load_assignment:
-        cluster_name: httpd
+        cluster_name: httpd-room-hash
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: synapse-client-reader-headless
+                      port_value: 8008
+    - name: httpd-token-hash
+      connect_timeout: 0.02s
+      type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: RING_HASH
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+          - priority: HIGH
+            max_connections: 30000
+            max_requests: 8192
+            max_retries: 3
+      load_assignment:
+        cluster_name: httpd-token-hash
         endpoints:
           - lb_endpoints:
               - endpoint:
