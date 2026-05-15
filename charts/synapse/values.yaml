@@ -356,6 +356,16 @@ ingress:
   # routes to to_device stream writer singleton worker
   toDevice:
     - "/_matrix/client/(r0|v3|unstable)/sendToDevice/"
+  # https://matrix-org.github.io/synapse/latest/workers.html#the-account_data-stream
+  # routes to account_data stream writer singleton worker
+  accountData:
+    - "/_matrix/client/(r0|v3|unstable)/.*/tags"
+    - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
+  # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
+  # routes to receipts stream writer multiple workers
+  receipts:
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
   # TODO:
   #cancellableDelayedEventsRoutes:  # msc4140
   #  - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events/.*/restart$"  # https://github.com/element-hq/synapse/blob/develop/docs/upgrade.md#upgrading-to-v11440
@@ -384,10 +394,6 @@ ingress:
     - "/_matrix/federation/v1/hierarchy/"
     # Inbound federation transaction request
     - "/_matrix/federation/v1/send/"
-  accountData:
-    # Account data requests
-    - "/_matrix/client/(r0|v3|unstable)/.*/tags"                                # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
-    - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
   presence:
     # Presence requests
     - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
@@ -401,10 +407,6 @@ ingress:
     - "/_synapse/admin/v1/media/.*$"
     - "/_synapse/admin/v1/quarantine_media/.*$"
     - "/_synapse/admin/v1/users/.*/media$"
-  receipts:
-    # Receipts requests
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"                       # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
   keys:
     # Encryption requests
     - "/_matrix/client/(r0|v3|unstable)/keys/query$"                            # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker

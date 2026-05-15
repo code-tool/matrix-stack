@@ -48,6 +48,24 @@ spec:
               number: 80
             name: synapse-to-device
 {{- end }}
+{{- range $route := .Values.ingress.accountData }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-account-data
+{{- end }}
+{{- range $route := .Values.ingress.receipts }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-receipts
+{{- end }}
 {{- range $route := .Values.ingress.clientReaderStickyRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -77,15 +95,6 @@ spec:
             name: synapse-client-reader
 {{- end }}
 {{- end }}
-{{- range $route := .Values.ingress.accountData }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-account-data
-{{- end }}
 {{- range $route := .Values.ingress.presence }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -103,15 +112,6 @@ spec:
             port:
               number: 80
             name: synapse-media-repository
-{{- end }}
-{{- range $route := .Values.ingress.receipts }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-receipts
 {{- end }}
 {{- range $route := .Values.ingress.keys }}
       - path: {{ $route }}
