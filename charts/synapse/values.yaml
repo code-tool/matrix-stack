@@ -333,6 +333,18 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "320"
   annotations: {}
   ingressClassName: nginx
+  # client-server overides should go first and always to main/master process
+  masterOverridesRoutes:
+    # client-server overrides to the main/master process process
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register)"
+    # client-server sso overrides to the main/master process process
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/|$)"
+    # qr code rendezvous loginto main process
+    # related to MSC4108 https://github.com/matrix-org/matrix-spec-proposals/pull/4108
+    - "(/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous|/_synapse/client/rendezvous)$"
+    # federation overrides to main/master process
+    - "/_matrix/federation/v1/openid/userinfo$"
+  # send all other traffic to the main/master process, should go last in lb config
   masterRoutes:
     - "/_matrix/"
     - "/_synapse/"

@@ -21,6 +21,15 @@ spec:
   - host: {{ .Values.synapse.serverName }}
     http:
       paths:
+{{- range $route := .Values.ingress.masterOverridesRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-master
+{{- end }}
 {{- range $route := .Values.ingress.clientReaderStickyRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -142,7 +151,6 @@ spec:
             name: matrix-authentication
 {{- end }}
 {{- end }}
-      # Send all other traffic to the main process
 {{- range $route := .Values.ingress.masterRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
