@@ -162,6 +162,15 @@ spec:
             name: matrix-authentication
 {{- end }}
 {{- end }}
+{{- range $route := .Values.ingress.userDirectoryRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-user-dir
+{{- end }}
 {{- range $route := .Values.ingress.mediaRepository }}
       - path: {{ $route }}
         pathType: ImplementationSpecific

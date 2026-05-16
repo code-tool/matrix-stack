@@ -86,13 +86,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: synapse-federation-headless
+  name: synapse-federation-reader-headless
   {{- with $.Values.synapse.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "synapse-federation.selectorLabels" . | nindent 4 }}
+    {{- include "synapse-federation-reader.selectorLabels" . | nindent 4 }}
 spec:
   clusterIP: None
   type: ClusterIP
@@ -101,4 +101,4 @@ spec:
       port: 8008
       targetPort: 8008
   selector:
-    {{- include "synapse-federation.selectorLabels" . | nindent 6 }}
+    {{- include "synapse-federation-reader.selectorLabels" . | nindent 6 }}

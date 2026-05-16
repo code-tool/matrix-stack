@@ -1,4 +1,62 @@
 ---
+# the core of synapse monolith distribution is complex regexp routing to particular workers
+# workers types:
+# 1. synapse.app.generic_worker:
+#    most common worker type, can read data, respond to http api, clients and federation
+#    requests, can read data, have no streams, can not wrie any strem by itself
+#    generic worker can be:
+#      - reader (client_reader, federation_reader, sync, room)
+#      - stream writer (if configured in stream_writers section)
+#      - both of them
+#    this generic_worker not an architecture type, this is behavior type based on config
+# 2. stream writer:
+#    not a separate type, this is role for generic worker, if worker is in stream_writers section
+#    this worker writes redis stream exclusively and other workers writes the strim
+#    by requesting http to it
+#    stream writer must:
+#      - be in instance_map
+#      - have replication listener (port 9093)
+#      - some of the streams are singleton:
+#        (typing, to_device, account_data, presence, push_rules),
+#      - some of stream writers are scalable and ready for round-robin requests:
+#        (receipts, device_lists, thread_subscriptions, quarantined_media, events)
+# 3. synapse.app.media_repository:
+#    the only real worker app type, different from generic_worker:
+#      - media-specific headers
+#      - responds for /_matrix/media/, /_matrix/client/v1/media/, /_matrix/federation/v1/media/
+#      - can have backgrounf job media_instance_running_background_jobs
+#      - can not be a stream writer
+#      - can not respond to any client/federation endpoints
+# 4. background jobs:
+#    this is generic workers, that has no http endpoints to respond
+#    the are:
+#      - background: singleton for stats, media cleanup, user directory updates
+#      - pusher: `pusher_instances: [pusher1, pusher2]`, sends push-notifications
+#      - federation_sender: `federation_sender_instances: [sender1, sender2]`, output federation only
+# --------------------------------------------------------------------------------------------------------
+# | worker                                     | type          | scalable | possible lb algo     | http  |
+# --------------------------------------------------------------------------------------------------------
+# │ typing                                     │ stream writer │ no       │ -                    │ yes   |
+# │ to_device                                  │ stream writer │ no       │ -                    │ yes   |
+# │ account_data                               │ stream writer │ no       │ -                    │ yes   |
+# │ presence                                   │ stream writer │ no       │ -                    │ yes   |
+# │ push_rules                                 │ stream writer │ no       │ -                    │ yes   |
+# │ receipts                                   │ stream writer │ yes      │ round-robin          │ yes   |
+# │ device_lists                               │ stream writer │ yes      │ round-robin          │ yes   |
+# │ thread_subscriptions                       │ stream writer │ yes      │ round-robin          │ yes   |
+# │ quarantined_media                          │ stream writer │ yes      │ round-robin          │ yes   |
+# │ events (persister)                         │ stream writer │ yes      │ shard by room_id     │ yes   |
+# │ media_repository                           │ app           │ yes      │ least_conn           │ yes   |
+# │ media_instance_running_background_jobs     │ app           │ no       │ no                   │ no    |
+# │ room_worker                                │ generic       │ yes      │ hash by room_id      │ yes   |
+# │ sync_worker                                │ generic       │ yes      │ hash by user_id      │ yes   |
+# │ federation_reader                          │ generic       │ yes      │ hash by source ip    │ yes   |
+# │ client_reader                              │ generic       │ yes      │ least_conn           │ yes   |
+# │ user_dir                                   │ generic       │ no       │ -                    │ yes   |
+# │ background_worker                          │ generic       │ no       │ -                    │ no    |
+# │ pusher                                     │ generic       │ yes      │ shard by user        │ no    |
+# │ federation_sender                          │ generic       │ yes      │ shard by destination │ no    |
+
 synapse:
   serverName: NOT-CONFIGURED
   matrixAuthenticationServiceEndpoint: ''
@@ -36,9 +94,55 @@ synapse:
     limits:
       memory: 2Gi
   autoscalingWorkers:
-    # TODO:
-    #federation_reader:
+    # room: routes client+federation room-id requests (hash by room_id via Envoy)
+    # must match synapse-room-headless service expected by envoy.yaml:441
+    room:
+      replicas: 2
+      resources: {}
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 5
+        minReplicaCount: 2
+      autoscaling:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 20
+    # sync: routes sync/events/initialSync requests (hash by user via Envoy whoami)
+    # must match synapse-sync-headless service expected by envoy.yaml:465
+    sync:
+      replicas: 2
+      resources: {}
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 10
+        minReplicaCount: 3
+      autoscaling:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 20
     federation_sender:
+      replicas: 1
+      resources: {}
+      # https://keda.sh/docs/2.17/scalers/cron/
+      kedaAutoscaling:
+        enabled: false
+        timezone: "Europe/Kyiv"
+        start: "0 9 * * *"
+        end: "0 19 * * *"
+        desiredReplicas: 5
+        minReplicaCount: 2
+      # HPA
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 10
+    federation_reader:
       replicas: 1
       resources: {}
       # https://keda.sh/docs/2.17/scalers/cron/
@@ -91,15 +195,33 @@ synapse:
     enabled: true
     minAvailable: 1
   deployScalingWorkers:
+    receipts:
+      replicas: 1
+      resources: {}
+    device_lists:
+      replicas: 1
+      resources: {}
+    thread_subscriptions:
+      replicas: 1
+      resources: {}
     event_persister:
       replicas: 2
       resources: {}
     pusher:
       replicas: 1
       resources: {}
-  # this workers will neewr scale, only vertical scaling is possible
+    federation_sender:
+      replicas: 1
+      resources: {}
+  # this workers will never scale, only vertical scaling is possible
   singletonWorkers:
     master:
+      replicas: 1
+      resources: {}
+    typing:
+      replicas: 1
+      resources: {}
+    to_device:
       replicas: 1
       resources: {}
     account_data:
@@ -111,21 +233,10 @@ synapse:
     push_rules:
       replicas: 1
       resources: {}
-    # TODO: this sould be tested as deployScalingWorker
-    device_lists:
-      replicas: 1
-      resources: {}
-    typing:
+    user_dir:
       replicas: 1
       resources: {}
     background_worker:
-      replicas: 1
-      resources: {}
-    # TODO: this sould be tested as deployScalingWorker
-    receipts:
-      replicas: 1
-      resources: {}
-    to_device:
       replicas: 1
       resources: {}
     media_repository_background_jobs:
@@ -396,6 +507,7 @@ ingress:
   # client-server: any request with room id in url
   roomRoutes:
     - '/_matrix/client/.*?!(?<room>[A-Za-z0-9._=\-\/]+):[A-Za-z0-9.\-]+'
+    #- '/_matrix/client/.*?(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(?::|%3A)[A-Za-z0-9.\-]+'
   # room (!sic) worker, consistent hash by room_id, unlimited scale
   # federation specific, must be AFTER masterOverridesRoutes
   # workers.md: state_ids and get_missing_events are v1 only; v[12] is over-permissive but harmless
@@ -420,10 +532,9 @@ ingress:
     # Native Sliding Sync MSC3575
     # source: sync.py:785 client_patterns("/org.matrix.simplified_msc3575/sync$", releases=[], unstable=True)
     - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
-  # TODO: use separate generic worker, configured with single instance
   # `update_user_directory_from_worker: worker-name`
-  #userDirectoryRoutes:
-  #  - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
+  userDirectoryRoutes:
+    - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
   # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
   # scalable unlimited by least_conn lb algo
   clientReaderRoutes:
