@@ -102,6 +102,17 @@ spec:
               number: 80
             name: synapse-device-lists
 {{- end }}
+{{- if .Values.experimentalFeatures.msc4306.enabled }}
+{{- range $route := .Values.ingress.threadSubscriptionsRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-thread-subscriptions
+{{- end }}
+{{- end }}
 {{- range $route := .Values.ingress.roomRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -139,7 +150,7 @@ spec:
           service:
             port:
               number: 80
-            name: synapse-client-reader
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- end }}
 {{- range $route := .Values.ingress.federationReaderRoutes }}

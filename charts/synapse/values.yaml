@@ -391,15 +391,11 @@ media_storage_providers: []
 identity_server_vector: false
 openid_configuration: true
 experimentalFeatures:
-  # TODO: check feature codes
-  # msc2965 not rendered in template 
-  msc2965:
-    enabled: true
   msc3967:
     enabled: true
+  # msc2965 will be enabled with msc3861
   msc3861:
-    # enabled by matrixAuthentication.enabled, deprecated section
-    # enabled: true
+    # TODO: enabled by matrixAuthentication.enabled, deprecated section
     issuer: NOT-CONFIGURED
     client_id: NOT-CONFIGURED
     client_auth_method: client_secret_basic
@@ -411,6 +407,9 @@ experimentalFeatures:
   msc4222:
     enabled: false
   msc4140:
+    enabled: false
+  # msc4308 will be enabled with msc4306
+  msc4306:
     enabled: false
 
 ingress:
@@ -475,16 +474,17 @@ ingress:
   # source: keys.py:507 client_patterns("/keys/device_signing/upload$", releases=("v3",)) -> (v3|unstable)
   #   (api/v1|r0|v3|unstable) is over-permissive vs source but harmless
   deviceListsRoutes:
-    - "/_matrix/client/(r0|v3)/delete_devices$"
+    - "/_matrix/client/(r0|v3|unstable)/delete_devices$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)"
     - "/_matrix/client/(r0|v3|unstable)/keys/upload(/|$)"
+    # keys.py:507 unexistent prefixes api/v1 and r0 device_lists
     - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
-  # TODO: implement this, should be stream writer multiple worker
   # https://github.com/element-hq/synapse/blob/b99a58719b274fcbb327fd8d7649185792bfd12c/synapse/rest/client/thread_subscriptions.py#L38-L247
-  #threadSubscriptionsRoutes:
-  #  - "/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$"
-  #  - "/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$"
+  # stream writer multiple worker
+  threadSubscriptionsRoutes:
+    - "/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$"
+    - "/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$"
   # TODO: implement this for 1.152, should be stream writer multiple worker
   # https://element-hq.github.io/synapse/latest/workers.html#the-quarantined_media_changes-stream
   #quarantinedMediaRoutes:
@@ -540,6 +540,7 @@ ingress:
     # source: devices.py:241 client_patterns("/org.matrix.msc3814.v1/dehydrated_device/DEVICE_ID/events$", releases=()) -> unstable only
     - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device/[^/]*/events$"
     # Room reads - NOTE: requests with a room_id in path are already caught by roomRoutes above.
+    # TODO: workers.md describes only v1 and unstable. Here r0, v3 goes clientReader.
     # These entries serve as fallback for URL-encoded room IDs (%21...%3A) that roomRoutes misses.
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(joined_members|context/.*|members|state|hierarchy|relations/|event/|aliases|timestamp_to_event|redact|send|state/|(join|invite|leave|ban|unban|kick))"
     # Discovery and generic APIs
