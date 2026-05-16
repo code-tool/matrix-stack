@@ -73,7 +73,7 @@ containers:
   image: {{ .image.repository }}:{{ .image.tag }}
   imagePullPolicy: {{ .image.pullPolicy }}
   resources: {{ .options.resources | default .resourcesDefaults | toYaml | nindent 4 }}
-  {{- if ne .worker "master" )}}
+  {{- if ne .worker "master" }}
   env:
   - name: "SYNAPSE_WORKER"
     {{- if has .worker (list "media_repository" "media_repository_background_jobs") }}

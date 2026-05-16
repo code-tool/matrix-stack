@@ -37,7 +37,7 @@ spec:
           service:
             port:
               number: 80
-            name: synapse-room-envoy
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- range $route := .Values.ingress.typing }}
       - path: {{ $route }}
@@ -110,7 +110,7 @@ spec:
             port:
               number: 80
             # !
-            name: synapse-room-envoy
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- range $route := .Values.ingress.syncRoutes }}
       - path: {{ $route }}
@@ -120,7 +120,7 @@ spec:
             port:
               number: 80
             # !
-            name: synapse-sync-envoy
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- range $route := .Values.ingress.clientReaderRoutes }}
       - path: {{ $route }}
@@ -149,7 +149,7 @@ spec:
           service:
             port:
               number: 80
-            name: synapse-federation-sender
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- if .Values.matrixAuthentication.enabled }}
 {{- range $route := .Values.ingress.matrixAuthentication }}
