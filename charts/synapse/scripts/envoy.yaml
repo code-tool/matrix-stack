@@ -99,6 +99,24 @@ static_resources:
                             envoy.filters.http.lua:
                               "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
                               name: room_hash
+                        # Generic client discovery and lookup APIs
+                        # versions has no API version prefix: source versions.py:42
+                        - match:
+                            safe_regex:
+                              regex: '^/_matrix/client/versions$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-client-reader
+                        # notifications
+                        # source: notifications.py:46 client_patterns("/notifications$") -> (r0|v3|unstable)
+                        - match:
+                            safe_regex:
+                              regex: '^/_matrix/client/(r0|v3|unstable)/notifications$'
+                          route:
+                            timeout: 300s
+                            auto_host_rewrite: true
+                            cluster: httpd-client-reader
                         # Encryption and room-key APIs
                         - match:
                             safe_regex:
@@ -414,7 +432,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: synapse-federation-headless
+                      address: synapse-federation-reader-headless
                       port_value: 8008
     - name: httpd-room-hash
       connect_timeout: 0.02s

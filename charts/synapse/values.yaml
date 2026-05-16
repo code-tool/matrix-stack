@@ -506,7 +506,8 @@ ingress:
   # room worker, consistent hash by room_id, unlimited scale
   # client-server: any request with room id in url
   roomRoutes:
-    - '/_matrix/client/.*?!(?<room>[A-Za-z0-9._=\-\/]+):[A-Za-z0-9.\-]+'
+    - '/_matrix/client/.*(?:%21|!)[A-Za-z0-9._=/-]+(?::|%3[Aa])[A-Za-z0-9.-]+.*$'
+    #- '/_matrix/client/.*?!(?<room>[A-Za-z0-9._=\-\/]+):[A-Za-z0-9.\-]+'
     #- '/_matrix/client/.*?(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(?::|%3A)[A-Za-z0-9.\-]+'
   # room (!sic) worker, consistent hash by room_id, unlimited scale
   # federation specific, must be AFTER masterOverridesRoutes
