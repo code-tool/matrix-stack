@@ -662,6 +662,15 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.0.1/sentry-webhook-0.0.1.tgz
     version: 0.0.1
   synapse:
+  - apiVersion: v2
+    appVersion: 1.149.1
+    created: "2026-05-18T12:24:04.690526983Z"
+    description: matrix synapse kubernetes deployment
+    digest: 8eafbf49aa4c2573f0b858f8a60ef22168a4eaf52ff06f80b4b662807dd6ce6a
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-2.0.0/synapse-2.0.0.tgz
+    version: 2.0.0
   - apiVersion: v1
     created: "2026-05-15T00:48:08.110419981Z"
     digest: a1da494243e4b68b592e90e2add3aa5609320c784decdbe7f13fa378e33ae614
@@ -1693,4 +1702,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-05-15T00:48:08.110854975Z"
+generated: "2026-05-18T12:24:04.691240926Z"
