@@ -22,7 +22,7 @@ data:
       "m.homeserver": {
         "base_url": "https://{{ .Values.synapse.serverName }}"
       },
-      {{- if .Values.experimentalFeatures.msc2965.enabled }}
+      {{- if or .Values.experimentalFeatures.msc2965.enabled .Values.matrixAuthentication.enabled }}
       "org.matrix.msc2965.authentication": {
         "issuer": "https://{{ .Values.matrixAuthentication.ingress.host }}/",
         "account": "https://{{ .Values.matrixAuthentication.ingress.host }}/account"
