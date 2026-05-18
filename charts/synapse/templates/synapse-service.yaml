@@ -42,3 +42,63 @@ spec:
       targetPort: 8008
   selector:
     {{- include "synapse-client-reader.selectorLabels" . | nindent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-room-headless
+  {{- with $.Values.synapse.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "synapse-room.selectorLabels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+    {{- include "synapse-room.selectorLabels" . | nindent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-sync-headless
+  {{- with $.Values.synapse.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "synapse-sync.selectorLabels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+    {{- include "synapse-sync.selectorLabels" . | nindent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-federation-reader-headless
+  {{- with $.Values.synapse.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "synapse-federation-reader.selectorLabels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+    {{- include "synapse-federation-reader.selectorLabels" . | nindent 6 }}

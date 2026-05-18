@@ -1,17 +1,33 @@
 {{/*
 Selector labels
 */}}
-{{- define "sliding-sync-proxy.selectorLabels" -}}
+{{- define "synapse-client-reader.selectorLabels" -}}
 app: synapse
-component: sliding-sync-proxy
+component: synapse-client-reader
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "synapse-client-reader.selectorLabels" -}}
+{{- define "synapse-room.selectorLabels" -}}
 app: synapse
-component: synapse-client-reader
+component: synapse-room
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "synapse-sync.selectorLabels" -}}
+app: synapse
+component: synapse-sync
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "synapse-federation-reader.selectorLabels" -}}
+app: synapse
+component: synapse-federation-reader
 {{- end }}
 
 {{/*
@@ -57,15 +73,14 @@ containers:
   image: {{ .image.repository }}:{{ .image.tag }}
   imagePullPolicy: {{ .image.pullPolicy }}
   resources: {{ .options.resources | default .resourcesDefaults | toYaml | nindent 4 }}
-  {{- if has .worker (list "event_persister" "federation_sender" "client_reader" "event_creator" "account_data" "presence" "receipts" "keys" "typing" "background_worker" "pusher" "to_device") }}
+  {{- if ne .worker "master" }}
   env:
   - name: "SYNAPSE_WORKER"
-    value: "synapse.app.generic_worker"
-  {{- end }}
-  {{- if has .worker (list "media_repository" "media_repository_background_jobs") }}
-  env:
-  - name: "SYNAPSE_WORKER"
+    {{- if has .worker (list "media_repository" "media_repository_background_jobs") }}
     value: "synapse.app.media_repository"
+    {{- else }}
+    value: "synapse.app.generic_worker"
+    {{- end }}
   {{- end }}
   ports:
     - containerPort: 8008
@@ -74,7 +89,7 @@ containers:
     - containerPort: 9092
       name: metrics
       protocol: TCP
-  {{- if not (has .worker (list "background_worker" "event_persister" "pusher" "keys")) }}
+  {{- if not (has .worker (list "background_worker" "event_persister" "pusher")) }}
   startupProbe:
     httpGet:
       path: /health

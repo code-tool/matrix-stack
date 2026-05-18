@@ -21,7 +21,16 @@ spec:
   - host: {{ .Values.synapse.serverName }}
     http:
       paths:
-{{- range $route := .Values.ingress.clientReaderStickyRoutes }}
+{{- range $route := .Values.ingress.masterOverridesRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-master
+{{- end }}
+{{- range $route := .Values.ingress.roomFederationRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
         backend:
@@ -29,62 +38,6 @@ spec:
             port:
               number: 80
             name: synapse-client-reader-envoy
-{{- end }}
-{{- range $route := .Values.ingress.clientReaderRoutes }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-client-reader
-{{- end }}
-{{- if not .Values.matrixAuthentication.enabled }}
-{{- range $route := .Values.ingress.clientReaderRegister }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-client-reader
-{{- end }}
-{{- end }}
-{{- range $route := .Values.ingress.accountData }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-account-data
-{{- end }}
-{{- range $route := .Values.ingress.presence }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-presence
-{{- end }}
-{{- range $route := .Values.ingress.mediaRepository }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-media-repository
-{{- end }}
-{{- range $route := .Values.ingress.toDevice }}
-      - path: {{ $route }}
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            port:
-              number: 80
-            name: synapse-to-device
 {{- end }}
 {{- range $route := .Values.ingress.typing }}
       - path: {{ $route }}
@@ -95,6 +48,24 @@ spec:
               number: 80
             name: synapse-typing
 {{- end }}
+{{- range $route := .Values.ingress.toDevice }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-to-device
+{{- end }}
+{{- range $route := .Values.ingress.accountData }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-account-data
+{{- end }}
 {{- range $route := .Values.ingress.receipts }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
@@ -104,32 +75,92 @@ spec:
               number: 80
             name: synapse-receipts
 {{- end }}
-{{- range $route := .Values.ingress.keys }}
+{{- range $route := .Values.ingress.presence }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
         backend:
           service:
             port:
               number: 80
-            name: synapse-keys
+            name: synapse-presence
 {{- end }}
-{{- range $route := .Values.ingress.eventCreator }}
+{{- range $route := .Values.ingress.pushRulesRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
         backend:
           service:
             port:
               number: 80
-            name: synapse-event-creator
+            name: synapse-push-rules
 {{- end }}
-{{- range $route := .Values.ingress.federationSenderRoutes }}
+{{- range $route := .Values.ingress.deviceListsRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
         backend:
           service:
             port:
               number: 80
-            name: synapse-federation-sender
+            name: synapse-device-lists
+{{- end }}
+{{- if .Values.experimentalFeatures.msc4306.enabled }}
+{{- range $route := .Values.ingress.threadSubscriptionsRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-thread-subscriptions
+{{- end }}
+{{- end }}
+{{- range $route := .Values.ingress.roomRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            # !
+            name: synapse-client-reader-envoy
+{{- end }}
+{{- range $route := .Values.ingress.syncRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            # !
+            name: synapse-client-reader-envoy
+{{- end }}
+{{- range $route := .Values.ingress.clientReaderRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader-envoy
+{{- end }}
+{{- if not .Values.matrixAuthentication.enabled }}
+{{- range $route := .Values.ingress.clientReaderRegister }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader-envoy
+{{- end }}
+{{- end }}
+{{- range $route := .Values.ingress.federationReaderRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader-envoy
 {{- end }}
 {{- if .Values.matrixAuthentication.enabled }}
 {{- range $route := .Values.ingress.matrixAuthentication }}
@@ -142,7 +173,24 @@ spec:
             name: matrix-authentication
 {{- end }}
 {{- end }}
-      # Send all other traffic to the main process
+{{- range $route := .Values.ingress.userDirectoryRoutes }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-user-dir
+{{- end }}
+{{- range $route := .Values.ingress.mediaRepository }}
+      - path: {{ $route }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-media-repository
+{{- end }}
 {{- range $route := .Values.ingress.masterRoutes }}
       - path: {{ $route }}
         pathType: ImplementationSpecific
