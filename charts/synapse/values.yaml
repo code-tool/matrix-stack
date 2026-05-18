@@ -428,7 +428,10 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/|$)"
     # qr code rendezvous loginto main process
     # related to MSC4108 https://github.com/matrix-org/matrix-spec-proposals/pull/4108
-    - "(/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous|/_synapse/client/rendezvous)$"
+    #- "(/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous|/_synapse/client/rendezvous)$"
+    # this should fix spec.rules[0].http.paths[2].path: must be an absolute path
+    - "/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous$"
+    - "/_synapse/client/rendezvous$"
     # federation overrides to main/master process
     - "/_matrix/federation/v1/openid/userinfo$"
   # send all other traffic to the main/master process, should go last in lb config
