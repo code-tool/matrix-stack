@@ -53,7 +53,7 @@ spec:
               mountPath: /config/envoy.yaml
               subPath: envoy.yaml
             - name: config
-              mountPath: /usr/lib/synapse.lua
+              mountPath: /usr/lib/lib/synapse.lua
               subPath: synapse.lua
       {{- if .Values.envoyProxy.nodeSelector }}
       nodeSelector:

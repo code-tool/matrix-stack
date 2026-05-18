@@ -327,7 +327,6 @@ static_resources:
                             local synapse = require("lib.synapse")
 
                             function envoy_on_request(request_handle)
-                              local headers = request_handle:headers()
                               local hash_key = synapse.get_user_identifier_from_request(request_handle, {
                                 whoami_cluster = "httpd-client-reader",
                                 whoami_path = "/_matrix/client/v3/account/whoami",
@@ -337,6 +336,7 @@ static_resources:
                                 logging_token_length = 8
                               })
 
+                              local headers = request_handle:headers()
                               if hash_key ~= nil then
                                 headers:add("X-Hash-Key", hash_key)
                                 return
