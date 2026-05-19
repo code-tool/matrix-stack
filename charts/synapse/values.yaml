@@ -78,8 +78,7 @@ synapse:
     # also this ghcr contains synapse:v1.146.0-e2e-optimized with e2e_room_key query patches
     tag: "v1.149.1"
     pullPolicy: IfNotPresent
-  autoscaling:
-    enabled: true
+  disablePgBouncerForStreamWriters: false
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -394,6 +393,8 @@ experimentalFeatures:
   msc3967:
     enabled: true
   # msc2965 will be enabled with msc3861
+  msc2965:
+    enabled: true
   msc3861:
     # TODO: enabled by matrixAuthentication.enabled, deprecated section
     issuer: NOT-CONFIGURED
@@ -443,6 +444,7 @@ ingress:
   # source: room.py:1472 client_patterns("/rooms/.*/typing/...", v1=True) -> (api/v1|r0|v3|unstable)
   typing:
     #- "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
+    # this is hack to make this regexp longer, because ImplementationSpecific chose longest if both match
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/typing"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
   # routes to to_device stream writer singleton worker
@@ -625,7 +627,6 @@ admin:
       cloud.google.com/neg: '{"ingress":false}'
 
 envoyProxy:
-  enabled: true
   admin:
     port: 9901
   metrics: true

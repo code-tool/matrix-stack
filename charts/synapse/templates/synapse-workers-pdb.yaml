@@ -1,5 +1,5 @@
 {{- if .Values.synapse.deployScalingWorkersPdb.enabled }}
-{{/* deployScalingWorkers: replicas >= 1, minAvailable:1 allows rolling updates */}}
+{{/* deployScalingWorkers: replicas>1 → minAvailable:1; replicas=1 → maxUnavailable:1 allows node drain */}}
 {{- range $worker, $options := .Values.synapse.deployScalingWorkers }}
 {{ $name := $worker | replace "_" "-" }}
 ---
@@ -8,10 +8,14 @@ kind: PodDisruptionBudget
 metadata:
   name: synapse-{{ $name }}
 spec:
+  {{- if gt ($options.replicas | int) 1 }}
   {{- if and $.Values.synapse.deployScalingWorkersPdb.minAvailable (not (hasKey $.Values.synapse.deployScalingWorkersPdb "maxUnavailable")) }}
   minAvailable: {{ $.Values.synapse.deployScalingWorkersPdb.minAvailable }}
   {{- else if $.Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
   maxUnavailable: {{ $.Values.synapse.deployScalingWorkersPdb.maxUnavailable }}
+  {{- end }}
+  {{- else }}
+  maxUnavailable: 1
   {{- end }}
   selector:
     matchLabels:
