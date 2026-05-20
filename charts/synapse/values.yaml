@@ -582,8 +582,8 @@ ingress:
     # This pattern (56 chars) is tried before shorter routes, so negative lookaheads are required to
     # prevent shadowing:
     #   - (?!/(media|openid)) excludes:
-    #       /_matrix/federation/v1/media/   (29 chars) → must go to synapse-media-repository
-    #       /_matrix/federation/v1/openid/  (37 chars) → must go to synapse-master (masterOverridesRoutes)
+    #       /_matrix/federation/v1/media/   (29 chars) -> must go to synapse-media-repository
+    #       /_matrix/federation/v1/openid/  (37 chars) -> must go to synapse-master (masterOverridesRoutes)
     - "/_matrix/(federation/(v1|v2)(?!/(media|openid))|key/v2)/"
   # enabled if MAS is enabled, mutually exclusive with clientReaderRegister
   # source: login.py:76,588 logout.py:38,65
