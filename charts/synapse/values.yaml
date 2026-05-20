@@ -434,7 +434,7 @@ ingress:
     - "/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous$"
     - "/_synapse/client/rendezvous$"
     # federation overrides to main/master process
-    #- "/_matrix/federation/v1/openid/userinfo$"
+    #- "/_matrix/federation/v1/openid/userinfo$" # should go to federation reader
   # send all other traffic to the main/master process, should go last in lb config
   masterRoutes:
     - "/_matrix/"
@@ -460,9 +460,15 @@ ingress:
   # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
   # routes to receipts stream writer multiple workers
   # source: receipts.py:41, read_marker.py:40 - client_patterns() -> (r0|v3|unstable)
+  # Caution(!): patterns must be longer than roomRoutes (73 chars) because of ImplementationSpecific
+  # Both receipt URLs contain a room ID and would otherwise match roomRoutes first (longest wins),
+  # routing to room workers which are NOT receipts stream writers -> assert _can_write_to_receipts -> 500
   receipts:
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+    # original
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   # routes to presence stream writer singleton worker
   # source: presence.py:43 client_patterns("/presence/.../status", v1=True) -> (api/v1|r0|v3|unstable)
