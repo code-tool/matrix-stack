@@ -62,7 +62,8 @@ static_resources:
                             prefix: "/"
                             headers:
                               - name: ":method"
-                                exact_match: "OPTIONS"
+                                string_match:
+                                  exact: "OPTIONS"
                           direct_response:
                             status: 204
                           response_headers_to_add:
