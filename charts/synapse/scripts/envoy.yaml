@@ -57,6 +57,30 @@ static_resources:
                     - name: local_service
                       domains: ["*"]
                       routes:
+                        # CORS preflight — intercept all OPTIONS requests, no upstream proxy
+                        - match:
+                            prefix: "/"
+                            headers:
+                              - name: ":method"
+                                exact_match: "OPTIONS"
+                          direct_response:
+                            status: 204
+                          response_headers_to_add:
+                            - header:
+                                key: "access-control-allow-origin"
+                                value: "*"
+                            - header:
+                                key: "access-control-allow-methods"
+                                value: "GET, HEAD, POST, PUT, DELETE, OPTIONS"
+                            - header:
+                                key: "access-control-allow-headers"
+                                value: "X-Requested-With, Content-Type, Authorization, Date"
+                            - header:
+                                key: "access-control-expose-headers"
+                                value: "Synapse-Trace-Id, Server"
+                            - header:
+                                key: "content-length"
+                                value: "0"
                         - match:
                             safe_regex:
                               regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)(?:\?.*)?$'
