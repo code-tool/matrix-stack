@@ -167,7 +167,8 @@ local function lookup_whoami(request_handle, token, options)
                 [":method"] = "GET",
                 [":path"] = get_option(options, "whoami_path", "/_matrix/client/v3/account/whoami"),
                 [":authority"] = authority,
-                ["authorization"] = "Bearer " .. token
+                ["authorization"] = "Bearer " .. token,
+                ["x-forwarded-proto"] = "https"
             },
             "",
             get_option(options, "timeout_ms", 5000)
