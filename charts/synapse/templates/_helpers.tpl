@@ -95,23 +95,23 @@ containers:
       path: /health
       port: http
     failureThreshold: 180
-    periodSeconds: 10
+    periodSeconds: 15
   livenessProbe:
     httpGet:
       path: /health
       port: http
-    failureThreshold: 3
-    periodSeconds: 10
+    failureThreshold: 5
+    periodSeconds: 15
   readinessProbe:
     httpGet:
       path: /health
       port: http
-    periodSeconds: 10
+    periodSeconds: 15
   {{- end }}
   volumeMounts:
   - name: synapse-{{ .name }}-secret
     mountPath: /data
-terminationGracePeriodSeconds: 10
+terminationGracePeriodSeconds: 30
 {{- if .nodeSelector }}
 nodeSelector:
   {{ toYaml .nodeSelector | nindent 2 }}
