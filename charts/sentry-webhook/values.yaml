@@ -7,6 +7,9 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+service:
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
 conf:
   APP_PORT: 3000
   SENTRY_CLIENT_SECRET: ""

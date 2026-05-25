@@ -6,6 +6,10 @@ metadata:
   name:  matrix-authentication
   labels:
     {{- include "matrix-authentication.selectorLabels" . | nindent 4 }}
+  {{- with .Values.matrixAuthentication.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.matrixAuthentication.service.type }}
   ports:
