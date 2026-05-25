@@ -1,5 +1,5 @@
 {{- if .Values.matrixAuthentication.enabled }}
-{{- if .Values.matrixAuthentication.podDisruptionBudget.ebabled }}
+{{- if .Values.matrixAuthentication.podDisruptionBudget.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

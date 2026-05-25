@@ -21,7 +21,7 @@ spec:
       labels:
         {{- include "matrix-authentication.selectorLabels" . | nindent 8 }}
       annotations:
-        checksum/config: {{ .Values.matrixAuthentication.configYaml | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/matrix-authentication-secret.yaml") $ | sha256sum }}
       {{- with .Values.matrixAuthentication.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

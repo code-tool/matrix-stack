@@ -1,4 +1,4 @@
-ARG SYNAPSE_PKG_VER="v1.142.1"
+ARG SYNAPSE_PKG_VER="v1.149.1"
 ARG PYTHON_PKG_VER="3.13"
 
 # stage 1 : build pip

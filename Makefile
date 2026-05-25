@@ -1,4 +1,6 @@
-VERSION=v1.146.0
+VERSION=v1.149.1
+
+.PHONY: all build-main push-main build-e2e push-e2e test-lua
 
 all: build-main push-main build-e2e push-e2e
 
@@ -13,3 +15,6 @@ build-e2e:
 
 push-e2e: build-e2e
 	docker push ghcr.io/code-tool/matrix-stack/synapse:${VERSION}-e2e-optimized
+
+test-lua:
+	lua charts/synapse/scripts/synapse_test.lua

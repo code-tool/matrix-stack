@@ -9,7 +9,7 @@ spec:
   endpoints:
   - interval: 60s
     path: /metrics
-    port: http
+    port: redis-exporter
   jobLabel: redis-exporter
   selector:
     matchLabels:
