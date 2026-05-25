@@ -425,8 +425,6 @@ ingress:
   masterOverridesRoutes:
     # client-server overrides to the main/master process process
     - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register)"
-    # client-server sso overrides to the main/master process process
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/|$)"
     # qr code rendezvous loginto main process
     # related to MSC4108 https://github.com/matrix-org/matrix-spec-proposals/pull/4108
     #- "(/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous|/_synapse/client/rendezvous)$"
@@ -596,6 +594,7 @@ ingress:
   # Fixed: explicit version prefixes instead of greedy (.*) to avoid matching subpaths unexpectedly
   # logout has v1=True -> (api/v1|r0|v3|unstable); refresh has no v1 -> (r0|v3|unstable)
   matrixAuthentication:
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/|$)"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/logout(/all)?$"
     - "/_matrix/client/(r0|v3|unstable)/refresh$"
