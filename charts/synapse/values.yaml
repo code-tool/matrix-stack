@@ -76,7 +76,7 @@ synapse:
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
     # also this ghcr contains synapse:v1.146.0-e2e-optimized with e2e_room_key query patches
-    tag: "v1.149.1"
+    tag: "v1.151.0"
     pullPolicy: IfNotPresent
   disablePgBouncerForStreamWriters: false
   nodeSelector: {}
@@ -700,7 +700,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/element-hq/matrix-authentication-service
-    tag: 1.14.0
+    tag: 1.15.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
