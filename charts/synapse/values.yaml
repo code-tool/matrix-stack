@@ -1,64 +1,4 @@
 ---
-# the core of synapse monolith distribution is complex regexp routing to particular workers
-# workers types:
-# 1. synapse.app.generic_worker:
-#    most common worker type, can read data, respond to http api, clients and federation
-#    requests, can read data, have no streams, can not wrie any strem by itself
-#    generic worker can be:
-#      - reader (client_reader, federation_reader, sync, room)
-#      - stream writer (if configured in stream_writers section)
-#      - both of them
-#    this generic_worker not an architecture type, this is behavior type based on config
-# 2. stream writer:
-#    not a separate type, this is role for generic worker, if worker is in stream_writers section
-#    this worker writes redis stream exclusively and other workers writes the strim
-#    by requesting http to it
-#    stream writer must:
-#      - be in instance_map
-#      - have replication listener (port 9093)
-#      - some of the streams are singleton:
-#        (typing, to_device, account_data, presence, push_rules),
-#      - some of stream writers are scalable and ready for round-robin requests:
-#        (receipts, device_lists, thread_subscriptions, quarantined_media, events)
-# 3. synapse.app.media_repository:
-#    the only real worker app type, different from generic_worker:
-#      - media-specific headers
-#      - responds for /_matrix/media/, /_matrix/client/v1/media/, /_matrix/federation/v1/media/
-#      - can have backgrounf job media_instance_running_background_jobs
-#      - can not be a stream writer
-#      - can not respond to any client/federation endpoints
-# 4. background jobs:
-#    this is generic workers, that has no http endpoints to respond
-#    the are:
-#      - background: singleton for stats, media cleanup, user directory updates
-#      - pusher: `pusher_instances: [pusher1, pusher2]`, sends push-notifications
-#      - federation_sender: `federation_sender_instances: [sender1, sender2]`, output federation only
-# --------------------------------------------------------------------------------------------------------
-# | worker                                     | type          | scalable | possible lb algo     | http  |
-# --------------------------------------------------------------------------------------------------------
-# │ typing                                     │ stream writer │ no       │ -                    │ yes   |
-# │ to_device                                  │ stream writer │ no       │ -                    │ yes   |
-# │ account_data                               │ stream writer │ no       │ -                    │ yes   |
-# │ presence                                   │ stream writer │ no       │ -                    │ yes   |
-# │ push_rules                                 │ stream writer │ no       │ -                    │ yes   |
-# │ receipts                                   │ stream writer │ yes      │ round-robin          │ yes   |
-# │ device_lists                               │ stream writer │ yes      │ round-robin          │ yes   |
-# │ thread_subscriptions                       │ stream writer │ yes      │ round-robin          │ yes   |
-# │ quarantined_media                          │ stream writer │ yes      │ round-robin          │ yes   |
-# │ events (persister)                         │ stream writer │ yes      │ shard by room_id     │ yes   |
-# │ media_repository                           │ app           │ yes      │ least_conn           │ yes   |
-# │ media_instance_running_background_jobs     │ app           │ no       │ no                   │ no    |
-# │ room_worker                                │ generic       │ yes      │ hash by room_id      │ yes   |
-# │ sync_worker                                │ generic       │ yes      │ hash by user_id      │ yes   |
-# │ federation_reader                          │ generic       │ yes      │ hash by source ip    │ yes   |
-# │ client_reader                              │ generic       │ yes      │ least_conn           │ yes   |
-# │ user_dir                                   │ generic       │ no       │ -                    │ yes   |
-# │ background_worker                          │ generic       │ no       │ -                    │ no    |
-# │ pusher                                     │ generic       │ yes      │ shard by user        │ no    |
-# │ federation_sender                          │ generic       │ yes      │ shard by destination │ no    |
-
-clusterDnsDomain: cluster.local
-
 synapse:
   serverName: NOT-CONFIGURED
   matrixAuthenticationServiceEndpoint: ''
@@ -75,7 +15,7 @@ synapse:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
-    # also this ghcr contains synapse:v1.146.0-e2e-optimized with e2e_room_key query patches
+    # also this ghcr contains synapse:v1.151.0-e2e-optimized with e2e_room_key query patches
     tag: "v1.151.0"
     pullPolicy: IfNotPresent
   disablePgBouncerForStreamWriters: false
@@ -103,8 +43,8 @@ synapse:
       kedaAutoscaling:
         enabled: false
         timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
+        start: "30 8 * * *"
+        end: "30 20 * * *"
         desiredReplicas: 5
         minReplicaCount: 2
       autoscaling:
@@ -119,8 +59,8 @@ synapse:
       kedaAutoscaling:
         enabled: false
         timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
+        start: "30 8 * * *"
+        end: "30 20 * * *"
         desiredReplicas: 10
         minReplicaCount: 3
       autoscaling:
@@ -134,8 +74,8 @@ synapse:
       kedaAutoscaling:
         enabled: false
         timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
+        start: "30 8 * * *"
+        end: "30 20 * * *"
         desiredReplicas: 5
         minReplicaCount: 2
       # HPA
@@ -150,8 +90,8 @@ synapse:
       kedaAutoscaling:
         enabled: false
         timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
+        start: "30 8 * * *"
+        end: "30 20 * * *"
         desiredReplicas: 15
         minReplicaCount: 5
       # HPA
@@ -166,8 +106,8 @@ synapse:
       kedaAutoscaling:
         enabled: false
         timezone: "Europe/Kyiv"
-        start: "0 9 * * *"
-        end: "0 19 * * *"
+        start: "30 8 * * *"
+        end: "30 20 * * *"
         desiredReplicas: 5
         minReplicaCount: 2
       # HPA
@@ -338,7 +278,7 @@ synapse:
   eventCacheSize: '10K'
   # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html#caches
   caches:
-    globalFactor: 1.0
+    globalFactor: 0.5
     cacheEntryTtl: '30m'
     syncResponseCacheDuration: '2m'
   cacheAutotuning:
@@ -476,7 +416,10 @@ ingress:
   # routes to push_rules stream writer singleton worker
   # source: push_rule.py:51 client_patterns("/pushrules/...", v1=True) -> (api/v1|r0|v3|unstable)
   pushRulesRoutes:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
+    # short version
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
+    # long version because of ingress
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/"
   # https://element-hq.github.io/synapse/latest/workers.html#the-device_lists-stream
   # routes to device_lists stream writer multiple workers
   # source: devices.py:79 client_patterns("/delete_devices") -> (r0|v3|unstable)
