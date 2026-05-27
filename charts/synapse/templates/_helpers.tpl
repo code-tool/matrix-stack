@@ -103,9 +103,9 @@ Supported Kubernetes suffixes: Gi, Mi, G, M.
 {{- include "synapse.workerCacheMemory" (merge (dict "num" 9 "denom" 10) .) -}}
 {{- end -}}
 
-{{/* target_cache_memory_usage = 50% of max = 45% of memory limit */}}
+{{/* target_cache_memory_usage = 80% of max = 72% of memory limit */}}
 {{- define "synapse.workerTargetCacheMemory" -}}
-{{- include "synapse.workerCacheMemory" (merge (dict "num" 45 "denom" 100) .) -}}
+{{- include "synapse.workerCacheMemory" (merge (dict "num" 72 "denom" 100) .) -}}
 {{- end -}}
 
 {{/*
