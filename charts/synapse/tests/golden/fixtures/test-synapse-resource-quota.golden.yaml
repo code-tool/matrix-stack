@@ -1,0 +1,18 @@
+---
+# Source: synapse/templates/synapse-resource-quota.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: synapse-critical-pods
+spec:
+  hard:
+    pods: 10
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values:
+      - system-node-critical
+      - system-cluster-critical
