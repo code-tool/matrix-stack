@@ -95,7 +95,7 @@ spec:
             port:
               number: 80
             name: synapse-presence
-      - path: /_matrix/client/(api/v1|r0|v3|unstable)/pushrules/
+      - path: /_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/
         pathType: ImplementationSpecific
         backend:
           service:
