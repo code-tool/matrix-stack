@@ -281,6 +281,9 @@ synapse:
     globalFactor: 0.5
     cacheEntryTtl: '30m'
     syncResponseCacheDuration: '2m'
+    perCacheFactors:
+      does_pair_of_users_share_a_room: 5.0
+      get_unread_event_push_actions_by_room_for_user: 10.0
   cacheAutotuning:
     maxCacheMemoryUsage: '1024M'
     targetCacheMemoryUsage: '512M'
