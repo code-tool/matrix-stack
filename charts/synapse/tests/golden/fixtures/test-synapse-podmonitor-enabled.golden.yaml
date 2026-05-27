@@ -1,0 +1,13 @@
+---
+# Source: synapse/templates/synapse-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: synapse-metrics
+spec:
+  selector:
+    matchLabels:
+      scrapeMetrics9092: 'true'
+  podMetricsEndpoints:
+  - port: metrics
+    path: "/_synapse/metrics"

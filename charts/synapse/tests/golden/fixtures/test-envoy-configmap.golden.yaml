@@ -1,0 +1,753 @@
+---
+# Source: synapse/templates/envoy-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: synapse-client-reader-envoy
+  labels:
+    app: synapse
+    component: synapse-client-reader
+data:
+  envoy.yaml: |
+    admin:
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 9901
+    
+    overload_manager:
+      refresh_interval: 0.25s
+      resource_monitors:
+        - name: "envoy.resource_monitors.fixed_heap"
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.resource_monitors.fixed_heap.v3.FixedHeapConfig
+            max_heap_size_bytes: 2147483648
+        - name: "envoy.resource_monitors.global_downstream_max_connections"
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.resource_monitors.downstream_connections.v3.DownstreamConnectionsConfig
+            max_active_downstream_connections: 50000
+      actions:
+        - name: "envoy.overload_actions.shrink_heap"
+          triggers:
+            - name: "envoy.resource_monitors.fixed_heap"
+              threshold:
+                value: 0.95
+        - name: "envoy.overload_actions.stop_accepting_requests"
+          triggers:
+            - name: "envoy.resource_monitors.fixed_heap"
+              threshold:
+                value: 0.98
+    
+    layered_runtime:
+      layers:
+        - name: static_layer_0
+          static_layer:
+            envoy:
+              resource_limits:
+                listener:
+                  httpd:
+                    connection_limit: 49000
+    
+    static_resources:
+      listeners:
+        - name: listener_0
+          address:
+            socket_address:
+              protocol: TCP
+              address: 0.0.0.0
+              port_value: 10000
+          filter_chains:
+            - filters:
+                - name: envoy.filters.network.http_connection_manager
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                    stat_prefix: ingress_http
+                    route_config:
+                      name: local_route
+                      virtual_hosts:
+                        - name: local_service
+                          domains: ["*"]
+                          routes:
+                            # CORS preflight — intercept all OPTIONS requests, no upstream proxy
+                            - match:
+                                prefix: "/"
+                                headers:
+                                  - name: ":method"
+                                    string_match:
+                                      exact: "OPTIONS"
+                              direct_response:
+                                status: 204
+                              response_headers_to_add:
+                                - header:
+                                    key: "access-control-allow-origin"
+                                    value: "*"
+                                - header:
+                                    key: "access-control-allow-methods"
+                                    value: "GET, HEAD, POST, PUT, DELETE, OPTIONS"
+                                - header:
+                                    key: "access-control-allow-headers"
+                                    value: "X-Requested-With, Content-Type, Authorization, Date"
+                                - header:
+                                    key: "access-control-expose-headers"
+                                    value: "Synapse-Trace-Id, Server"
+                                - header:
+                                    key: "content-length"
+                                    value: "0"
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-user-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: whoami_hash
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-user-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: whoami_hash
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/.*(?:%21|!)[A-Za-z0-9._=/-]+(?::|%3[Aa])[A-Za-z0-9.-]+.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-room-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
+                            # Generic client discovery and lookup APIs
+                            # versions has no API version prefix: source versions.py:42
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/versions$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # notifications
+                            # source: notifications.py:46 client_patterns("/notifications$") -> (r0|v3|unstable)
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/notifications$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # Encryption and room-key APIs
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # MSC3814 dehydrated-device APIs
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device/[^/]*/events(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # Login, registration, account, and profile APIs
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/login.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/register(/available|/m\.login\.registration_token/validity)?(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/password_policy.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/profile.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # Room-scoped client APIs handled by client readers
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/hierarchy.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/aliases.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/timestamp_to_event.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(relations/|event/).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(redact|send|state/).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # Generic client discovery and lookup APIs
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/(createRoom|publicRooms|versions|joined_rooms|search|capabilities).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/user/.*/filter(/|$).*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # MatrixRTC transport discovery
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org\.matrix\.msc4143/rtc/transports(?:\?.*)?$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            # Federation and server-key APIs
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/(federation/(v1|v2)|key/v2)/.*$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-federation-ip-hash
+                                hash_policy:
+                                  - connection_properties:
+                                      source_ip: true
+                            - match:
+                                prefix: "/"
+                              direct_response:
+                                status: 404
+                                body:
+                                  inline_string: "not found\n"
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: unmatched_route_log
+                    http_filters:
+                      - name: envoy.filters.http.lua
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                          default_source_code:
+                            inline_string: |
+                              function envoy_on_request(request_handle)
+                                return
+                              end
+                          source_codes:
+                            whoami_hash:
+                              inline_string: |
+                                package.path = package.path .. ";/usr/lib/?.lua"
+                                local synapse = require("synapse")
+    
+                                function envoy_on_request(request_handle)
+                                  local hash_key = synapse.get_user_identifier_from_request(request_handle, {
+                                    whoami_cluster = "httpd-client-reader",
+                                    whoami_path = "/_matrix/client/v3/account/whoami",
+                                    cache_ttl_seconds = 300,
+                                    timeout_ms = 5000,
+                                    logging_enabled = false,
+                                    logging_token_length = 8
+                                  })
+    
+                                  local headers = request_handle:headers()
+                                  if hash_key ~= nil then
+                                    headers:add("X-Hash-Key", hash_key)
+                                    return
+                                  end
+    
+                                  synapse.set_request_id_hash_key_with_fallback_log(request_handle, headers, "user")
+                                end
+                            room_hash:
+                              inline_string: |
+                                package.path = package.path .. ";/usr/lib/?.lua"
+                                local synapse = require("synapse")
+    
+                                function envoy_on_request(request_handle)
+                                  local headers = request_handle:headers()
+                                  local hash_key = synapse.get_room_id_from_request(headers)
+    
+                                  if hash_key ~= nil then
+                                    headers:add("X-Hash-Key", hash_key)
+                                    return
+                                  end
+    
+                                  synapse.set_request_id_hash_key_with_fallback_log(request_handle, headers, "room")
+                                end
+                            unmatched_route_log:
+                              inline_string: |
+                                function envoy_on_request(request_handle)
+                                  local headers = request_handle:headers()
+                                  request_handle:logWarn(
+                                    "synapse_envoy_unmatched_route: method="
+                                    .. tostring(headers:get(":method"))
+                                    .. " path="
+                                    .. tostring(headers:get(":path"))
+                                    .. " authority="
+                                    .. tostring(headers:get(":authority"))
+                                  )
+                                end
+                      - name: envoy.filters.http.router
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+      clusters:
+        - name: httpd-client-reader
+          connect_timeout: 0.02s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          lb_policy: LEAST_REQUEST
+          least_request_lb_config:
+            choice_count: 2
+          outlier_detection:
+            consecutive_5xx: 5
+            consecutive_gateway_failure: 5
+            interval: 10s
+            base_ejection_time: 30s
+            max_ejection_percent: 50
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-client-reader
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-client-reader-headless
+                          port_value: 8008
+        - name: httpd-federation-ip-hash
+          connect_timeout: 0.02s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          lb_policy: RING_HASH
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-federation-ip-hash
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-federation-reader-headless
+                          port_value: 8008
+        - name: httpd-room-hash
+          connect_timeout: 0.02s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          lb_policy: RING_HASH
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-room-hash
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-room-headless
+                          port_value: 8008
+        - name: httpd-user-hash
+          connect_timeout: 0.02s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          lb_policy: RING_HASH
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-user-hash
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-sync-headless
+                          port_value: 8008
+    
+  synapse.lua: |
+    local room_id_pattern = "(![A-Za-z0-9._=%%%-/]+:[A-Za-z0-9.%-]+)"
+    local whoami_cache = {}
+    
+    local function normalize_matrix_room_separators(path)
+        return path:gsub("%%21", "!"):gsub("%%3[Aa]", ":")
+    end
+    
+    local function get_room_id_from_namespace_path(path, namespace)
+        local _, _, room_id = string.find(path, "^/_matrix/" .. namespace .. "/.-" .. room_id_pattern)
+    
+        return room_id
+    end
+    
+    local function get_room_id_from_path(path)
+        local normalized_path = normalize_matrix_room_separators(path)
+    
+        local key = get_room_id_from_namespace_path(normalized_path, "client")
+        if key ~= nil then
+            return key
+        end
+    
+        key = get_room_id_from_namespace_path(normalized_path, "federation")
+        if key ~= nil then
+            return key
+        end
+    
+        local _, _, key = string.find(path, "/_matrix/client/v3/rooms/([^/]+)/messages")
+    
+        return key
+    end
+    
+    local function get_room_id_from_request(headers)
+        local path = headers:get(":path")
+    
+        return get_room_id_from_path(path)
+    end
+    
+    local function get_access_token(auth_header, path)
+        if auth_header ~= nil and string.len(auth_header) > 0 then
+            local _, _, bearer_token = string.find(auth_header, "^[Bb]earer%s+(.+)$")
+            if bearer_token ~= nil then
+                return bearer_token
+            end
+    
+            return auth_header
+        end
+    
+        local _, _, token_param = string.find(path, "access_token=([^&]+)")
+        if token_param ~= nil then
+            return token_param
+        end
+    
+        return auth_header
+    end
+    
+    local function get_access_token_from_request(headers)
+        local path = headers:get(":path")
+    
+        return get_access_token(headers:get("authorization"), path)
+    end
+    
+    local function log_hash_fallback(request_handle, headers, fallback_type, request_id)
+        request_handle:logWarn(
+            "synapse_envoy_" .. fallback_type .. "_hash_fallback: method="
+            .. tostring(headers:get(":method"))
+            .. " path="
+            .. tostring(headers:get(":path"))
+            .. " authority="
+            .. tostring(headers:get(":authority"))
+            .. " request_id="
+            .. tostring(request_id)
+        )
+    end
+    
+    local function set_request_id_hash_key_with_fallback_log(request_handle, headers, fallback_type)
+        local request_id = headers:get("x-request-id")
+    
+        log_hash_fallback(request_handle, headers, fallback_type, request_id)
+        headers:add("X-Hash-Key", request_id)
+    end
+    
+    local function get_option(options, key, default)
+        if options ~= nil and options[key] ~= nil then
+            return options[key]
+        end
+    
+        return default
+    end
+    
+    local function log(request_handle, options, level, message)
+        if not get_option(options, "logging_enabled", false) then
+            return
+        end
+    
+        local prefixed_message = "whoami_sync_worker_router: " .. message
+        if level == "error" then
+            request_handle:logErr(prefixed_message)
+            return
+        end
+    
+        request_handle:logWarn(prefixed_message)
+    end
+    
+    local function truncate_token(token, options)
+        local token_length = get_option(options, "logging_token_length", 8)
+        if token == nil or string.len(token) <= token_length then
+            return token
+        end
+    
+        return string.sub(token, 1, token_length) .. "..."
+    end
+    
+    local function extract_localpart(user_id)
+        if user_id == nil or string.sub(user_id, 1, 1) ~= "@" then
+            return nil
+        end
+    
+        local colon_index = string.find(user_id, ":", 2, true)
+        if colon_index == nil then
+            return nil
+        end
+    
+        return string.sub(user_id, 2, colon_index - 1)
+    end
+    
+    local function extract_user_id_from_whoami_body(body)
+        local _, _, user_id = string.find(body, '"user_id"%s*:%s*"([^"]+)"')
+    
+        return user_id
+    end
+    
+    local function get_cached_username(token, options)
+        local entry = whoami_cache[token]
+        if entry == nil then
+            return nil
+        end
+    
+        if entry.expires_at > os.time() then
+            return entry.username
+        end
+    
+        whoami_cache[token] = nil
+        return nil
+    end
+    
+    local function cache_username(token, username, options)
+        local ttl_seconds = get_option(options, "cache_ttl_seconds", 300)
+        whoami_cache[token] = {
+            username = username,
+            expires_at = os.time() + ttl_seconds
+        }
+    end
+    
+    local function lookup_whoami(request_handle, token, options)
+        local headers = request_handle:headers()
+        local authority = headers:get(":authority")
+        if authority == nil then
+            authority = "synapse-client-reader-headless"
+        end
+    
+        log(request_handle, options, "warn", "performing whoami lookup for token " .. truncate_token(token, options))
+    
+        local ok, response_headers, response_body = pcall(function()
+            return request_handle:httpCall(
+                get_option(options, "whoami_cluster", "httpd"),
+                {
+                    [":method"] = "GET",
+                    [":path"] = get_option(options, "whoami_path", "/_matrix/client/v3/account/whoami"),
+                    [":authority"] = authority,
+                    ["authorization"] = "Bearer " .. token,
+                    ["x-forwarded-proto"] = "https"
+                },
+                "",
+                get_option(options, "timeout_ms", 5000)
+            )
+        end)
+    
+        if not ok then
+            log(request_handle, options, "error", "whoami lookup failed: " .. tostring(response_headers))
+            return nil
+        end
+    
+        local status = response_headers[":status"]
+        if status ~= "200" then
+            if status == "401" then
+                log(request_handle, options, "warn", "whoami lookup returned 401 for token " .. truncate_token(token, options))
+            else
+                log(request_handle, options, "error", "whoami lookup returned status " .. tostring(status))
+            end
+            return nil
+        end
+    
+        local user_id = extract_user_id_from_whoami_body(response_body)
+        local username = extract_localpart(user_id)
+        if username ~= nil then
+            log(request_handle, options, "warn", "whoami lookup success: " .. user_id .. " -> " .. username)
+        end
+    
+        return username
+    end
+    
+    local function get_user_identifier_from_request(request_handle, options)
+        local headers = request_handle:headers()
+        local token = get_access_token_from_request(headers)
+        if token == nil or string.len(token) == 0 then
+            log(request_handle, options, "warn", "no token found in request")
+            return nil
+        end
+    
+        local cached_username = get_cached_username(token, options)
+        if cached_username ~= nil then
+            log(request_handle, options, "warn", "cache hit for token " .. truncate_token(token, options) .. " -> " .. cached_username)
+            return cached_username
+        end
+    
+        local username = lookup_whoami(request_handle, token, options)
+        if username ~= nil then
+            cache_username(token, username, options)
+            return username
+        end
+    
+        log(request_handle, options, "warn", "whoami lookup failed, falling back to token-based routing")
+        return token
+    end
+    
+    return {
+        get_access_token_from_request = get_access_token_from_request,
+        get_room_id_from_request = get_room_id_from_request,
+        set_request_id_hash_key_with_fallback_log = set_request_id_hash_key_with_fallback_log,
+        get_user_identifier_from_request = get_user_identifier_from_request
+    }

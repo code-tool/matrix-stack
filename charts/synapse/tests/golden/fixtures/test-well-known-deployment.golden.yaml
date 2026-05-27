@@ -1,0 +1,50 @@
+---
+# Source: synapse/templates/well-known-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: well-known
+  labels:
+    app: well-known
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: well-known
+  template:
+    metadata:
+      annotations:
+        checksum/config: 6f9c415ebc849e3573206c2523a167830361c6f2d526d0916114836ffd636fd7
+      labels:
+        app: well-known
+    spec:
+      containers:
+      - name: well-known
+        image: nginx:1.28.3
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+        resources:
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        volumeMounts:
+        - name: well-known-config
+          subPath: default.conf
+          mountPath: /etc/nginx/conf.d/default.conf
+        - name: well-known-config
+          subPath: client
+          mountPath: /usr/share/nginx/html/.well-known/matrix/client
+        - name: well-known-config
+          subPath: server
+          mountPath: /usr/share/nginx/html/.well-known/matrix/server
+        - name: well-known-config
+          subPath: openid-configuration
+          mountPath: /usr/share/nginx/html/.well-known/matrix/openid-configuration
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: well-known-config
+        configMap:
+          name: well-known-config

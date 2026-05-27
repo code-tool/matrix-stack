@@ -1,0 +1,1041 @@
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-account-data
+  labels:
+    app: synapse
+    component: synapse-account-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-account-data
+  serviceName: synapse-account-data
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-account-data
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-account-data-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-account-data-secret
+        secret:
+          secretName: synapse-account-data-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-background-worker
+  labels:
+    app: synapse
+    component: synapse-background-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-background-worker
+  serviceName: synapse-background-worker
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-background-worker
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        volumeMounts:
+        - name: synapse-background-worker-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-background-worker-secret
+        secret:
+          secretName: synapse-background-worker-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-device-lists
+  labels:
+    app: synapse
+    component: synapse-device-lists
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-device-lists
+  serviceName: synapse-device-lists
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-device-lists
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-device-lists-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-device-lists-secret
+        secret:
+          secretName: synapse-device-lists-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-event-persister
+  labels:
+    app: synapse
+    component: synapse-event-persister
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-event-persister
+  serviceName: synapse-event-persister
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-event-persister
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        volumeMounts:
+        - name: synapse-event-persister-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-event-persister-secret
+        secret:
+          secretName: synapse-event-persister-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-federation-sender
+  labels:
+    app: synapse
+    component: synapse-federation-sender
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-federation-sender
+  serviceName: synapse-federation-sender
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-federation-sender
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-federation-sender-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-federation-sender-secret
+        secret:
+          secretName: synapse-federation-sender-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-master
+  labels:
+    app: synapse
+    component: synapse-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-master
+  serviceName: synapse-master
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-master
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-master-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-master-secret
+        secret:
+          secretName: synapse-master-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-media-repository-background-jobs
+  labels:
+    app: synapse
+    component: synapse-media-repository-background-jobs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-media-repository-background-jobs
+  serviceName: synapse-media-repository-background-jobs
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-media-repository-background-jobs
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.media_repository"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-media-repository-background-jobs-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-media-repository-background-jobs-secret
+        secret:
+          secretName: synapse-media-repository-background-jobs-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-presence
+  labels:
+    app: synapse
+    component: synapse-presence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-presence
+  serviceName: synapse-presence
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-presence
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-presence-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-presence-secret
+        secret:
+          secretName: synapse-presence-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-push-rules
+  labels:
+    app: synapse
+    component: synapse-push-rules
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-push-rules
+  serviceName: synapse-push-rules
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-push-rules
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-push-rules-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-push-rules-secret
+        secret:
+          secretName: synapse-push-rules-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-pusher
+  labels:
+    app: synapse
+    component: synapse-pusher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-pusher
+  serviceName: synapse-pusher
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-pusher
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        volumeMounts:
+        - name: synapse-pusher-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-pusher-secret
+        secret:
+          secretName: synapse-pusher-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-receipts
+  labels:
+    app: synapse
+    component: synapse-receipts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-receipts
+  serviceName: synapse-receipts
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-receipts
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-receipts-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-receipts-secret
+        secret:
+          secretName: synapse-receipts-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-thread-subscriptions
+  labels:
+    app: synapse
+    component: synapse-thread-subscriptions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-thread-subscriptions
+  serviceName: synapse-thread-subscriptions
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-thread-subscriptions
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-thread-subscriptions-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-thread-subscriptions-secret
+        secret:
+          secretName: synapse-thread-subscriptions-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-to-device
+  labels:
+    app: synapse
+    component: synapse-to-device
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-to-device
+  serviceName: synapse-to-device
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-to-device
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-to-device-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-to-device-secret
+        secret:
+          secretName: synapse-to-device-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-typing
+  labels:
+    app: synapse
+    component: synapse-typing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-typing
+  serviceName: synapse-typing
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-typing
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-typing-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-typing-secret
+        secret:
+          secretName: synapse-typing-secret
+---
+# Source: synapse/templates/synapse-workers-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: synapse-user-dir
+  labels:
+    app: synapse
+    component: synapse-user-dir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-user-dir
+  serviceName: synapse-user-dir
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 55eaa481070eecc9b744e9e2a271713877f974d548a1ad903478d45358d367a7
+      labels:
+        app: synapse
+        component: synapse-user-dir
+    spec:
+      
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-user-dir-secret
+          mountPath: /data
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: synapse-user-dir-secret
+        secret:
+          secretName: synapse-user-dir-secret

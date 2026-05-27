@@ -1,0 +1,19 @@
+---
+# Source: synapse/templates/pgbouncer-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-pgbouncer
+  labels:
+    app: synapse-pgbouncer
+spec:
+  selector:
+    app: synapse-pgbouncer
+  ports:
+  - name: pgbouncer
+    port: 5432
+    targetPort: 5432
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
