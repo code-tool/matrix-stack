@@ -71,26 +71,25 @@ Generic workers with no HTTP endpoints:
 
 Worker reference table
 
- --------------------------------------------------------------------------------------------------------
- | worker                                     | type          | scalable | possible lb algo     | http  |
- --------------------------------------------------------------------------------------------------------
- │ typing                                     │ stream writer │ no       │ -                    │ yes   |
- │ to_device                                  │ stream writer │ no       │ -                    │ yes   |
- │ account_data                               │ stream writer │ no       │ -                    │ yes   |
- │ presence                                   │ stream writer │ no       │ -                    │ yes   |
- │ push_rules                                 │ stream writer │ no       │ -                    │ yes   |
- │ receipts                                   │ stream writer │ yes      │ round-robin          │ yes   |
- │ device_lists                               │ stream writer │ yes      │ round-robin          │ yes   |
- │ thread_subscriptions                       │ stream writer │ yes      │ round-robin          │ yes   |
- │ quarantined_media                          │ stream writer │ yes      │ round-robin          │ yes   |
- │ events (persister)                         │ stream writer │ yes      │ shard by room_id     │ yes   |
- │ media_repository                           │ app           │ yes      │ least_conn           │ yes   |
- │ media_instance_running_background_jobs     │ app           │ no       │ no                   │ no    |
- │ room_worker                                │ generic       │ yes      │ hash by room_id      │ yes   |
- │ sync_worker                                │ generic       │ yes      │ hash by user_id      │ yes   |
- │ federation_reader                          │ generic       │ yes      │ hash by source ip    │ yes   |
- │ client_reader                              │ generic       │ yes      │ least_conn           │ yes   |
- │ user_dir                                   │ generic       │ no       │ -                    │ yes   |
- │ background_worker                          │ generic       │ no       │ -                    │ no    |
- │ pusher                                     │ generic       │ yes      │ shard by user        │ no    |
- │ federation_sender                          │ generic       │ yes      │ shard by destination │ no    |
+| worker                                 | type          | scalable | possible lb algo     | http |
+|----------------------------------------|---------------|----------|----------------------|------|
+| typing                                 | stream writer | no       | -                    | yes  |
+| to_device                              | stream writer | no       | -                    | yes  |
+| account_data                           | stream writer | no       | -                    | yes  |
+| presence                               | stream writer | no       | -                    | yes  |
+| push_rules                             | stream writer | no       | -                    | yes  |
+| receipts                               | stream writer | yes      | round-robin          | yes  |
+| device_lists                           | stream writer | yes      | round-robin          | yes  |
+| thread_subscriptions                   | stream writer | yes      | round-robin          | yes  |
+| quarantined_media                      | stream writer | yes      | round-robin          | yes  |
+| events (persister)                     | stream writer | yes      | shard by room_id     | yes  |
+| media_repository                       | app           | yes      | least_conn           | yes  |
+| media_instance_running_background_jobs | app           | no       | -                    | no   |
+| room_worker                            | generic       | yes      | hash by room_id      | yes  |
+| sync_worker                            | generic       | yes      | hash by user_id      | yes  |
+| federation_reader                      | generic       | yes      | hash by source ip    | yes  |
+| client_reader                          | generic       | yes      | least_conn           | yes  |
+| user_dir                               | generic       | no       | -                    | yes  |
+| background_worker                      | generic       | no       | -                    | no   |
+| pusher                                 | generic       | yes      | shard by user        | no   |
+| federation_sender                      | generic       | yes      | shard by destination | no   |
