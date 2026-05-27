@@ -278,7 +278,7 @@ synapse:
   eventCacheSize: '10K'
   # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html#caches
   caches:
-    globalFactor: 1.0
+    globalFactor: 0.5
     cacheEntryTtl: '30m'
     syncResponseCacheDuration: '2m'
   cacheAutotuning:

@@ -65,6 +65,50 @@ component: synapse-{{ . }}
 {{- end }}
 
 {{/*
+Base helper for Synapse cache size limits.
+Falls back to .fallback when no limit is configured or suffix is unrecognised.
+Supported Kubernetes suffixes: Gi, Mi, G, M.
+*/}}
+{{- define "synapse.workerCacheMemory" -}}
+{{- $resources := .options.resources | default .defaults -}}
+{{- $memLimit := "" -}}
+{{- if and $resources $resources.limits $resources.limits.memory -}}
+  {{- $memLimit = $resources.limits.memory | toString -}}
+{{- end -}}
+{{- $num := .num -}}
+{{- $denom := .denom -}}
+{{- if $memLimit -}}
+  {{- if hasSuffix "Gi" $memLimit -}}
+    {{- $val := trimSuffix "Gi" $memLimit | int64 -}}
+    {{- printf "%dM" (div (mul (mul $val 1024) $num) $denom) -}}
+  {{- else if hasSuffix "Mi" $memLimit -}}
+    {{- $val := trimSuffix "Mi" $memLimit | int64 -}}
+    {{- printf "%dM" (div (mul $val $num) $denom) -}}
+  {{- else if hasSuffix "G" $memLimit -}}
+    {{- $val := trimSuffix "G" $memLimit | int64 -}}
+    {{- printf "%dM" (div (mul (mul $val 1024) $num) $denom) -}}
+  {{- else if hasSuffix "M" $memLimit -}}
+    {{- $val := trimSuffix "M" $memLimit | int64 -}}
+    {{- printf "%dM" (div (mul $val $num) $denom) -}}
+  {{- else -}}
+    {{- .fallback -}}
+  {{- end -}}
+{{- else -}}
+  {{- .fallback -}}
+{{- end -}}
+{{- end -}}
+
+{{/* max_cache_memory_usage = 90% of memory limit */}}
+{{- define "synapse.workerMaxCacheMemory" -}}
+{{- include "synapse.workerCacheMemory" (merge (dict "num" 9 "denom" 10) .) -}}
+{{- end -}}
+
+{{/* target_cache_memory_usage = 50% of max = 45% of memory limit */}}
+{{- define "synapse.workerTargetCacheMemory" -}}
+{{- include "synapse.workerCacheMemory" (merge (dict "num" 45 "denom" 100) .) -}}
+{{- end -}}
+
+{{/*
 Workers containers
 */}}
 {{- define "synapse-workers.containers" -}}
