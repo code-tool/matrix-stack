@@ -238,18 +238,6 @@ data:
                                 cluster: httpd-matrix-auth
                             {{- end }}
                             {{- end }}
-                            {{- range $route := .Values.ingress.federationReaderRoutes }}
-                            - match:
-                                safe_regex:
-                                  regex: {{ printf "^%s" $route | squote }}
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-federation-ip-hash
-                                hash_policy:
-                                  - connection_properties:
-                                      source_ip: true
-                            {{- end }}
                             {{- range $route := .Values.ingress.userDirectoryRoutes }}
                             - match:
                                 safe_regex:
@@ -267,6 +255,18 @@ data:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
+                            {{- end }}
+                            {{- range $route := .Values.ingress.federationReaderRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-federation-ip-hash
+                                hash_policy:
+                                  - connection_properties:
+                                      source_ip: true
                             {{- end }}
                             {{- range $route := .Values.ingress.masterRoutes }}
                             - match:

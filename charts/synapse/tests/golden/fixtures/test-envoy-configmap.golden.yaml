@@ -372,16 +372,6 @@ data:
                                 cluster: httpd-matrix-auth
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/(federation/(v1|v2)(?!/(media|openid))|key/v2)/'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-federation-ip-hash
-                                hash_policy:
-                                  - connection_properties:
-                                      source_ip: true
-                            - match:
-                                safe_regex:
                                   regex: '^/_matrix/client/(r0|v3|unstable)/user_directory/search$'
                               route:
                                 timeout: 300s
@@ -450,6 +440,16 @@ data:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/(federation/(v1|v2)|key/v2)/'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-federation-ip-hash
+                                hash_policy:
+                                  - connection_properties:
+                                      source_ip: true
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/'
