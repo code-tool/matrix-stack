@@ -25,7 +25,6 @@ spec:
         app: synapse
         component: synapse-account-data
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -66,10 +65,10 @@ spec:
         volumeMounts:
         - name: synapse-account-data-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-account-data-secret
@@ -102,7 +101,6 @@ spec:
         app: synapse
         component: synapse-background-worker
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -126,10 +124,10 @@ spec:
         volumeMounts:
         - name: synapse-background-worker-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-background-worker-secret
@@ -162,7 +160,6 @@ spec:
         app: synapse
         component: synapse-device-lists
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -203,10 +200,10 @@ spec:
         volumeMounts:
         - name: synapse-device-lists-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-device-lists-secret
@@ -239,7 +236,6 @@ spec:
         app: synapse
         component: synapse-event-persister
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -263,10 +259,10 @@ spec:
         volumeMounts:
         - name: synapse-event-persister-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-event-persister-secret
@@ -299,7 +295,6 @@ spec:
         app: synapse
         component: synapse-federation-sender
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -340,10 +335,10 @@ spec:
         volumeMounts:
         - name: synapse-federation-sender-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-federation-sender-secret
@@ -376,7 +371,6 @@ spec:
         app: synapse
         component: synapse-master
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -414,10 +408,10 @@ spec:
         volumeMounts:
         - name: synapse-master-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-master-secret
@@ -450,7 +444,6 @@ spec:
         app: synapse
         component: synapse-media-repository-background-jobs
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -491,10 +484,10 @@ spec:
         volumeMounts:
         - name: synapse-media-repository-background-jobs-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-media-repository-background-jobs-secret
@@ -527,7 +520,6 @@ spec:
         app: synapse
         component: synapse-presence
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -568,10 +560,10 @@ spec:
         volumeMounts:
         - name: synapse-presence-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-presence-secret
@@ -604,7 +596,6 @@ spec:
         app: synapse
         component: synapse-push-rules
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -645,10 +636,10 @@ spec:
         volumeMounts:
         - name: synapse-push-rules-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-push-rules-secret
@@ -681,7 +672,6 @@ spec:
         app: synapse
         component: synapse-pusher
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -705,10 +695,10 @@ spec:
         volumeMounts:
         - name: synapse-pusher-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-pusher-secret
@@ -741,7 +731,6 @@ spec:
         app: synapse
         component: synapse-receipts
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -782,10 +771,10 @@ spec:
         volumeMounts:
         - name: synapse-receipts-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-receipts-secret
@@ -818,7 +807,6 @@ spec:
         app: synapse
         component: synapse-thread-subscriptions
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -859,10 +847,10 @@ spec:
         volumeMounts:
         - name: synapse-thread-subscriptions-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-thread-subscriptions-secret
@@ -895,7 +883,6 @@ spec:
         app: synapse
         component: synapse-to-device
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -936,10 +923,10 @@ spec:
         volumeMounts:
         - name: synapse-to-device-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-to-device-secret
@@ -972,7 +959,6 @@ spec:
         app: synapse
         component: synapse-typing
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -1013,10 +999,10 @@ spec:
         volumeMounts:
         - name: synapse-typing-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-typing-secret
@@ -1049,7 +1035,6 @@ spec:
         app: synapse
         component: synapse-user-dir
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -1090,10 +1075,10 @@ spec:
         volumeMounts:
         - name: synapse-user-dir-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-user-dir-secret
