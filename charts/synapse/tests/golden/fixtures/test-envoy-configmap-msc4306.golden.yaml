@@ -218,6 +218,20 @@ data:
                                 cluster: httpd-device-lists
                             - match:
                                 safe_regex:
+                                  regex: '^/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-thread-subscriptions
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-thread-subscriptions
+                            - match:
+                                safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)$'
                               route:
                                 timeout: 300s
@@ -863,6 +877,33 @@ data:
                       address:
                         socket_address:
                           address: synapse-device-lists
+                          port_value: 8008
+        - name: httpd-thread-subscriptions
+          connect_timeout: 0.02s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          ignore_health_on_host_removal: true
+          lb_policy: LEAST_REQUEST
+          least_request_lb_config:
+            choice_count: 2
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-thread-subscriptions
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-thread-subscriptions
                           port_value: 8008
         - name: httpd-matrix-auth
           connect_timeout: 0.02s
