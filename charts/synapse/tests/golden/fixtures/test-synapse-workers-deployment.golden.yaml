@@ -8,8 +8,7 @@ metadata:
     app: synapse
     component: synapse-client-reader
 spec:
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -29,7 +28,6 @@ spec:
         app: synapse
         component: synapse-client-reader
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -70,10 +68,10 @@ spec:
         volumeMounts:
         - name: synapse-client-reader-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-client-reader-secret
@@ -89,8 +87,7 @@ metadata:
     app: synapse
     component: synapse-federation-reader
 spec:
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -110,7 +107,6 @@ spec:
         app: synapse
         component: synapse-federation-reader
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -151,10 +147,10 @@ spec:
         volumeMounts:
         - name: synapse-federation-reader-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-federation-reader-secret
@@ -170,8 +166,7 @@ metadata:
     app: synapse
     component: synapse-media-repository
 spec:
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -191,7 +186,6 @@ spec:
         app: synapse
         component: synapse-media-repository
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -232,10 +226,10 @@ spec:
         volumeMounts:
         - name: synapse-media-repository-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-media-repository-secret
@@ -251,8 +245,7 @@ metadata:
     app: synapse
     component: synapse-room
 spec:
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -272,7 +265,6 @@ spec:
         app: synapse
         component: synapse-room
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -313,10 +305,10 @@ spec:
         volumeMounts:
         - name: synapse-room-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-room-secret
@@ -332,8 +324,7 @@ metadata:
     app: synapse
     component: synapse-sync
 spec:
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -353,7 +344,6 @@ spec:
         app: synapse
         component: synapse-sync
     spec:
-      
       containers:
       - name: synapse
         image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
@@ -394,10 +384,10 @@ spec:
         volumeMounts:
         - name: synapse-sync-secret
           mountPath: /data
-      lifecycle:
-        preStop:
-          exec:
-            command: ["sleep", "15"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
       terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-sync-secret

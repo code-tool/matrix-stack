@@ -385,9 +385,9 @@ ingress:
   # routes to typing stream writer singleton worker
   # source: room.py:1472 client_patterns("/rooms/.*/typing/...", v1=True) -> (api/v1|r0|v3|unstable)
   typing:
-    #- "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
     # this is hack to make this regexp longer, because ImplementationSpecific chose longest if both match
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/typing"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/typing"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
   # routes to to_device stream writer singleton worker
   # source: sendtodevice.py:42 client_patterns("/sendToDevice/...") -> (r0|v3|unstable)
@@ -407,10 +407,10 @@ ingress:
   # routing to room workers which are NOT receipts stream writers -> assert _can_write_to_receipts -> 500
   receipts:
     # original
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   # routes to presence stream writer singleton worker
   # source: presence.py:43 client_patterns("/presence/.../status", v1=True) -> (api/v1|r0|v3|unstable)
@@ -421,9 +421,9 @@ ingress:
   # source: push_rule.py:51 client_patterns("/pushrules/...", v1=True) -> (api/v1|r0|v3|unstable)
   pushRulesRoutes:
     # short version
-    #- "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
     # long version because of ingress
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/"
   # https://element-hq.github.io/synapse/latest/workers.html#the-device_lists-stream
   # routes to device_lists stream writer multiple workers
   # source: devices.py:79 client_patterns("/delete_devices") -> (r0|v3|unstable)
@@ -527,15 +527,12 @@ ingress:
     # source: no specific password_policy file found; workers.md:276 documents (r0|v3|unstable)
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
   federationReaderRoutes:
-    # original:
-    # - "/_matrix/(federation/(v1|v2)|key/v2)/"
-    # NGINX ingress sorts ImplementationSpecific regex paths by string length (longer = higher priority).
-    # This pattern (56 chars) is tried before shorter routes, so negative lookaheads are required to
-    # prevent shadowing:
-    #   - (?!/(media|openid)) excludes:
-    #       /_matrix/federation/v1/media/   (29 chars) -> must go to synapse-media-repository
-    #       /_matrix/federation/v1/openid/  (37 chars) -> must go to synapse-master (masterOverridesRoutes)
-    - "/_matrix/(federation/(v1|v2)(?!/(media|openid))|key/v2)/"
+    # RE2 (envoy safe_regex) does not support lookaheads.
+    # media routes (/_matrix/federation/v1/media/) must be placed BEFORE this route in the envoy
+    # template so they are matched first; the federation catch-all then never sees media paths.
+    # openid userinfo (/_matrix/federation/v1/openid/) CAN be handled by the federation reader worker
+    # (it is registered in the federation transport), so excluding it is unnecessary.
+    - "/_matrix/(federation/(v1|v2)|key/v2)/"
   # enabled if MAS is enabled, mutually exclusive with clientReaderRegister
   # source: login.py:76,588 logout.py:38,65
   # Fixed: explicit version prefixes instead of greedy (.*) to avoid matching subpaths unexpectedly

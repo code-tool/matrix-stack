@@ -13,8 +13,7 @@ spec:
     matchLabels:
       app: synapse
       component: matrix-authentication
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1

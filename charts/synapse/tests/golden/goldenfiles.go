@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var update = flag.Bool("update-golden", true, "update golden test output files")
+var update = flag.Bool("update-golden", false, "update golden test output files")
 
 type TemplateGoldenTest struct {
 	suite.Suite

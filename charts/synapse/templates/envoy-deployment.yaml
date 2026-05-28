@@ -10,8 +10,7 @@ spec:
     matchLabels:
       {{- include "synapse-client-reader-envoy.selectorLabels" . | nindent 6 }}
   {{- if .Values.envoyProxy.updateStrategy }}
-  strategy:
-    {{ toYaml .Values.envoyProxy.updateStrategy | nindent 4 }}
+  strategy: {{ toYaml .Values.envoyProxy.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:

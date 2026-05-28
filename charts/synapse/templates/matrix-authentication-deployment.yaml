@@ -13,8 +13,7 @@ spec:
     matchLabels:
       {{- include "matrix-authentication.selectorLabels" . | nindent 6 }}
   {{- if .Values.matrixAuthentication.updateStrategy }}
-  strategy:
-    {{ toYaml .Values.matrixAuthentication.updateStrategy | nindent 4 }}
+  strategy: {{ toYaml .Values.matrixAuthentication.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:

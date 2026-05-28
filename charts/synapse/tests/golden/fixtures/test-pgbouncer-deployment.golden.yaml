@@ -11,8 +11,7 @@ spec:
   selector:
     matchLabels:
       app: synapse-pgbouncer
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1

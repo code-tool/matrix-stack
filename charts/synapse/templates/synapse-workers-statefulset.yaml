@@ -27,5 +27,5 @@ spec:
         {{- end }}
         {{- include "synapse-workers.selectorLabels" $name | nindent 8 }}
     spec:
-      {{ include "synapse-workers.containers" (dict "name" $name "image" $.Values.synapse.image "worker" $worker "options" $options "resourcesDefaults" $.Values.synapse.resourcesDefaults "nodeSelector" $.Values.synapse.nodeSelector "tolerations" $.Values.synapse.tolerations "affinity" $.Values.synapse.affinity) | nindent 6 }}
+      {{- include "synapse-workers.containers" (dict "name" $name "image" $.Values.synapse.image "worker" $worker "options" $options "resourcesDefaults" $.Values.synapse.resourcesDefaults "nodeSelector" $.Values.synapse.nodeSelector "tolerations" $.Values.synapse.tolerations "affinity" $.Values.synapse.affinity) | nindent 6 }}
 {{ end }}

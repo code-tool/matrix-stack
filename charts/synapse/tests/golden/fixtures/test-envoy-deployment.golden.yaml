@@ -13,8 +13,7 @@ spec:
     matchLabels:
       app: synapse
       component: synapse-client-reader-envoy
-  strategy:
-    
+  strategy: 
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 1
@@ -25,7 +24,7 @@ spec:
         app: synapse
         component: synapse-client-reader-envoy
       annotations:
-        checksum/config: 4306a5fe13ce835bd5d8c12f9b7309eb2b9cf97095b33b6776657844ea9b3640
+        checksum/config: 2f9946972844bc7bcf913a1450f0484608cb3367e1461fa0d6a1d1524b616567
     spec:
       terminationGracePeriodSeconds: 60
       containers:
