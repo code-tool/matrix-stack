@@ -155,10 +155,10 @@ containers:
   volumeMounts:
   - name: synapse-{{ .name }}-secret
     mountPath: /data
-lifecycle:
-  preStop:
-    exec:
-      command: ["sleep", "15"]
+  lifecycle:
+    preStop:
+      exec:
+        command: ["sleep", "15"]
 terminationGracePeriodSeconds: 90
 {{- if .nodeSelector }}
 nodeSelector:
