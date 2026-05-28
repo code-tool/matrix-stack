@@ -419,6 +419,7 @@ data:
           connect_timeout: 0.02s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
+          drain_connections_on_host_removal: true
           lb_policy: LEAST_REQUEST
           least_request_lb_config:
             choice_count: 2
@@ -451,6 +452,7 @@ data:
           connect_timeout: 0.02s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
+          drain_connections_on_host_removal: true
           lb_policy: RING_HASH
           circuit_breakers:
             thresholds:
@@ -475,6 +477,7 @@ data:
           connect_timeout: 0.02s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
+          drain_connections_on_host_removal: true
           lb_policy: RING_HASH
           circuit_breakers:
             thresholds:
@@ -499,6 +502,7 @@ data:
           connect_timeout: 0.02s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
+          drain_connections_on_host_removal: true
           lb_policy: RING_HASH
           circuit_breakers:
             thresholds:

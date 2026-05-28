@@ -155,7 +155,11 @@ containers:
   volumeMounts:
   - name: synapse-{{ .name }}-secret
     mountPath: /data
-terminationGracePeriodSeconds: 30
+lifecycle:
+  preStop:
+    exec:
+      command: ["sleep", "15"]
+terminationGracePeriodSeconds: 90
 {{- if .nodeSelector }}
 nodeSelector:
   {{ toYaml .nodeSelector | nindent 2 }}

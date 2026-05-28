@@ -24,7 +24,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 0817d4d981d3285584a05f07eeb12d230102ecd94f2913b9f18a3194ee381e8a
+        checksum/secret: 9b7d64acaad2ae4d07691cdb05834decda55c9dc1d62af5189979e78b28be4aa
       labels:
         app: synapse
         component: synapse-client-reader
@@ -70,7 +70,11 @@ spec:
         volumeMounts:
         - name: synapse-client-reader-secret
           mountPath: /data
-      terminationGracePeriodSeconds: 30
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-client-reader-secret
         secret:
@@ -101,7 +105,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 0817d4d981d3285584a05f07eeb12d230102ecd94f2913b9f18a3194ee381e8a
+        checksum/secret: 9b7d64acaad2ae4d07691cdb05834decda55c9dc1d62af5189979e78b28be4aa
       labels:
         app: synapse
         component: synapse-federation-reader
@@ -147,7 +151,11 @@ spec:
         volumeMounts:
         - name: synapse-federation-reader-secret
           mountPath: /data
-      terminationGracePeriodSeconds: 30
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-federation-reader-secret
         secret:
@@ -178,7 +186,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 0817d4d981d3285584a05f07eeb12d230102ecd94f2913b9f18a3194ee381e8a
+        checksum/secret: 9b7d64acaad2ae4d07691cdb05834decda55c9dc1d62af5189979e78b28be4aa
       labels:
         app: synapse
         component: synapse-media-repository
@@ -224,7 +232,11 @@ spec:
         volumeMounts:
         - name: synapse-media-repository-secret
           mountPath: /data
-      terminationGracePeriodSeconds: 30
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-media-repository-secret
         secret:
@@ -255,7 +267,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 0817d4d981d3285584a05f07eeb12d230102ecd94f2913b9f18a3194ee381e8a
+        checksum/secret: 9b7d64acaad2ae4d07691cdb05834decda55c9dc1d62af5189979e78b28be4aa
       labels:
         app: synapse
         component: synapse-room
@@ -301,7 +313,11 @@ spec:
         volumeMounts:
         - name: synapse-room-secret
           mountPath: /data
-      terminationGracePeriodSeconds: 30
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-room-secret
         secret:
@@ -332,7 +348,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 0817d4d981d3285584a05f07eeb12d230102ecd94f2913b9f18a3194ee381e8a
+        checksum/secret: 9b7d64acaad2ae4d07691cdb05834decda55c9dc1d62af5189979e78b28be4aa
       labels:
         app: synapse
         component: synapse-sync
@@ -378,7 +394,11 @@ spec:
         volumeMounts:
         - name: synapse-sync-secret
           mountPath: /data
-      terminationGracePeriodSeconds: 30
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
       volumes:
       - name: synapse-sync-secret
         secret:
