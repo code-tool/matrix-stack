@@ -455,7 +455,7 @@ ingress:
   # federation specific, must be AFTER masterOverridesRoutes
   # workers.md: state_ids and get_missing_events are v1 only; v[12] is over-permissive but harmless
   roomFederationRoutes:
-    - '/_matrix/federation/v[12]/(?:state_ids|get_missing_events)/(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(:|%3A)[A-Za-z0-9.\-]+'    
+    - '/_matrix/federation/v[12]/(?:state_ids|get_missing_events)/(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(:|%3A)[A-Za-z0-9.\-]+'
   # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
   mediaRepository:
     - "/_matrix/media/"
@@ -480,6 +480,70 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
   # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
   # scalable unlimited by least_conn lb algo
+  genericRoutes:
+    # Sync requests
+    - /_matrix/client/(r0|v3)/sync$
+    - /_matrix/client/(api/v1|r0|v3)/events$
+    - /_matrix/client/(api/v1|r0|v3)/initialSync$
+    - /_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$
+    # Native Sliding Sync (MSC3575) - supported since Synapse 1.114
+    - /_matrix/client/unstable/org.matrix.simplified_msc3575/sync$
+    # Client API requests
+    - /_matrix/client/(api/v1|r0|v3|unstable)/createRoom$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/publicRooms$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$
+    - /_matrix/client/v1/rooms/.*/hierarchy$
+    - /_matrix/client/(v1|unstable)/rooms/.*/relations/
+    - /_matrix/client/v1/rooms/.*/threads$
+    - /_matrix/client/unstable/im.nheko.summary/rooms/.*/summary$
+    - /_matrix/client/unstable/im.nheko.summary/summary/.*$
+    - /_matrix/client/unstable/org.matrix.msc4143/rtc/transports$
+    - /_matrix/client/(r0|v3|unstable)/account/3pid$
+    - /_matrix/client/(r0|v3|unstable)/account/whoami$
+    - /_matrix/client/(r0|v3|unstable)/account/deactivate$
+    - /_matrix/client/versions$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/
+    - /_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$
+    - /_matrix/client/v1/rooms/.*/timestamp_to_event$
+    - /_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases
+    - /_matrix/client/(api/v1|r0|v3|unstable)/search$
+    - /_matrix/client/(r0|v3|unstable)/user/.*/filter(/|$)
+    - /_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$
+    - /_matrix/client/(r0|v3|unstable)/capabilities$
+    - /_matrix/client/(r0|v3|unstable)/notifications$
+
+    # Encryption requests
+    - /_matrix/client/(r0|v3|unstable)/keys/query$
+    - /_matrix/client/(r0|v3|unstable)/keys/changes$
+    - /_matrix/client/(r0|v3|unstable)/keys/claim$
+    - /_matrix/client/(r0|v3|unstable)/room_keys/
+    # MSC3814 dehydrated-device support:
+    # Ref: https://github.com/element-hq/synapse/blob/b99a58719b274fcbb327fd8d7649185792bfd12c/synapse/rest/client/devices.py#L256-L459
+    - /_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device$
+    - /_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device/[^/]*/events$
+
+    # Registration/login requests
+    - /_matrix/client/(api/v1|r0|v3|unstable)/login$
+    - /_matrix/client/(r0|v3|unstable)/register$
+    - /_matrix/client/(r0|v3|unstable)/register/available$
+    - /_matrix/client/v1/register/m.login.registration_token/validity$
+    - /_matrix/client/(r0|v3|unstable)/password_policy$
+
+    # Event sending requests
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/
+    - /_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)$
+    - /_matrix/client/(api/v1|r0|v3|unstable)/join/
+    - /_matrix/client/(api/v1|r0|v3|unstable)/knock/
+    - /_matrix/client/(api/v1|r0|v3|unstable)/profile/
+
+    # Unstable MSC4140 support
+    - /_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$
   clientReaderRoutes:
     # Encryption and room-key APIs
     - "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/"
@@ -523,6 +587,28 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
   federationReaderRoutes:
     - "/_matrix/(federation/(v1|v2)|key/v2)/"
+    # Federation requests goes to generic?
+    - "/_matrix/federation/v1/event/"
+    - "/_matrix/federation/v1/state/"
+    - "/_matrix/federation/v1/state_ids/"
+    - "/_matrix/federation/v1/backfill/"
+    - "/_matrix/federation/v1/get_missing_events/"
+    - "/_matrix/federation/v1/publicRooms"
+    - "/_matrix/federation/v1/query/"
+    - "/_matrix/federation/v1/make_join/"
+    - "/_matrix/federation/v1/make_leave/"
+    - "/_matrix/federation/(v1|v2)/send_join/"
+    - "/_matrix/federation/(v1|v2)/send_leave/"
+    - "/_matrix/federation/(v1|v2)/invite/"
+    - "/_matrix/federation/v1/event_auth/"
+    - "/_matrix/federation/v1/timestamp_to_event/"
+    - "/_matrix/federation/v1/exchange_third_party_invite/"
+    - "/_matrix/federation/v1/user/devices/"
+    - "/_matrix/key/v2/query"
+    - "/_matrix/federation/v1/hierarchy/"
+
+    # Inbound federation transaction request
+    - "/_matrix/federation/v1/send/"
     # original:
     # - "/_matrix/(federation/(v1|v2)|key/v2)/"
     # NGINX ingress sorts ImplementationSpecific regex paths by string length (longer = higher priority).

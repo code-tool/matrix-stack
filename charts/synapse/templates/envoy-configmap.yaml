@@ -176,6 +176,15 @@ data:
                                 cluster: httpd-thread-subscriptions
                             {{- end }}
                             {{- end }}
+                            {{- range $route := .Values.ingress.genericRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            {{- end }}
                             {{- range $route := .Values.ingress.roomRoutes }}
                             - match:
                                 safe_regex:
