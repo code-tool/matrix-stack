@@ -1,0 +1,27 @@
+---
+# Source: synapse/templates/synapse-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: synapse
+  
+  annotations: 
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "320"
+    nginx.org/client-max-body-size: 50m
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - NOT-CONFIGURED
+  rules:
+  - host: NOT-CONFIGURED
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            port:
+              number: 80
+            name: synapse-client-reader-envoy

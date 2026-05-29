@@ -1,0 +1,395 @@
+---
+# Source: synapse/templates/synapse-workers-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-client-reader
+  labels:
+    app: synapse
+    component: synapse-client-reader
+spec:
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-client-reader
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 5bf0c072203e5559c8ee0015e18f435094a9c225f34653428b5bfb26cb251c3d
+      labels:
+        app: synapse
+        component: synapse-client-reader
+    spec:
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-client-reader-secret
+          mountPath: /data
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - name: synapse-client-reader-secret
+        secret:
+          secretName: synapse-client-reader-secret
+---
+# Source: synapse/templates/synapse-workers-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-federation-reader
+  labels:
+    app: synapse
+    component: synapse-federation-reader
+spec:
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-federation-reader
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 5bf0c072203e5559c8ee0015e18f435094a9c225f34653428b5bfb26cb251c3d
+      labels:
+        app: synapse
+        component: synapse-federation-reader
+    spec:
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-federation-reader-secret
+          mountPath: /data
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - name: synapse-federation-reader-secret
+        secret:
+          secretName: synapse-federation-reader-secret
+---
+# Source: synapse/templates/synapse-workers-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-media-repository
+  labels:
+    app: synapse
+    component: synapse-media-repository
+spec:
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-media-repository
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 5bf0c072203e5559c8ee0015e18f435094a9c225f34653428b5bfb26cb251c3d
+      labels:
+        app: synapse
+        component: synapse-media-repository
+    spec:
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.media_repository"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-media-repository-secret
+          mountPath: /data
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - name: synapse-media-repository-secret
+        secret:
+          secretName: synapse-media-repository-secret
+---
+# Source: synapse/templates/synapse-workers-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-room
+  labels:
+    app: synapse
+    component: synapse-room
+spec:
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-room
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 5bf0c072203e5559c8ee0015e18f435094a9c225f34653428b5bfb26cb251c3d
+      labels:
+        app: synapse
+        component: synapse-room
+    spec:
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-room-secret
+          mountPath: /data
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - name: synapse-room-secret
+        secret:
+          secretName: synapse-room-secret
+---
+# Source: synapse/templates/synapse-workers-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-sync
+  labels:
+    app: synapse
+    component: synapse-sync
+spec:
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: synapse
+      component: synapse-sync
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9092"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        checksum/secret: 5bf0c072203e5559c8ee0015e18f435094a9c225f34653428b5bfb26cb251c3d
+      labels:
+        app: synapse
+        component: synapse-sync
+    spec:
+      containers:
+      - name: synapse
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.151.0
+        imagePullPolicy: IfNotPresent
+        resources: 
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        env:
+        - name: "SYNAPSE_WORKER"
+          value: "synapse.app.generic_worker"
+        ports:
+          - containerPort: 8008
+            name: http
+            protocol: TCP
+          - containerPort: 9092
+            name: metrics
+            protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 180
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        volumeMounts:
+        - name: synapse-sync-secret
+          mountPath: /data
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - name: synapse-sync-secret
+        secret:
+          secretName: synapse-sync-secret

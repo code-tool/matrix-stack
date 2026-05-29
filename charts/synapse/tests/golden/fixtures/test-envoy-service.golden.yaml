@@ -1,0 +1,23 @@
+---
+# Source: synapse/templates/envoy-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name:  synapse-client-reader-envoy
+  labels:
+    app: synapse
+    component: synapse-client-reader-envoy
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 9901
+      targetPort: http-admin
+      protocol: TCP
+      name: http-admin
+  selector:
+    app: synapse
+    component: synapse-client-reader-envoy
