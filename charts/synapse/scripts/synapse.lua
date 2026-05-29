@@ -160,16 +160,22 @@ local function lookup_whoami(request_handle, token, options)
 
     log(request_handle, options, "warn", "performing whoami lookup for token " .. truncate_token(token, options))
 
+    local call_headers = {
+        [":method"] = "GET",
+        [":path"] = get_option(options, "whoami_path", "/_matrix/client/v3/account/whoami"),
+        [":authority"] = authority,
+        ["authorization"] = "Bearer " .. token,
+        ["x-forwarded-proto"] = "https"
+    }
+    local xff = headers:get("x-forwarded-for")
+    if xff ~= nil then
+        call_headers["x-forwarded-for"] = xff
+    end
+
     local ok, response_headers, response_body = pcall(function()
         return request_handle:httpCall(
             get_option(options, "whoami_cluster", "httpd"),
-            {
-                [":method"] = "GET",
-                [":path"] = get_option(options, "whoami_path", "/_matrix/client/v3/account/whoami"),
-                [":authority"] = authority,
-                ["authorization"] = "Bearer " .. token,
-                ["x-forwarded-proto"] = "https"
-            },
+            call_headers,
             "",
             get_option(options, "timeout_ms", 5000)
         )

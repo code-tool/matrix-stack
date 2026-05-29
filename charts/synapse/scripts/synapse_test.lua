@@ -101,6 +101,37 @@ local function test_whoami_lookup_returns_localpart()
     assert_equal(calls, 1, "whoami should be called once")
 end
 
+local function test_whoami_lookup_forwards_xff()
+    local captured_xff
+    local request_handle = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        [":authority"] = "matrix.example.org",
+        ["authorization"] = "Bearer xff-token",
+        ["x-forwarded-for"] = "203.0.113.1"
+    }, function(_, cluster, headers, body, timeout_ms)
+        captured_xff = headers["x-forwarded-for"]
+        return { [":status"] = "200" }, '{"user_id":"@carol:example.org"}'
+    end)
+
+    synapse.get_user_identifier_from_request(request_handle, {})
+    assert_equal(captured_xff, "203.0.113.1", "whoami httpCall should forward x-forwarded-for")
+end
+
+local function test_whoami_lookup_without_xff()
+    local captured_xff = "sentinel"
+    local request_handle = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        [":authority"] = "matrix.example.org",
+        ["authorization"] = "Bearer no-xff-token"
+    }, function(_, cluster, headers, body, timeout_ms)
+        captured_xff = headers["x-forwarded-for"]
+        return { [":status"] = "200" }, '{"user_id":"@dave:example.org"}'
+    end)
+
+    synapse.get_user_identifier_from_request(request_handle, {})
+    assert_equal(captured_xff, nil, "whoami httpCall should not set x-forwarded-for when absent")
+end
+
 local function test_whoami_lookup_is_cached()
     local request_handle = new_request_handle({
         [":path"] = "/_matrix/client/v3/sync",
@@ -184,6 +215,8 @@ local tests = {
     test_access_token_from_authorization_header,
     test_access_token_from_query,
     test_whoami_lookup_returns_localpart,
+    test_whoami_lookup_forwards_xff,
+    test_whoami_lookup_without_xff,
     test_whoami_lookup_is_cached,
     test_whoami_failure_falls_back_to_token,
     test_missing_token_returns_nil,
