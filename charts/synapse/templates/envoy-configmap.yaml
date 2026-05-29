@@ -101,18 +101,7 @@ data:
                                 auto_host_rewrite: true
                                 cluster: httpd-master
                             {{- end }}
-                            {{- range $route := .Values.ingress.roomFederationRoutes }}
-                            - match:
-                                safe_regex:
-                                  regex: {{ printf "^%s" $route | squote }}
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-federation-ip-hash
-                                hash_policy:
-                                  - connection_properties:
-                                      source_ip: true
-                            {{- end }}
+
                             {{- range $route := .Values.ingress.typing }}
                             - match:
                                 safe_regex:
@@ -187,22 +176,6 @@ data:
                                 cluster: httpd-thread-subscriptions
                             {{- end }}
                             {{- end }}
-                            {{- range $route := .Values.ingress.syncRoutes }}
-                            - match:
-                                safe_regex:
-                                  regex: {{ printf "^%s" $route | squote }}
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-user-hash
-                                hash_policy:
-                                  - header:
-                                      header_name: X-Hash-Key
-                              typed_per_filter_config:
-                                envoy.filters.http.lua:
-                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
-                                  name: whoami_hash
-                            {{- end }}
                             {{- range $route := .Values.ingress.roomRoutes }}
                             - match:
                                 safe_regex:
@@ -218,6 +191,38 @@ data:
                                 envoy.filters.http.lua:
                                   "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
                                   name: room_hash
+                            {{- end }}
+                            {{- range $route := .Values.ingress.roomFederationRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-room-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
+                            {{- end }}
+                            {{- range $route := .Values.ingress.syncRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-user-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: whoami_hash
                             {{- end }}
                             {{- range $route := .Values.ingress.clientReaderRoutes }}
                             - match:
