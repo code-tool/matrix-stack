@@ -24,7 +24,7 @@ spec:
         app: synapse
         component: synapse-client-reader-envoy
       annotations:
-        checksum/config: c49abf62618877e6211fd19eeddaf6bbcd84bf5c4643dc397826aa555c96a1c4
+        checksum/config: b78841a938e26dd1686a8054e2e886642c55d3e562d0b04b668a55b0be474182
     spec:
       terminationGracePeriodSeconds: 60
       containers:
