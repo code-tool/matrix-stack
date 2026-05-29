@@ -39,6 +39,7 @@ data:
       layers:
         - name: static_layer_0
           static_layer:
+            re2.max_program_size.error_level: 500
             envoy:
               resource_limits:
                 listener:

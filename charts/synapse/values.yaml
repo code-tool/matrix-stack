@@ -407,10 +407,10 @@ ingress:
   # routing to room workers which are NOT receipts stream writers -> assert _can_write_to_receipts -> 500
   receipts:
     # original
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   # routes to presence stream writer singleton worker
   # source: presence.py:43 client_patterns("/presence/.../status", v1=True) -> (api/v1|r0|v3|unstable)
