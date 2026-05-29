@@ -306,7 +306,9 @@ synapse:
     #    param: 1
     #  logging: false
   saml2_config: {}
-
+rc_key_requests:
+  per_second: 20
+  burst_count: 100
 rc_message:
   per_second: 100
   burst_count: 300
