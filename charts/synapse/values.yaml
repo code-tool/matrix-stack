@@ -312,11 +312,10 @@ rc_key_requests:
 rc_message:
   per_second: 100
   burst_count: 300
-  # recommended for MSC3266
-  # This needs to match at least the heart-beat frequency plus a bit of headroom
-  # Currently the heart-beat is every 5 seconds which translates into a rate of 0.2s
-  # per_second: 0.5
-  # burst_count: 30
+rc_presence:
+  per_user:
+    per_second: 0.2
+    burst_count: 2
 
 federation_domain_whitelist: []
 
