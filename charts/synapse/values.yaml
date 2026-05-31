@@ -494,12 +494,12 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/notifications$"
     # Backup key APIs
     # source: room_keys.py:43 client_patterns("/room_keys/keys(...)") -> (r0|v3|unstable)
-    - "/_matrix/client/(r0|v3|unstable)/room_keys/"
+    #- "/_matrix/client/(r0|v3|unstable)/room_keys/"
     # source: keys.py:325,369,425 client_patterns("/keys/(query|changes|claim)$") -> (r0|v3|unstable)
     #- "/_matrix/client/(r0|v3|unstable)/keys/(query|changes|claim)"
     # by adding two separate routes we send query to device list
-    - "/_matrix/client/(r0|v3|unstable)/keys/changes$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
+    #- "/_matrix/client/(r0|v3|unstable)/keys/changes$"
+    #- "/_matrix/client/(r0|v3|unstable)/keys/claim$"
     # MSC3814 dehydrated device
     # source: devices.py:351 client_patterns("/org.matrix.msc3814.v1/dehydrated_device$", releases=()) -> unstable only
     - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device$"
