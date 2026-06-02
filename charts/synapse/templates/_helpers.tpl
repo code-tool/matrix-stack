@@ -133,7 +133,7 @@ containers:
     - containerPort: 9092
       name: metrics
       protocol: TCP
-  {{- if not (has .worker (list "background_worker" "event_persister" "pusher")) }}
+  {{- if not (has .worker (list "background_worker" "event_persister" "pusher" "presence")) }}
   startupProbe:
     httpGet:
       path: /health
