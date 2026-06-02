@@ -406,6 +406,8 @@ ingress:
     - '/_matrix/client/(v3|unstable)/keys/device_signing/upload$'
     # workers.md: ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$
     - '/_matrix/client/(r0|v3|unstable)/keys/signatures/upload$'
+    # moved from client reader
+    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
   # validated 020626
   threadSubscriptionsRoutes:
@@ -455,7 +457,8 @@ ingress:
   clientReaderRoomKeys:
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
-    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
+  # moved to deviceListsRoutes
+  #  - '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
   # by round-robin
   clientReaderRoutes:
@@ -483,6 +486,9 @@ ingress:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$'
     - '/_matrix/client/(r0|v3|unstable)/capabilities$'
     - '/_matrix/client/(r0|v3|unstable)/notifications$'
+    - '/_matrix/client/unstable/org\.matrix\.msc4140/delayed_events(/.*/restart)?$'
+    # check acc to delayed_events.py
+    #- '/_matrix/client/unstable/org\.matrix\.msc4140/delayed_events.*'
 
   clientReaderRegister:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
@@ -514,7 +520,6 @@ ingress:
     - "/_matrix/key/v2/query.*"
     - "/_matrix/federation/v1/hierarchy/.*"
     - "/_matrix/federation/v1/send/.*"
-    - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$"
 
   matrixAuthentication:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/.*)?$"
