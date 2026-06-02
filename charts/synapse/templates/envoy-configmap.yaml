@@ -151,6 +151,24 @@ data:
                                   name: whoami_hash
                             {{- end }}
 
+
+                            {{- range $route := .Values.ingress.syncKeysRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-user-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: whoami_hash
+                            {{- end }}
+
                             {{- range $route := .Values.ingress.mediaRepository }}
                             - match:
                                 safe_regex:
@@ -272,6 +290,26 @@ data:
                                 auto_host_rewrite: true
                                 cluster: httpd-matrix-auth
                             {{- end }}
+                            {{- end }}
+
+                            {{- range $route := .Values.ingress.clientReaderRoomKeys }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            {{- end }}
+
+                            {{- range $route := .Values.ingress.clientReaderEventsRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
                             {{- end }}
 
                             {{- range $route := .Values.ingress.clientReaderRoutes }}

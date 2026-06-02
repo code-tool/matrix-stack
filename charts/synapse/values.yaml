@@ -377,42 +377,43 @@ ingress:
     - "/_synapse/.*"
 
   typing:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/typing.*"
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing.*'
 
   toDevice:
-    - "/_matrix/client/(r0|v3|unstable)/sendToDevice/.*"
+    - '/_matrix/client/(r0|v3|unstable)/sendToDevice/.*'
 
   accountData:
-    - "/_matrix/client/(r0|v3|unstable)/.*/tags.*"
-    - "/_matrix/client/(r0|v3|unstable)/.*/account_data.*"
+    - '/_matrix/client/(r0|v3|unstable)/.*/tags.*'
+    - '/_matrix/client/(r0|v3|unstable)/.*/account_data.*'
 
   receipts:
-    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/receipt.*'
-    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/read_markers$'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt.*'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers.*'
 
   presence:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/presence/.*"
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/presence/.*'
 
   pushRulesRoutes:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/.*"
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/.*'
 
+  # shold be before encryption rules ^/_matrix/client/(r0|v3|unstable)/keys/.*
   deviceListsRoutes:
-    - "/_matrix/client/(r0|v3|unstable)/keys/query$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/changes$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/upload/.*"
-    - "/_matrix/client/(r0|v3|unstable)/delete_devices$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?$"
-    - "/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
+    # workers.md: ^/_matrix/client/(r0|v3)/delete_devices$
+    - '/_matrix/client/(r0|v3|unstable)/delete_devices$'
+    # workers.md: ^/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)
+    - '/_matrix/client/(r0|v3|unstable)/devices(/.*)?$'
+    - '/_matrix/client/(r0|v3|unstable)/keys/upload$'
+    - '/_matrix/client/(v3|unstable)/keys/device_signing/upload$'
+    # workers.md: ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$
+    - '/_matrix/client/(r0|v3|unstable)/keys/signatures/upload$'
 
+  # validated 020626
   threadSubscriptionsRoutes:
     - "/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$"
     - "/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$"
 
   roomRoutes:
-    - '/_matrix/client/.*(?:%21|!)[A-Za-z0-9._=/-]+(?::|%3[Aa])[A-Za-z0-9.-]+.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$'
 
   mediaRepository:
     - "/_matrix/media/.*"
@@ -427,39 +428,61 @@ ingress:
 
   syncRoutes:
     - "/_matrix/client/(r0|v3|unstable)/sync$"
-    - "/_matrix/client/(api/v1|r0|v3)/events$"
-    - "/_matrix/client/(api/v1|r0|v3)/initialSync$"
-    - "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$"
-    - '/_matrix/client/(r0|v3|unstable)/room_keys.*'
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/events$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/initialSync$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/initialSync$"
     - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
+
+  # by user-id
+  syncKeysRoutes:
+    - '/_matrix/client/(r0|v3|unstable)/room_keys/.*'
 
   userDirectoryRoutes:
     - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
 
+  #event_creator - accepts events from clients
+  #event_persister - accepts events from event_creator, writes events stream to db
+  # by round-robin
+  clientReaderEventsRoutes:
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick).*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/join/.*'
+    - '/_matrix/client/(r0|v3|unstable)/knock/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/profile/.*'
+  # by round-robin
+  clientReaderRoomKeys:
+    - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
+    - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
+    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
+
+  # by round-robin
   clientReaderRoutes:
     - '/_matrix/client/versions$'
-    - '/_matrix/client/(r0|v3|unstable)/notifications$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/).*$'
-    - '/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device(?:\?.*)?$'
-    - '/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device/[^/]*/events(?:\?.*)?$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/profile.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate).*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/hierarchy.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/aliases.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/timestamp_to_event.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(relations/|event/).*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(redact|send|state/).*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick).*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/(createRoom|publicRooms|versions|joined_rooms|search|capabilities).*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$'
+    - '/_matrix/client/v1/rooms/.*/hierarchy$'
+    - '/_matrix/client/(v1|unstable)/rooms/.*/relations/.*'
+    - '/_matrix/client/v1/rooms/.*/threads$'
+    - '/_matrix/client/unstable/im\.nheko\.summary/summary/.*$'
+    - '/_matrix/client/(r0|v3|unstable)/account/3pid$'
+    - '/_matrix/client/(r0|v3|unstable)/account/whoami$'
+    - '/_matrix/client/(r0|v3|unstable)/account/deactivate$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$'
+    - '/_matrix/client/v1/rooms/.*/timestamp_to_event$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable.*)/rooms/.*/aliases.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/search$'
+    - '/_matrix/client/(r0|v3|unstable)/user/.*/filter(/.*)?$'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/user/.*/filter(/|$).*$'
-    - '/_matrix/client/unstable/org\.matrix\.msc4143/rtc/transports(?:\?.*)?$'
+    - '/_matrix/client/(r0|v3|unstable)/capabilities$'
+    - '/_matrix/client/(r0|v3|unstable)/notifications$'
 
   clientReaderRegister:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
@@ -469,7 +492,29 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
 
   federationReaderRoutes:
-    - "/_matrix/(federation/(v1|v2)|key/v2)/.*"
+    - "/_matrix/federation/v1/version$"
+    - "/_matrix/federation/v1/event/.*"
+    - "/_matrix/federation/v1/state/.*"
+    - "/_matrix/federation/v1/state_ids/.*"
+    - "/_matrix/federation/v1/backfill/.*"
+    - "/_matrix/federation/v1/get_missing_events/.*"
+    - "/_matrix/federation/v1/publicRooms.*"
+    - "/_matrix/federation/v1/query/.*"
+    - "/_matrix/federation/v1/make_join/.*"
+    - "/_matrix/federation/v1/make_leave/.*"
+    - "/_matrix/federation/(v1|v2)/send_join/.*"
+    - "/_matrix/federation/(v1|v2)/send_leave/.*"
+    - "/_matrix/federation/v1/make_knock/.*"
+    - "/_matrix/federation/v1/send_knock/.*"
+    - "/_matrix/federation/(v1|v2)/invite/.*"
+    - "/_matrix/federation/v1/event_auth/.*"
+    - "/_matrix/federation/v1/timestamp_to_event/.*"
+    - "/_matrix/federation/v1/exchange_third_party_invite/.*"
+    - "/_matrix/federation/v1/user/devices/.*"
+    - "/_matrix/key/v2/query.*"
+    - "/_matrix/federation/v1/hierarchy/.*"
+    - "/_matrix/federation/v1/send/.*"
+    - "/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$"
 
   matrixAuthentication:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/.*)?$"
