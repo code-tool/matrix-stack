@@ -314,8 +314,8 @@ rc_message:
   burst_count: 300
 rc_presence:
   per_user:
-    per_second: 0.2
-    burst_count: 2
+    per_second: 0.1
+    burst_count: 1
 
 federation_domain_whitelist: []
 
@@ -386,9 +386,9 @@ ingress:
   # routes to typing stream writer singleton worker
   # source: room.py:1472 client_patterns("/rooms/.*/typing/...", v1=True) -> (api/v1|r0|v3|unstable)
   typing:
-    #- "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing"
     # this is hack to make this regexp longer, because ImplementationSpecific chose longest if both match
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/typing"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/typing"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-to_device-stream
   # routes to to_device stream writer singleton worker
   # source: sendtodevice.py:42 client_patterns("/sendToDevice/...") -> (r0|v3|unstable)
@@ -402,8 +402,8 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/.*/tags"
     - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
     # fix priority
-    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/account_data'
-    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/tags'
+    #- '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/account_data'
+    #- '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/tags'
     # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
   # routes to receipts stream writer multiple workers
   # source: receipts.py:41, read_marker.py:40 - client_patterns() -> (r0|v3|unstable)
@@ -412,10 +412,10 @@ ingress:
   # routing to room workers which are NOT receipts stream writers -> assert _can_write_to_receipts -> 500
   receipts:
     # original
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
-    #- "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
-    - "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt"
+    - "/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/receipt"
+    #- "/_matrix/client/(r0|v3|unstable)/rooms/(?:%21|!)[A-Za-z0-9._=\\-]+(?::|%3[Aa])[A-Za-z0-9.\\-]+/read_markers"
   # https://matrix-org.github.io/synapse/latest/workers.html#the-presence-stream
   # routes to presence stream writer singleton worker
   # source: presence.py:43 client_patterns("/presence/.../status", v1=True) -> (api/v1|r0|v3|unstable)
@@ -426,9 +426,9 @@ ingress:
   # source: push_rule.py:51 client_patterns("/pushrules/...", v1=True) -> (api/v1|r0|v3|unstable)
   pushRulesRoutes:
     # short version
-    #- "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/"
     # long version because of ingress
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/pushrules/(global|device)/(override|underride|sender|room|content|default)/"
   # https://element-hq.github.io/synapse/latest/workers.html#the-device_lists-stream
   # routes to device_lists stream writer multiple workers
   # source: devices.py:79 client_patterns("/delete_devices") -> (r0|v3|unstable)
@@ -439,7 +439,7 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/keys/query$"
     - "/_matrix/client/(r0|v3|unstable)/keys/changes$"
     - "/_matrix/client/(r0|v3|unstable)/keys/claim$"
-    - "/_matrix/client/(r0|v3|unstable)/room_keys/"
+    #- "/_matrix/client/(r0|v3|unstable)/room_keys/"
     - "/_matrix/client/(r0|v3|unstable)/keys/upload/"
     - "/_matrix/client/(r0|v3|unstable)/delete_devices$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)"
@@ -448,7 +448,7 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$"
     # hack:
-    - '/_matrix/client/(r0|v3|unstable)/room_keys/keys/(?:%21|!)[A-Za-z0-9._=\-/]+(?::|%3[Aa])[A-Za-z0-9.\-]+'
+    #- '/_matrix/client/(r0|v3|unstable)/room_keys/keys/(?:%21|!)[A-Za-z0-9._=\-/]+(?::|%3[Aa])[A-Za-z0-9.\-]+'
   # https://github.com/element-hq/synapse/blob/b99a58719b274fcbb327fd8d7649185792bfd12c/synapse/rest/client/thread_subscriptions.py#L38-L247
   # stream writer multiple worker
   threadSubscriptionsRoutes:
@@ -467,8 +467,8 @@ ingress:
   # room (!sic) worker, consistent hash by room_id, unlimited scale
   # federation specific, must be AFTER masterOverridesRoutes
   # workers.md: state_ids and get_missing_events are v1 only; v[12] is over-permissive but harmless
-  roomFederationRoutes:
-    - '/_matrix/federation/v[12]/(?:state_ids|get_missing_events)/(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(:|%3A)[A-Za-z0-9.\-]+'
+  #roomFederationRoutes:
+  #  - '/_matrix/federation/v[12]/(?:state_ids|get_missing_events)/(?:%21|!)(?<room>[A-Za-z0-9._=\-\/]+)(:|%3A)[A-Za-z0-9.\-]+'
   # https://matrix-org.github.io/synapse/latest/workers.html#synapseappmedia_repository
   mediaRepository:
     - "/_matrix/media/"
@@ -484,7 +484,12 @@ ingress:
   # source: sync.py:109 client_patterns("/sync$") -> (r0|v3|unstable); api/v1 here is over-permissive but harmless
   # source: events.py:43 client_patterns("/events$", v1=True) -> (api/v1|r0|v3|unstable) ✓
   syncRoutes:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/(sync|events|initialSync|rooms/[^/]+/initialSync)$"
+    #- "/_matrix/client/(r0|v3)/sync$"
+    - "/_matrix/client/(r0|v3|unstable)/sync$"
+    - "/_matrix/client/(api/v1|r0|v3)/events$"
+    - "/_matrix/client/(api/v1|r0|v3)/initialSync$"
+    - "/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$"
+    - '/_matrix/client/(r0|v3|unstable)/room_keys'
     # Native Sliding Sync MSC3575
     # source: sync.py:785 client_patterns("/org.matrix.simplified_msc3575/sync$", releases=[], unstable=True)
     - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
@@ -494,40 +499,31 @@ ingress:
   # https://matrix-org.github.io/synapse/latest/workers.html#synapseappgeneric_worker
   # scalable unlimited by least_conn lb algo
   clientReaderRoutes:
-    # versions: no API version prefix - source: versions.py:42 re.compile("^/_matrix/client/versions$")
-    - "/_matrix/client/versions$"
-    # source: notifications.py:46 client_patterns("/notifications$") -> (r0|v3|unstable)
-    - "/_matrix/client/(r0|v3|unstable)/notifications$"
-    # Backup key APIs
-    # source: room_keys.py:43 client_patterns("/room_keys/keys(...)") -> (r0|v3|unstable)
-    #- "/_matrix/client/(r0|v3|unstable)/room_keys/"
-    # source: keys.py:325,369,425 client_patterns("/keys/(query|changes|claim)$") -> (r0|v3|unstable)
-    #- "/_matrix/client/(r0|v3|unstable)/keys/(query|changes|claim)"
-    # by adding two separate routes we send query to device list
-    #- "/_matrix/client/(r0|v3|unstable)/keys/changes$"
-    #- "/_matrix/client/(r0|v3|unstable)/keys/claim$"
-    # MSC3814 dehydrated device
-    # source: devices.py:351 client_patterns("/org.matrix.msc3814.v1/dehydrated_device$", releases=()) -> unstable only
-    - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device$"
-    # source: devices.py:241 client_patterns("/org.matrix.msc3814.v1/dehydrated_device/DEVICE_ID/events$", releases=()) -> unstable only
-    - "/_matrix/client/unstable/org.matrix.msc3814.v1/dehydrated_device/[^/]*/events$"
-    # Room reads - NOTE: requests with a room_id in path are already caught by roomRoutes above.
-    # TODO: workers.md describes only v1 and unstable. Here r0, v3 goes clientReader.
-    # These entries serve as fallback for URL-encoded room IDs (%21...%3A) that roomRoutes misses.
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(joined_members|context/.*|members|state|hierarchy|relations/|event/|aliases|timestamp_to_event|redact|send|state/|(join|invite|leave|ban|unban|kick))"
-    # Discovery and generic APIs
-    # NOTE: `versions` is intentionally omitted here - it has no API version prefix (see separate entry above)
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/(createRoom|publicRooms|voip/turnServer|joined_rooms|search|directory/room/.*|capabilities)"
-    # source: _base.py client_patterns() no v1 -> (r0|v3|unstable); api/v1 here is over-permissive but harmless
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/user/.*/filter(/|$)"
-    # MatrixRTC MSC4143 (requires msc4143_enabled: true)
-    # source: matrixrtc.py:31 client_patterns("/org.matrix.msc4143/rtc/transports$", releases=()) -> unstable only
-    - "/_matrix/client/unstable/org.matrix.msc4143/rtc/transports$"
-    #
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/profile/"  # workers.md:285
-    #
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate)"  # workers.md:244
-    - "/_matrix/client/(r0|v3|unstable)/room_keys/version"
+    - '/_matrix/client/versions$'
+    #- '/_matrix/client/(r0|v3|unstable)/room_keys/'
+    #- '/_matrix/client/(r0|v3|unstable)/room_keys/version'
+    - '/_matrix/client/(r0|v3|unstable)/notifications$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/).*$'
+    - '/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device(?:\?.*)?$'
+    - '/_matrix/client/unstable/org\.matrix\.msc3814\.v1/dehydrated_device/[^/]*/events(?:\?.*)?$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/profile.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate).*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/hierarchy.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/aliases.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/timestamp_to_event.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(relations/|event/).*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(redact|send|state/).*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick).*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/(createRoom|publicRooms|versions|joined_rooms|search|capabilities).*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/user/.*/filter(/|$).*$'
+    - '/_matrix/client/unstable/org\.matrix\.msc4143/rtc/transports(?:\?.*)?$'
   # disabled if MAS is enabled
   # NOTE: /register* entries here are shadowed by masterOverridesRoutes `register` (no $ anchor).
   # Only login$ and password_policy$ can actually reach client_reader.
@@ -544,14 +540,14 @@ ingress:
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
   federationReaderRoutes:
     # original:
-    # - "/_matrix/(federation/(v1|v2)|key/v2)/"
+     - "/_matrix/(federation/(v1|v2)|key/v2)/"
     # NGINX ingress sorts ImplementationSpecific regex paths by string length (longer = higher priority).
     # This pattern (56 chars) is tried before shorter routes, so negative lookaheads are required to
     # prevent shadowing:
     #   - (?!/(media|openid)) excludes:
     #       /_matrix/federation/v1/media/   (29 chars) -> must go to synapse-media-repository
     #       /_matrix/federation/v1/openid/  (37 chars) -> must go to synapse-master (masterOverridesRoutes)
-    - "/_matrix/(federation/(v1|v2)(?!/(media|openid))|key/v2)/"
+    #- "/_matrix/(federation/(v1|v2)(?!/(media|openid))|key/v2)/"
   # enabled if MAS is enabled, mutually exclusive with clientReaderRegister
   # source: login.py:76,588 logout.py:38,65
   # Fixed: explicit version prefixes instead of greedy (.*) to avoid matching subpaths unexpectedly
