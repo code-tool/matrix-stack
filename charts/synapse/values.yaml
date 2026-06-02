@@ -398,9 +398,13 @@ ingress:
   # routes to account_data stream writer singleton worker
   # source: account_data.py, tags.py - all client_patterns() without v1 -> (r0|v3|unstable)
   accountData:
+    # original
     - "/_matrix/client/(r0|v3|unstable)/.*/tags"
     - "/_matrix/client/(r0|v3|unstable)/.*/account_data"
-  # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
+    # fix priority
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/account_data'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/(?:%21|!)[A-Za-z0-9._=\-]+(?::|%3[Aa])[A-Za-z0-9.\-]+/tags'
+    # https://matrix-org.github.io/synapse/latest/workers.html#the-receipts-stream
   # routes to receipts stream writer multiple workers
   # source: receipts.py:41, read_marker.py:40 - client_patterns() -> (r0|v3|unstable)
   # Caution(!): patterns must be longer than roomRoutes (73 chars) because of ImplementationSpecific
@@ -523,6 +527,7 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/profile/"  # workers.md:285
     #
     - "/_matrix/client/(api/v1|r0|v3|unstable)/account/(3pid|whoami|deactivate)"  # workers.md:244
+    - "/_matrix/client/(r0|v3|unstable)/room_keys/version"
   # disabled if MAS is enabled
   # NOTE: /register* entries here are shadowed by masterOverridesRoutes `register` (no $ anchor).
   # Only login$ and password_policy$ can actually reach client_reader.
