@@ -167,7 +167,7 @@ synapse:
     media_repository_background_jobs:
       replicas: 1
       resources: {}
-  presence: true
+  presence: false
   postgres:
     cp_max: 50
     cp_min: 5
