@@ -482,3 +482,24 @@ spec:
   selector:
       app: synapse
       component: synapse-federation-reader
+---
+# Source: synapse/templates/synapse-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-device-lists-headless
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+  labels:
+    app: synapse
+    component: synapse-device-lists
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+      app: synapse
+      component: synapse-device-lists

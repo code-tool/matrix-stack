@@ -33,6 +33,14 @@ component: synapse-federation-reader
 {{/*
 Selector labels
 */}}
+{{- define "synapse-device-lists.selectorLabels" -}}
+app: synapse
+component: synapse-device-lists
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
 {{- define "synapse-client-reader-envoy.selectorLabels" -}}
 app: synapse
 component: synapse-client-reader-envoy
