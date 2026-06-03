@@ -2,4 +2,4 @@ apiVersion: v2
 appVersion: 1.151.0
 description: matrix synapse kubernetes deployment
 name: synapse
-version: 2.4.6
+version: 2.5.0
