@@ -454,7 +454,7 @@ ingress:
   clientReaderRoomKeys:
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
-    - '/_matrix/client/(r0|v3|unstable)/keys/query'
+    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
   # moved to deviceListsRoutes
   #  - '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
