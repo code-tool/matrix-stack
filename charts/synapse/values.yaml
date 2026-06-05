@@ -368,7 +368,8 @@ ingress:
   ingressClassName: nginx
   # client-server overides should go first and always to main/master process
   masterOverridesRoutes:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register).*"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register).*"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)).*"
     - "/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous$"
     - "/_synapse/client/rendezvous$"
 
@@ -377,18 +378,23 @@ ingress:
     - "/_synapse/.*"
 
   typing:
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing.*'
+    #- '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/typing.*'
 
   toDevice:
     - '/_matrix/client/(r0|v3|unstable)/sendToDevice/.*'
 
   accountData:
-    - '/_matrix/client/(r0|v3|unstable)/.*/tags.*'
-    - '/_matrix/client/(r0|v3|unstable)/.*/account_data.*'
+    #- '/_matrix/client/(r0|v3|unstable)/.*/tags.*'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/tags(/.*)?$'
+    #- '/_matrix/client/(r0|v3|unstable)/.*/account_data.*'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+(/rooms/[^/]+)?/account_data(/.*)?$'
 
   receipts:
-    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt.*'
-    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers.*'
+    #- '/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt.*'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/receipt.*'
+    #- '/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers.*'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/read_markers.*'
 
   presence:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/presence/.*'
@@ -407,7 +413,7 @@ ingress:
     # workers.md: ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$
     - '/_matrix/client/(r0|v3|unstable)/keys/signatures/upload$'
     # moved from client reader
-    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
+    #- '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
   # validated 020626
   threadSubscriptionsRoutes:
@@ -457,8 +463,8 @@ ingress:
   clientReaderRoomKeys:
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
-  # moved to deviceListsRoutes
-  #  - '/_matrix/client/(r0|v3|unstable)/keys/query$'
+    # moved to deviceListsRoutes
+    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
   # by round-robin
   clientReaderRoutes:
