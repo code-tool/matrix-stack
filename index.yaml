@@ -727,6 +727,15 @@ entries:
     version: 3.0.0
   - apiVersion: v2
     appVersion: 1.151.0
+    created: "2026-06-05T16:34:02.960561692Z"
+    description: matrix synapse kubernetes deployment
+    digest: 02a5682979271a2658378f3a2a5aaab1b56113f315a60a868541337cf6174052
+    name: synapse
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/synapse-2.4.10/synapse-2.4.10.tgz
+    version: 2.4.10
+  - apiVersion: v2
+    appVersion: 1.151.0
     created: "2026-06-05T16:30:39.496779105Z"
     description: matrix synapse kubernetes deployment
     digest: 92cbd0dac3681e972fc37330b7f243db8901f98d42acf8e7f4b340b8f5c7a09e
@@ -2188,4 +2197,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-06-05T16:30:39.497340349Z"
+generated: "2026-06-05T16:34:02.961065812Z"
