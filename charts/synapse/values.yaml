@@ -368,8 +368,8 @@ ingress:
   ingressClassName: nginx
   # client-server overides should go first and always to main/master process
   masterOverridesRoutes:
-    - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register).*"
-    - "/_matrix/client/(unstable|v1)/org.matrix.msc4108/rendezvous$"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)).*"
+    - '/_matrix/client/(unstable|v1)/org\.matrix\.msc4108/rendezvous$'
     - "/_synapse/client/rendezvous$"
 
   masterRoutes:
@@ -377,18 +377,20 @@ ingress:
     - "/_synapse/.*"
 
   typing:
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/typing/[^/]+$'
 
   toDevice:
     - '/_matrix/client/(r0|v3|unstable)/sendToDevice/.*'
 
   accountData:
-    - '/_matrix/client/(r0|v3|unstable)/.*/tags.*'
-    - '/_matrix/client/(r0|v3|unstable)/.*/account_data.*'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/tags$'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/tags/[^/]+$'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/account_data/[^/]+$'
+    - '/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/account_data/[^/]+$'
 
   receipts:
-    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt.*'
-    - '/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers.*'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/receipt/[^/]+/[^/]+$'
+    - '/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/read_markers$'
 
   presence:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/presence/.*'
@@ -408,8 +410,8 @@ ingress:
 
   # validated 020626
   threadSubscriptionsRoutes:
-    - "/_matrix/client/unstable/io.element.msc4306/rooms/.*/thread/.*/subscription$"
-    - "/_matrix/client/unstable/io.element.msc4308/thread_subscriptions$"
+    - '/_matrix/client/unstable/io\.element\.msc4306/rooms/.*/thread/.*/subscription$'
+    - '/_matrix/client/unstable/io\.element\.msc4308/thread_subscriptions$'
 
   roomRoutes:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$'
@@ -430,11 +432,12 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/events$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/initialSync$"
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/initialSync$"
-    - "/_matrix/client/unstable/org.matrix.simplified_msc3575/sync$"
+    - '/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync$'
 
   # by user-id
   syncKeysRoutes:
-    - '/_matrix/client/(r0|v3|unstable)/room_keys/.*'
+    - '/_matrix/client/(r0|v3|unstable)/room_keys/keys(/[^/]+)?(/[^/]+)?$'
+    - '/_matrix/client/(r0|v3|unstable)/room_keys/version(/[^/]+)?$'
 
   userDirectoryRoutes:
     - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
@@ -454,6 +457,7 @@ ingress:
   clientReaderRoomKeys:
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
+    - '/_matrix/client/unstable/org\.matrix\.msc3983/keys/claim$'
     - '/_matrix/client/(r0|v3|unstable)/keys/query$'
   # moved to deviceListsRoutes
   #  - '/_matrix/client/(r0|v3|unstable)/keys/query$'
@@ -492,7 +496,7 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/login$"
     - "/_matrix/client/(r0|v3|unstable)/register$"
     - "/_matrix/client/(r0|v3|unstable)/register/available$"
-    - "/_matrix/client/v1/register/m.login.registration_token/validity$"
+    - '/_matrix/client/v1/register/m\.login\.registration_token/validity$'
     - "/_matrix/client/(r0|v3|unstable)/password_policy$"
 
   federationReaderRoutes:
