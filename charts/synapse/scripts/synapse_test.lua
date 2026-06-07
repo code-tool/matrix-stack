@@ -76,6 +76,82 @@ local function test_access_token_from_query()
     )
 end
 
+local function test_username_decoded_from_synapse_token_without_whoami()
+    local request_handle = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        -- syt_<unpadded-base64("alice")>_<random>_<crc>
+        ["authorization"] = "Bearer syt_YWxpY2U_abcdefghij1234567890_crc123"
+    }, function()
+        error("decodable token should not call whoami")
+    end)
+
+    assert_equal(
+        synapse.get_user_identifier_from_request(request_handle, {}),
+        "alice",
+        "localpart should be decoded directly from a syt_ token"
+    )
+end
+
+local function test_username_decoded_consistent_across_devices()
+    local handle_a = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        ["authorization"] = "Bearer syt_Y2Fyb2wtdGVzdF85OQ_deviceAtokenAAAAAAA_crc111"
+    }, function()
+        error("decodable token should not call whoami")
+    end)
+    local handle_b = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        ["authorization"] = "Bearer syt_Y2Fyb2wtdGVzdF85OQ_deviceBtokenBBBBBBB_crc222"
+    }, function()
+        error("decodable token should not call whoami")
+    end)
+
+    local key_a = synapse.get_user_identifier_from_request(handle_a, {})
+    local key_b = synapse.get_user_identifier_from_request(handle_b, {})
+
+    assert_equal(key_a, "carol-test_99", "device A should decode to the localpart")
+    assert_equal(key_b, "carol-test_99", "device B should decode to the same localpart")
+    assert_equal(key_a, key_b, "the same user on different devices must hash to the same key")
+end
+
+local function test_non_synapse_token_falls_back_to_whoami()
+    local calls = 0
+    local request_handle = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        -- application-service / delegated-auth tokens don't follow the syt_ format
+        ["authorization"] = "Bearer as_some_opaque_appservice_token"
+    }, function(_, cluster, headers, body, timeout_ms)
+        calls = calls + 1
+        return { [":status"] = "200" }, '{"user_id":"@bridgebot:example.org"}'
+    end)
+
+    assert_equal(
+        synapse.get_user_identifier_from_request(request_handle, {}),
+        "bridgebot",
+        "non-syt tokens should resolve via whoami"
+    )
+    assert_equal(calls, 1, "whoami should be used for tokens that aren't locally decodable")
+end
+
+local function test_malformed_synapse_token_falls_back_to_whoami()
+    local calls = 0
+    local request_handle = new_request_handle({
+        [":path"] = "/_matrix/client/v3/sync",
+        -- looks like a syt_ token, but the middle segment isn't valid base64
+        ["authorization"] = "Bearer syt_!!!not-base64!!!_randomstring12345_crc999"
+    }, function(_, cluster, headers, body, timeout_ms)
+        calls = calls + 1
+        return { [":status"] = "200" }, '{"user_id":"@erin:example.org"}'
+    end)
+
+    assert_equal(
+        synapse.get_user_identifier_from_request(request_handle, {}),
+        "erin",
+        "malformed syt_ tokens should fall back to whoami rather than crash"
+    )
+    assert_equal(calls, 1, "whoami should be used when local decoding fails")
+end
+
 local function test_whoami_lookup_returns_localpart()
     local calls = 0
     local request_handle = new_request_handle({
@@ -214,6 +290,10 @@ local tests = {
     test_room_id_from_encoded_path,
     test_access_token_from_authorization_header,
     test_access_token_from_query,
+    test_username_decoded_from_synapse_token_without_whoami,
+    test_username_decoded_consistent_across_devices,
+    test_non_synapse_token_falls_back_to_whoami,
+    test_malformed_synapse_token_falls_back_to_whoami,
     test_whoami_lookup_returns_localpart,
     test_whoami_lookup_forwards_xff,
     test_whoami_lookup_without_xff,
