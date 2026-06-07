@@ -1009,7 +1009,7 @@ data:
 
       clusters:
         - name: httpd-client-reader
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1042,7 +1042,7 @@ data:
                           address: synapse-client-reader-headless
                           port_value: 8008
         - name: httpd-federation-ip-hash
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1067,7 +1067,7 @@ data:
                           address: synapse-federation-reader-headless
                           port_value: 8008
         - name: httpd-room-hash
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1092,7 +1092,7 @@ data:
                           address: synapse-room-headless
                           port_value: 8008
         - name: httpd-user-hash
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1117,7 +1117,7 @@ data:
                           address: synapse-sync-headless
                           port_value: 8008
         - name: httpd-master
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1144,7 +1144,7 @@ data:
                           address: synapse-master
                           port_value: 8008
         - name: httpd-typing
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1171,7 +1171,7 @@ data:
                           address: synapse-typing
                           port_value: 8008
         - name: httpd-to-device
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1198,7 +1198,7 @@ data:
                           address: synapse-to-device
                           port_value: 8008
         - name: httpd-account-data
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1225,7 +1225,7 @@ data:
                           address: synapse-account-data
                           port_value: 8008
         - name: httpd-receipts
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1252,7 +1252,7 @@ data:
                           address: synapse-receipts
                           port_value: 8008
         - name: httpd-presence
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1279,7 +1279,7 @@ data:
                           address: synapse-presence
                           port_value: 8008
         - name: httpd-push-rules
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1306,7 +1306,7 @@ data:
                           address: synapse-push-rules
                           port_value: 8008
         - name: httpd-device-lists
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1333,7 +1333,7 @@ data:
                           address: synapse-device-lists
                           port_value: 8008
         - name: httpd-thread-subscriptions
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1360,7 +1360,7 @@ data:
                           address: synapse-thread-subscriptions
                           port_value: 8008
         - name: httpd-matrix-auth
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1387,7 +1387,7 @@ data:
                           address: matrix-authentication
                           port_value: 80
         - name: httpd-user-dir
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
@@ -1414,7 +1414,7 @@ data:
                           address: synapse-user-dir
                           port_value: 8008
         - name: httpd-media-repository
-          connect_timeout: 0.02s
+          connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
           ignore_health_on_host_removal: true
