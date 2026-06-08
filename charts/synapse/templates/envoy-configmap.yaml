@@ -61,6 +61,8 @@ data:
                     "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                     stat_prefix: ingress_http
                     xff_num_trusted_hops: 2
+                    merge_slashes: true
+                    normalize_path: true
                     route_config:
                       name: local_route
                       virtual_hosts:
