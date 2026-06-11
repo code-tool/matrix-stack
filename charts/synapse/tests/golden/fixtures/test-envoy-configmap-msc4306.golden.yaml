@@ -120,21 +120,21 @@ data:
                                 cluster: httpd-master
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/receipt/[^/]+/[^/]+$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/rooms/.*/receipt.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-receipts
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/rooms/[^/]+/read_markers$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/rooms/.*/read_markers.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-receipts
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/typing/[^/]+$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/typing.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -155,11 +155,11 @@ data:
                                 cluster: httpd-thread-subscriptions
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/sync$'
+                                  regex: '^/_matrix/client/(r0|v3)/sync'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -169,11 +169,11 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/events$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3)/events'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -183,11 +183,11 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/initialSync$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3)/initialSync'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -197,11 +197,11 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/initialSync$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -211,39 +211,11 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync$'
+                                  regex: '^/_matrix/client/unstable/org.matrix.simplified_msc3575/sync'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
-                                hash_policy:
-                                  - header:
-                                      header_name: X-Hash-Key
-                              typed_per_filter_config:
-                                envoy.filters.http.lua:
-                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
-                                  name: whoami_hash
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-user-hash
-                                hash_policy:
-                                  - header:
-                                      header_name: X-Hash-Key
-                              typed_per_filter_config:
-                                envoy.filters.http.lua:
-                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
-                                  name: whoami_hash
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/.*)$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -274,42 +246,42 @@ data:
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/purge_media_cache$'
+                                  regex: '^/_synapse/admin/v1/purge_media_cache'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/room/.*/media.*$'
+                                  regex: '^/_synapse/admin/v1/room/.*/media.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/user/.*/media.*$'
+                                  regex: '^/_synapse/admin/v1/user/.*/media.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/media/.*$'
+                                  regex: '^/_synapse/admin/v1/media/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/quarantine_media/.*$'
+                                  regex: '^/_synapse/admin/v1/quarantine_media/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
                             - match:
                                 safe_regex:
-                                  regex: '^/_synapse/admin/v1/users/.*/media$'
+                                  regex: '^/_synapse/admin/v1/users/.*/media'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -323,63 +295,49 @@ data:
                                 cluster: httpd-to-device
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/tags$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/.*/tags.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-account-data
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/tags/[^/]+$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/.*/account_data.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-account-data
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/[^/]+/account_data/[^/]+$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-account-data
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/[^/]+/rooms/[^/]+/account_data/[^/]+$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-account-data
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-device-lists
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-device-lists
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-device-lists
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3)/delete_devices$'
+                                  regex: '^/_matrix/client/(r0|v3)/delete_devices'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-device-lists
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -400,11 +358,11 @@ data:
                                 cluster: httpd-presence
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-room-hash
+                                cluster: httpd-room-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -414,7 +372,7 @@ data:
                                   name: room_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/federation/v1/version$'
+                                  regex: '^/_matrix/federation/v1/version'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -641,133 +599,189 @@ data:
                                 cluster: httpd-user-dir
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect(/.*)?$'
+                                  regex: '^/_matrix/client/(.*)/(login|logout|refresh)'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-matrix-auth
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/login$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/query$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-matrix-auth
+                                cluster: httpd-client-keys
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/logout(/all)?$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/changes$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-matrix-auth
+                                cluster: httpd-client-keys
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/refresh$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/claim$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-matrix-auth
+                                cluster: httpd-client-keys
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact/.*'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/room_keys/'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-client-keys
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send/.*'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/room_keys/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-client-keys
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick).*'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/join/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/knock/.*'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/knock/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/profile/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/versions$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/createRoom'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms.*'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-client-reader
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/v1/rooms/.*/hierarchy$'
+                                  regex: '^/_matrix/client/v1/rooms/.*/hierarchy'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -781,42 +795,70 @@ data:
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/v1/rooms/.*/threads$'
+                                  regex: '^/_matrix/client/v1/rooms/.*/threads'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/unstable/im\.nheko\.summary/summary/.*$'
+                                  regex: '^/_matrix/client/unstable/im\.nheko\.summary/summary/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/3pid$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/3pid'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/whoami$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/whoami'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/deactivate$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/account/deactivate'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$'
+                                  regex: '^/_matrix/client/versions'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/account/3pid'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/account/whoami'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/sync'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -830,63 +872,70 @@ data:
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/v1/rooms/.*/timestamp_to_event$'
+                                  regex: '^/_matrix/client/v1/rooms/.*/timestamp_to_event'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable.*)/rooms/.*/aliases.*'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/search$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/search'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/.*/filter(/.*)?$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/user/.*/filter(/.*)?'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/capabilities$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/capabilities'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/notifications$'
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/notifications'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-client-reader
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/unstable/org\.matrix\.msc4140/delayed_events(/.*/restart)?$'
+                                  regex: '^/_synapse/admin/v1/rooms/[^/]+'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -1015,6 +1064,39 @@ data:
                         socket_address:
                           address: synapse-client-reader-headless
                           port_value: 8008
+        - name: httpd-client-keys
+          connect_timeout: 1.00s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          ignore_health_on_host_removal: true
+          lb_policy: LEAST_REQUEST
+          least_request_lb_config:
+            choice_count: 2
+          outlier_detection:
+            consecutive_5xx: 5
+            consecutive_gateway_failure: 5
+            interval: 10s
+            base_ejection_time: 30s
+            max_ejection_percent: 50
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-client-keys
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-client-keys-headless
+                          port_value: 8008
         - name: httpd-federation-ip-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
@@ -1040,7 +1122,7 @@ data:
                         socket_address:
                           address: synapse-federation-reader-headless
                           port_value: 8008
-        - name: httpd-room-hash
+        - name: httpd-room-ring-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
@@ -1057,7 +1139,7 @@ data:
                 max_requests: 8192
                 max_retries: 3
           load_assignment:
-            cluster_name: httpd-room-hash
+            cluster_name: httpd-room-ring-hash
             endpoints:
               - lb_endpoints:
                   - endpoint:
@@ -1065,7 +1147,7 @@ data:
                         socket_address:
                           address: synapse-room-headless
                           port_value: 8008
-        - name: httpd-user-hash
+        - name: httpd-sync-user-ring-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
@@ -1082,7 +1164,7 @@ data:
                 max_requests: 8192
                 max_retries: 3
           load_assignment:
-            cluster_name: httpd-user-hash
+            cluster_name: httpd-sync-user-ring-hash
             endpoints:
               - lb_endpoints:
                   - endpoint:

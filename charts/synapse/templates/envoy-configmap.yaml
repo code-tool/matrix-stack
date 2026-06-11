@@ -105,7 +105,7 @@ data:
                             {{- end }}
 
                             {{- if not .Values.matrixAuthentication.enabled }}
-                            {{- range $route := .Values.ingress.clientReaderRegister }}
+                            {{- range $route := .Values.ingress.clientReaderRegisterRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -116,7 +116,7 @@ data:
                             {{- end }}
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.receipts }}
+                            {{- range $route := .Values.ingress.receiptsRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -126,7 +126,7 @@ data:
                                 cluster: httpd-receipts
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.typing }}
+                            {{- range $route := .Values.ingress.typingRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -155,7 +155,7 @@ data:
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-user-hash
+                                cluster: httpd-sync-user-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -165,24 +165,7 @@ data:
                                   name: whoami_hash
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.syncKeysRoutes }}
-                            - match:
-                                safe_regex:
-                                  regex: {{ printf "^%s" $route | squote }}
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-user-hash
-                                hash_policy:
-                                  - header:
-                                      header_name: X-Hash-Key
-                              typed_per_filter_config:
-                                envoy.filters.http.lua:
-                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
-                                  name: whoami_hash
-                            {{- end }}
-
-                            {{- range $route := .Values.ingress.mediaRepository }}
+                            {{- range $route := .Values.ingress.mediaRepositoryRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -192,7 +175,7 @@ data:
                                 cluster: httpd-media-repository
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.toDevice }}
+                            {{- range $route := .Values.ingress.toDeviceRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -202,7 +185,7 @@ data:
                                 cluster: httpd-to-device
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.accountData }}
+                            {{- range $route := .Values.ingress.accountDataRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -232,7 +215,7 @@ data:
                                 cluster: httpd-push-rules
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.presence }}
+                            {{- range $route := .Values.ingress.presenceRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -249,7 +232,7 @@ data:
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-room-hash
+                                cluster: httpd-room-ring-hash
                                 hash_policy:
                                   - header:
                                       header_name: X-Hash-Key
@@ -283,7 +266,7 @@ data:
                             {{- end }}
 
                             {{- if .Values.matrixAuthentication.enabled }}
-                            {{- range $route := .Values.ingress.matrixAuthentication }}
+                            {{- range $route := .Values.ingress.matrixAuthenticationRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
@@ -294,24 +277,31 @@ data:
                             {{- end }}
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.clientReaderRoomKeys }}
+                            {{- range $route := .Values.ingress.clientKeysRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-client-keys
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.clientReaderEventsRoutes }}
+                            {{- range $route := .Values.ingress.clientEventsRoutes }}
                             - match:
                                 safe_regex:
                                   regex: {{ printf "^%s" $route | squote }}
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
-                                cluster: httpd-client-reader
+                                cluster: httpd-room-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: room_hash
                             {{- end }}
 
                             {{- range $route := .Values.ingress.clientReaderRoutes }}
@@ -443,6 +433,39 @@ data:
                         socket_address:
                           address: synapse-client-reader-headless
                           port_value: 8008
+        - name: httpd-client-keys
+          connect_timeout: 1.00s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          ignore_health_on_host_removal: true
+          lb_policy: LEAST_REQUEST
+          least_request_lb_config:
+            choice_count: 2
+          outlier_detection:
+            consecutive_5xx: 5
+            consecutive_gateway_failure: 5
+            interval: 10s
+            base_ejection_time: 30s
+            max_ejection_percent: 50
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-client-keys
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-client-keys-headless
+                          port_value: 8008
         - name: httpd-federation-ip-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
@@ -468,7 +491,7 @@ data:
                         socket_address:
                           address: synapse-federation-reader-headless
                           port_value: 8008
-        - name: httpd-room-hash
+        - name: httpd-room-ring-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
@@ -485,7 +508,7 @@ data:
                 max_requests: 8192
                 max_retries: 3
           load_assignment:
-            cluster_name: httpd-room-hash
+            cluster_name: httpd-room-ring-hash
             endpoints:
               - lb_endpoints:
                   - endpoint:
@@ -493,7 +516,7 @@ data:
                         socket_address:
                           address: synapse-room-headless
                           port_value: 8008
-        - name: httpd-user-hash
+        - name: httpd-sync-user-ring-hash
           connect_timeout: 1.00s
           type: STRICT_DNS
           dns_lookup_family: V4_ONLY
@@ -510,7 +533,7 @@ data:
                 max_requests: 8192
                 max_retries: 3
           load_assignment:
-            cluster_name: httpd-user-hash
+            cluster_name: httpd-sync-user-ring-hash
             endpoints:
               - lb_endpoints:
                   - endpoint:
