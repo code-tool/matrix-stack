@@ -9,6 +9,14 @@ component: synapse-client-reader
 {{/*
 Selector labels
 */}}
+{{- define "synapse-client-keys.selectorLabels" -}}
+app: synapse
+component: synapse-client-keys
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
 {{- define "synapse-room.selectorLabels" -}}
 app: synapse
 component: synapse-room
