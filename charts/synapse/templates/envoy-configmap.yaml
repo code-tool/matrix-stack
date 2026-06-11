@@ -165,7 +165,6 @@ data:
                                   name: whoami_hash
                             {{- end }}
 
-
                             {{- range $route := .Values.ingress.syncKeysRoutes }}
                             - match:
                                 safe_regex:

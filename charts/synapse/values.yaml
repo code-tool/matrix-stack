@@ -401,13 +401,13 @@ ingress:
 
   # shold be before encryption rules ^/_matrix/client/(r0|v3|unstable)/keys/.*
   deviceListsRoutes:
+    - '/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$'
     - '/_matrix/client/(r0|v3)/delete_devices$'
     #- /_matrix/client/(api/v1|r0|v3|unstable)/devices(/|$)
     - '/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?$'
     #- /_matrix/client/(r0|v3|unstable)/keys/upload
-    - '/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/device_signing/upload$'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$'
 
   # validated 020626
   threadSubscriptionsRoutes:
@@ -435,11 +435,6 @@ ingress:
     - "/_matrix/client/(api/v1|r0|v3|unstable)/rooms/[^/]+/initialSync$"
     - '/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync$'
 
-  # by user-id
-  syncKeysRoutes:
-    - '/_matrix/client/(r0|v3|unstable)/room_keys/keys(/[^/]+)?(/[^/]+)?$'
-    - '/_matrix/client/(r0|v3|unstable)/room_keys/version(/[^/]+)?$'
-
   userDirectoryRoutes:
     - "/_matrix/client/(r0|v3|unstable)/user_directory/search$"
 
@@ -455,14 +450,23 @@ ingress:
     - '/_matrix/client/(r0|v3|unstable)/knock/.*'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/profile/.*'
   # by round-robin
-  clientReaderRoomKeys:
-    - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
-    - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
-    - '/_matrix/client/unstable/org\.matrix\.msc3983/keys/claim$'
-    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
+  clientReaderRoomKeys: []
+  #  - "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$"
+  #  #- "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/"
+  #  - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/.*)$"
+  #  #- "/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/)"
+
   # moved to deviceListsRoutes
   #  - '/_matrix/client/(r0|v3|unstable)/keys/query$'
 
+  # by user-id
+  syncKeysRoutes:
+    #  - '/_matrix/client/(r0|v3|unstable)/room_keys/keys(/[^/]+)?(/[^/]+)?$'
+    #  - '/_matrix/client/(r0|v3|unstable)/room_keys/version(/[^/]+)?$'
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/"
+    - "/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/.*)$"
+    #- "/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/)"
   # by round-robin
   clientReaderRoutes:
     - '/_matrix/client/versions$'

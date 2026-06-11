@@ -225,7 +225,7 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/room_keys/keys(/[^/]+)?(/[^/]+)?$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/room_keys/.*$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -239,7 +239,7 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/room_keys/version(/[^/]+)?$'
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/(query|changes|claim|room_keys/.*)$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -351,20 +351,6 @@ data:
                                 cluster: httpd-account-data
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3)/delete_devices$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-device-lists
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-device-lists
-                            - match:
-                                safe_regex:
                                   regex: '^/_matrix/client/(r0|v3|unstable)/keys/upload(/.*)?$'
                               route:
                                 timeout: 300s
@@ -380,6 +366,20 @@ data:
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/keys/signatures/upload$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-device-lists
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(r0|v3)/delete_devices$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-device-lists
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/devices(/.*)?$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
@@ -667,34 +667,6 @@ data:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-matrix-auth
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/changes$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-client-reader
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/claim$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-client-reader
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/unstable/org\.matrix\.msc3983/keys/claim$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-client-reader
-                            - match:
-                                safe_regex:
-                                  regex: '^/_matrix/client/(r0|v3|unstable)/keys/query$'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-client-reader
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact/.*'
