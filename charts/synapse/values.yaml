@@ -481,6 +481,7 @@ ingress:
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
     - '/_matrix/client/(r0|v3|unstable)/room_keys/'
+    - '/_matrix/client/(r0|v3|unstable)/room_keys/.*'
 
   # httpd-client-reader, LEAST_REQUEST
   clientReaderRoutes:
@@ -512,6 +513,7 @@ ingress:
     - '/_matrix/client/(r0|v3|unstable)/capabilities'
     - '/_matrix/client/(r0|v3|unstable)/notifications'
     - '/_synapse/admin/v1/rooms/[^/]+'
+    - '/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$'
 
   # httpd-client-reader, LEAST_REQUEST
   clientReaderRegisterRoutes:

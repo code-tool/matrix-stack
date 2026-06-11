@@ -634,6 +634,13 @@ data:
                                 cluster: httpd-client-keys
                             - match:
                                 safe_regex:
+                                  regex: '^/_matrix/client/(r0|v3|unstable)/room_keys/.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-keys
+                            - match:
+                                safe_regex:
                                   regex: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact.*'
                               route:
                                 timeout: 300s
@@ -922,6 +929,13 @@ data:
                             - match:
                                 safe_regex:
                                   regex: '^/_synapse/admin/v1/rooms/[^/]+'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-reader
+                            - match:
+                                safe_regex:
+                                  regex: '^/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
