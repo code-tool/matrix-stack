@@ -1,0 +1,42 @@
+--- a/synapse/storage/controllers/state.py	2026-06-16 02:07:49.851487330 +0300
++++ b/synapse/storage/controllers/state.py	2026-06-16 02:07:13.674945849 +0300
+@@ -45,6 +45,7 @@
+ from synapse.util.caches import intern_string
+ from synapse.util.caches.descriptors import cached
+ from synapse.util.cancellation import cancellable
++from synapse.util.duration import Duration
+ from synapse.util.metrics import Measure
+
+ if TYPE_CHECKING:
+@@ -458,14 +459,25 @@
+             )
+
+         else:
+-            # no events in this room - so presumably no state
+-            state = {}
++            state = await self.get_current_state_ids(
++                room_id,
++                state_filter=state_filter,
++                await_full_state=await_full_state,
++            )
++
++            for _ in range(3):
++                await self.clock.sleep(Duration(seconds=1.5))
++                new_state = await self.get_current_state_ids(
++                    room_id,
++                    state_filter=state_filter,
++                    await_full_state=await_full_state,
++                )
++                if new_state == state:
++                    break
++                state = new_state
+
+-            # (erikj) This should be rarely hit, but we've had some reports that
+-            # we get more state down gappy syncs than we should, so let's add
+-            # some logging.
+             logger.info(
+-                "Failed to find any events in room %s at %s",
++                "Failed to find any events in room %s at %s; falling back to current state",
+                 room_id,
+                 stream_position.room_key,
+             )

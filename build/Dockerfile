@@ -23,6 +23,10 @@ COPY workers.patch /tmp/workers.patch
 RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/config/workers.py) \
     < /tmp/workers.patch \
     && rm /tmp/workers.patch
+COPY fix-empty-room-state.patch /tmp/fix-empty-room-state.patch
+RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/controllers/state.py) \
+    < /tmp/fix-empty-room-state.patch \
+    && rm /tmp/fix-empty-room-state.patch
 
 # stage 3 : apply e2e_room_keys.patch
 FROM pipwheels AS e2e_patch
@@ -41,8 +45,8 @@ COPY --from=workers_patch \
   /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/config/workers.py \
   /usr/local/lib/python${PYTHON_PKG_VER}/site-packages/synapse/config/workers.py
 COPY --from=workers_patch \
-  /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/databases/main/event_push_actions.py \
-  /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/databases/main/event_push_actions.py
+  /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/controllers/state.py \
+  /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/controllers/state.py
 
 # stage 5 : base version with e2e_room_keys table optimization
 FROM main AS e2e
