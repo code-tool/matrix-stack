@@ -438,6 +438,15 @@ ingress:
   # to httpd-room-ring-hash envoy cluster
   roomRoutes:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state'
+    - '/_matrix/client/(v1|unstable)/rooms/.*/relations/.*'
+    - '/_matrix/client/v1/rooms/.*/threads'
+    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/.*'
+    - '/_matrix/client/v1/rooms/.*/timestamp_to_event'
+    - '/_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases.*'
 
   # to httpd-media-repository envoy cluster
   mediaRepositoryRoutes:
@@ -490,13 +499,7 @@ ingress:
   clientReaderRoutes:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/createRoom'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state'
     - '/_matrix/client/v1/rooms/.*/hierarchy'
-    - '/_matrix/client/(v1|unstable)/rooms/.*/relations/.*'
-    - '/_matrix/client/v1/rooms/.*/threads'
     - '/_matrix/client/unstable/im\.nheko\.summary/summary/.*'
     - '/_matrix/client/(r0|v3|unstable)/account/3pid'
     - '/_matrix/client/(r0|v3|unstable)/account/whoami'
@@ -506,10 +509,7 @@ ingress:
     - '/_matrix/client/(api/v1|r0|v3|unstable)/account/whoami'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/sync'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer'
-    - '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/.*'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms'
-    - '/_matrix/client/v1/rooms/.*/timestamp_to_event'
-    - '/_matrix/client/(api/v1|r0|v3|unstable/.*)/rooms/.*/aliases.*'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/search'
     - '/_matrix/client/(r0|v3|unstable)/user/.*/filter(/.*)?'
     - '/_matrix/client/(api/v1|r0|v3|unstable)/directory/room/.*'
