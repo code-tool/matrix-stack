@@ -20,7 +20,7 @@
 +                await_full_state=await_full_state,
 +            )
 +
-+            for _ in range(3):
++            for _ in range(10):
 +                await self.clock.sleep(Duration(seconds=1.5))
 +                new_state = await self.get_current_state_ids(
 +                    room_id,
