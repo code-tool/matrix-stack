@@ -459,7 +459,7 @@ ingress:
     - '/_matrix/client/(api/v1|r0|v3)/initialSync'
     - '/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync'
     #- '/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages'
-    - '/_matrix/client/unstable/org.matrix.simplified_msc3575/sync'
+    - '/_matrix/client/unstable/org\.matrix\.simplified_msc3575/sync'
 
   # httpd-user-dir envoy cluster
   userDirectoryRoutes:
@@ -480,9 +480,13 @@ ingress:
 
   # httpd-client-keys, LEAST_REQUEST
   clientKeysRoutes:
-    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
     - '/_matrix/client/(r0|v3|unstable)/keys/changes$'
     - '/_matrix/client/(r0|v3|unstable)/keys/claim$'
+
+  # httpd-client-keys-user-ring-hash, user-ring-hash
+  clientKeysHashedRoutes:
+    # have doubts about need of user-ring-hash for keys/query
+    - '/_matrix/client/(r0|v3|unstable)/keys/query$'
     - '/_matrix/client/(r0|v3|unstable)/room_keys/'
     - '/_matrix/client/(r0|v3|unstable)/room_keys/.*'
 
@@ -516,7 +520,7 @@ ingress:
     - '/_matrix/client/(r0|v3|unstable)/capabilities'
     - '/_matrix/client/(r0|v3|unstable)/notifications'
     - '/_synapse/admin/v1/rooms/[^/]+'
-    - '/_matrix/client/unstable/org.matrix.msc4140/delayed_events(/.*/restart)?$'
+    - '/_matrix/client/unstable/org\.matrix\.msc4140/delayed_events(/.*/restart)?$'
 
   # httpd-client-reader, LEAST_REQUEST
   clientReaderRegisterRoutes:

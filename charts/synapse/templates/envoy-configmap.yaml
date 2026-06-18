@@ -287,6 +287,23 @@ data:
                                 cluster: httpd-client-keys
                             {{- end }}
 
+                            {{- range $route := .Values.ingress.clientKeysHashedRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-client-keys-user-ring-hash
+                                hash_policy:
+                                  - header:
+                                      header_name: X-Hash-Key
+                              typed_per_filter_config:
+                                envoy.filters.http.lua:
+                                  "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.LuaPerRoute
+                                  name: whoami_hash
+                            {{- end }}
+
                             {{- range $route := .Values.ingress.clientEventsRoomRoutes }}
                             - match:
                                 safe_regex:
@@ -469,6 +486,31 @@ data:
                 max_retries: 3
           load_assignment:
             cluster_name: httpd-client-keys
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: synapse-client-keys-headless
+                          port_value: 8008
+        - name: httpd-client-keys-user-ring-hash
+          connect_timeout: 1.00s
+          type: STRICT_DNS
+          dns_lookup_family: V4_ONLY
+          ignore_health_on_host_removal: true
+          lb_policy: RING_HASH
+          circuit_breakers:
+            thresholds:
+              - priority: DEFAULT
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+              - priority: HIGH
+                max_connections: 30000
+                max_requests: 8192
+                max_retries: 3
+          load_assignment:
+            cluster_name: httpd-client-keys-user-ring-hash
             endpoints:
               - lb_endpoints:
                   - endpoint:
