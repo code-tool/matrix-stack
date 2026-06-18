@@ -16,7 +16,7 @@ synapse:
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
     # also this ghcr contains synapse:v1.151.0-e2e-optimized with e2e_room_key query patches
-    tag: "v1.151.5"
+    tag: "v1.155.0"
     pullPolicy: IfNotPresent
   disablePgBouncerForStreamWriters: false
   nodeSelector: {}
@@ -152,6 +152,9 @@ synapse:
       replicas: 1
       resources: {}
     federation_sender:
+      replicas: 1
+      resources: {}
+    quarantined_media_changes:
       replicas: 1
       resources: {}
   # this workers will never scale, only vertical scaling is possible
@@ -448,8 +451,11 @@ ingress:
     - '/_synapse/admin/v1/room/.*/media.*'
     - '/_synapse/admin/v1/user/.*/media.*'
     - '/_synapse/admin/v1/media/.*'
-    - '/_synapse/admin/v1/quarantine_media/.*'
     - '/_synapse/admin/v1/users/.*/media'
+
+  # to httpd-quarantined-media-changes envoy cluster
+  quarantineMediaChangesRoutes:
+    - '/_synapse/admin/v1/quarantine_media/.*'
 
   # was clientReaderStickyRoutes
   # to httpd-sync-user-ring-hash envoy cluster
@@ -605,7 +611,7 @@ envoyProxy:
     # maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
-    tag: v1.36.6
+    tag: v1.36.8
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
@@ -650,7 +656,7 @@ matrixAuthentication:
     # maxUnavailable: 1
   image:
     repository: ghcr.io/element-hq/matrix-authentication-service
-    tag: 1.15.0
+    tag: 1.18.0
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:

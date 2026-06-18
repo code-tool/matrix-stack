@@ -15,7 +15,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: config-sync
-          image: ghcr.io/element-hq/matrix-authentication-service:1.15.0
+          image: ghcr.io/element-hq/matrix-authentication-service:1.18.0
           imagePullPolicy: IfNotPresent
           env:
             - name: "MAS_CONFIG"

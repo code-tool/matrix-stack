@@ -41,6 +41,14 @@ component: synapse-federation-reader
 {{/*
 Selector labels
 */}}
+{{- define "synapse-quarantined-media-changes.selectorLabels" -}}
+app: synapse
+component: synapse-quarantined-media-changes
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
 {{- define "synapse-client-reader-envoy.selectorLabels" -}}
 app: synapse
 component: synapse-client-reader-envoy
