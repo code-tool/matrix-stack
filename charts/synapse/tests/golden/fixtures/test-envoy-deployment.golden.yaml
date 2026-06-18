@@ -24,12 +24,12 @@ spec:
         app: synapse
         component: synapse-client-reader-envoy
       annotations:
-        checksum/config: d131be604d783955b18d21cb0729988c91d289028b43c0be34fedfd1f1e561b6
+        checksum/config: 9d638ffa8fe8adfd5d59a0178fdb455821ac57f2f3e1f217d20d4dd78cafd53f
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: envoy
-          image: envoyproxy/envoy:v1.36.8
+          image: envoyproxy/envoy:v1.37.4
           imagePullPolicy: IfNotPresent
           args:
             - -c

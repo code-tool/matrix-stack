@@ -611,7 +611,7 @@ envoyProxy:
     # maxUnavailable: 1
   image:
     repository: envoyproxy/envoy
-    tag: v1.36.8
+    tag: v1.37.4
     pullPolicy: IfNotPresent
   resources: {}
   #  limits:
