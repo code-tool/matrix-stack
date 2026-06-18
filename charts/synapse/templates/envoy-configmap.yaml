@@ -956,7 +956,7 @@ data:
                   - endpoint:
                       address:
                         socket_address:
-                          address: httpd-quarantined-media-changes
+                          address: synapse-quarantined-media-changes-headless
                           port_value: 8008
 
   synapse.lua: |
