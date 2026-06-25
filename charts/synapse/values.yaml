@@ -22,6 +22,13 @@ synapse:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  logFormatters:
+    precise:
+      format: "%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s"
+  logHandlers:
+    console:
+      class: logging.StreamHandler
+      formatter: precise
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
