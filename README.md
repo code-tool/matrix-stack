@@ -81,7 +81,7 @@ Worker reference table
 | receipts                               | stream writer | yes      | round-robin          | yes  |
 | device_lists                           | stream writer | yes      | round-robin          | yes  |
 | thread_subscriptions                   | stream writer | yes      | round-robin          | yes  |
-| quarantined_media                      | stream writer | yes      | round-robin          | yes  |
+| quarantined_media_changes              | stream writer | yes      | round-robin (?)      | yes  |
 | events (persister)                     | stream writer | yes      | shard by room_id     | yes  |
 | media_repository                       | app           | yes      | least_conn           | yes  |
 | media_instance_running_background_jobs | app           | no       | -                    | no   |

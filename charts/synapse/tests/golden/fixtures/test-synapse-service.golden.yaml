@@ -283,6 +283,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: synapse-quarantined-media-changes
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+spec:
+  clusterIP: None
+  selector:
+    app: synapse
+    component: synapse-quarantined-media-changes
+  ports:
+  - name: client
+    port: 80
+    targetPort: 8008
+  - name: http
+    port: 8008
+    targetPort: 8008
+---
+# Source: synapse/templates/synapse-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
   name: synapse-receipts
   annotations:
     cloud.google.com/neg: '{"ingress":false}'
@@ -523,3 +543,24 @@ spec:
   selector:
       app: synapse
       component: synapse-federation-reader
+---
+# Source: synapse/templates/synapse-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-quarantined-media-changes-headless
+  annotations:
+    cloud.google.com/neg: '{"ingress":false}'
+  labels:
+    app: synapse
+    component: synapse-quarantined-media-changes
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
+  selector:
+      app: synapse
+      component: synapse-quarantined-media-changes
