@@ -29,6 +29,21 @@ synapse:
     console:
       class: logging.StreamHandler
       formatter: precise
+  logLoggers:
+    synapse.handlers.pagination:
+      level: INFO
+    synapse.config.retention:
+      level: INFO
+    synapse.metrics.background_process_metrics:
+      level: INFO
+    synapse.storage.SQL:
+      level: WARNING
+    twisted:
+      handlers:
+        - console
+      propagate: false
+    synapse.logging.scopecontextmanager:
+      level: CRITICAL
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
