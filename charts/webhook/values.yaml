@@ -18,6 +18,7 @@ matrix:
   apiKey: ""
   token: ""
 ingress:
+  enabled: true
   host: ""
   secretName: ""
   ingressClassName: nginx
