@@ -20,7 +20,7 @@ index 46c91bb..b8d6005 100644
      await utils.CLIENT.close()
 
 diff --git a/matrix_webhook/formatters.py b/matrix_webhook/formatters.py
-index 63040bf..e61f387 100644
+index 63040bf..17606f3 100644
 --- a/matrix_webhook/formatters.py
 +++ b/matrix_webhook/formatters.py
 @@ -1,6 +1,7 @@
@@ -64,8 +64,82 @@ index 63040bf..e61f387 100644
 +    data["body"] = text
 +    return data
 +
+diff --git a/matrix_webhook/handler.py b/matrix_webhook/handler.py
+index ed40449..405ea89 100644
+--- a/matrix_webhook/handler.py
++++ b/matrix_webhook/handler.py
+@@ -25,11 +25,11 @@ async def matrix_webhook(request):
+         return utils.create_json_response(HTTPStatus.OK, "OK")
+ 
+     data_b = await request.read()
+-
++    formatter = request.rel_url.query.get('formatter', None)
+     try:
+         data = json.loads(data_b.decode())
+     except json.decoder.JSONDecodeError:
+-        return utils.create_json_response(HTTPStatus.BAD_REQUEST, "Invalid JSON")
++        return utils.create_json_response(status=HTTPStatus.BAD_REQUEST, ret="Invalid JSON", formatter=formatter)
+ 
+     # legacy naming
+     if "text" in data and "body" not in data:
+@@ -47,8 +47,9 @@ async def matrix_webhook(request):
+             )
+         except AttributeError:
+             return utils.create_json_response(
+-                HTTPStatus.BAD_REQUEST,
+-                "Unknown formatter",
++                status=HTTPStatus.BAD_REQUEST,
++                ret="Unknown formatter",
++                formatter=formatter,
+             )
+ 
+     if "room_id" in request.rel_url.query and "room_id" not in data:
+@@ -63,8 +64,9 @@ async def matrix_webhook(request):
+             data["key"] = conf.API_KEY
+         else:  # but if there is a wrong digest, an informative error should be provided
+             return utils.create_json_response(
+-                HTTPStatus.UNAUTHORIZED,
+-                "Invalid SHA-256 HMAC digest",
++                status=HTTPStatus.UNAUTHORIZED,
++                ret="Invalid SHA-256 HMAC digest",
++                formatter=formatter,
+             )
+ 
+     missing = []
+@@ -73,12 +75,13 @@ async def matrix_webhook(request):
+             missing.append(key)
+     if missing:
+         return utils.create_json_response(
+-            HTTPStatus.BAD_REQUEST,
+-            f"Missing {', '.join(missing)}",
++            status=HTTPStatus.BAD_REQUEST,
++            ret=f"Missing {', '.join(missing)}",
++            formatter=formatter,
+         )
+ 
+     if data["key"] != conf.API_KEY:
+-        return utils.create_json_response(HTTPStatus.UNAUTHORIZED, "Invalid API key")
++        return utils.create_json_response(status=HTTPStatus.UNAUTHORIZED, ret="Invalid API key",formatter=formatter)
+ 
+     if "formatted_body" in data:
+         formatted_body = data["formatted_body"]
+@@ -86,7 +89,7 @@ async def matrix_webhook(request):
+         formatted_body = markdown(str(data["body"]), extensions=["extra"])
+ 
+     # try to join room first -> non none response means error
+-    resp = await utils.join_room(data["room_id"])
++    resp = await utils.join_room(room_id=data["room_id"], formatter=formatter)
+     if resp is not None:
+         return resp
+ 
+@@ -96,4 +99,4 @@ async def matrix_webhook(request):
+         "format": "org.matrix.custom.html",
+         "formatted_body": formatted_body,
+     }
+-    return await utils.send_room_message(data["room_id"], content)
++    return await utils.send_room_message(room_id=data["room_id"], content=content, formatter=formatter)
 diff --git a/matrix_webhook/utils.py b/matrix_webhook/utils.py
-index 72172a7..940c7c1 100644
+index 7b70e11..db2712c 100644
 --- a/matrix_webhook/utils.py
 +++ b/matrix_webhook/utils.py
 @@ -5,11 +5,13 @@ from collections import defaultdict
@@ -85,7 +159,7 @@ index 72172a7..940c7c1 100644
      lambda: HTTPStatus.INTERNAL_SERVER_ERROR,
 @@ -21,6 +23,9 @@ ERROR_MAP = defaultdict(
  LOGGER = logging.getLogger("matrix_webhook.utils")
- CLIENT = AsyncClient(conf.MATRIX_URL, conf.MATRIX_ID)
+ CLIENT = AsyncClient(conf.MATRIX_URL, conf.MATRIX_ID, proxy=conf.PROXY)
 
 +def format_url(data):
 +    data = sub(r"(<(https?://[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+)\|([\w\s]+)>)", r'<a href="\2">\3</a>', data)
@@ -93,10 +167,45 @@ index 72172a7..940c7c1 100644
 
  def error_map(resp):
      """Map response errors to HTTP status."""
-@@ -66,6 +71,16 @@ async def join_room(room_id):
-     return create_json_response(HTTPStatus.GATEWAY_TIMEOUT, "Homeserver not responding")
-
-
+@@ -31,15 +36,17 @@ def error_map(resp):
+     return ERROR_MAP[resp.status_code]
+ 
+ 
+-def create_json_response(status, ret):
++def create_json_response(status, ret, formatter: str = None):
+     """Create a JSON response."""
+     msg = f"Creating json response: {status=}, {ret=}"
+-    LOGGER.debug(msg)
+-    response_data = {"status": status, "ret": ret}
++    if formatter == "slack":
++        response_data = {"ok": 200 <= status.value < 300, "error": ret}
++    else:
++        response_data = {"status": status, "ret": ret}
+     return web.json_response(response_data, status=status)
+ 
+ 
+-async def join_room(room_id):
++async def join_room(room_id,formatter: str = None):
+     """Try to join the room."""
+     msg = f"Join room {room_id=}"
+     LOGGER.debug(msg)
+@@ -53,7 +60,7 @@ async def join_room(room_id):
+                     if conf.MATRIX_PW:
+                         await CLIENT.login(conf.MATRIX_PW)
+                 else:
+-                    return create_json_response(error_map(resp), resp.message)
++                    return create_json_response(status=error_map(resp), ret=resp.message, formatter=formatter)
+             else:
+                 return None
+         except LocalProtocolError as e:
+@@ -63,10 +70,20 @@ async def join_room(room_id):
+             if conf.MATRIX_PW:
+                 await CLIENT.login(conf.MATRIX_PW)
+         LOGGER.warning("Trying again")
+-    return create_json_response(HTTPStatus.GATEWAY_TIMEOUT, "Homeserver not responding")
++    return create_json_response(status=HTTPStatus.GATEWAY_TIMEOUT, ret="Homeserver not responding", formatter=formatter)
++
++
 +async def accept_invitation(room: MatrixRoom, event: InviteEvent):
 +    LOGGER.info(f"Got invite to room {room.room_id=}")
 +    await CLIENT.join(room.room_id)
@@ -105,8 +214,28 @@ index 72172a7..940c7c1 100644
 +def watch_for_invitation():
 +    CLIENT.add_event_callback(accept_invitation, InviteEvent)
 +    return create_task(CLIENT.sync_forever())
-+
-+
- async def send_room_message(room_id, content):
+ 
+ 
+-async def send_room_message(room_id, content):
++async def send_room_message(room_id, content, formatter: str = None):
      """Send a message to a room."""
      msg = f"Sending room message in {room_id=}: {content=}"
+     LOGGER.debug(msg)
+@@ -84,9 +101,9 @@ async def send_room_message(room_id, content):
+                     if conf.MATRIX_PW:
+                         await CLIENT.login(conf.MATRIX_PW)
+                 else:
+-                    return create_json_response(error_map(resp), resp.message)
++                    return create_json_response(status=error_map(resp), ret=resp.message,formatter=formatter)
+             else:
+-                return create_json_response(HTTPStatus.OK, "OK")
++                return create_json_response(status=HTTPStatus.OK, ret="OK", formatter=formatter)
+         except LocalProtocolError as e:
+             msg = f"Send error: {e}"
+             LOGGER.error(msg)
+@@ -94,4 +111,4 @@ async def send_room_message(room_id, content):
+             if conf.MATRIX_PW:
+                 await CLIENT.login(conf.MATRIX_PW)
+         LOGGER.warning("Trying again")
+-    return create_json_response(HTTPStatus.GATEWAY_TIMEOUT, "Homeserver not responding")
++    return create_json_response(status=HTTPStatus.GATEWAY_TIMEOUT, ret="Homeserver not responding", formatter=formatter)
