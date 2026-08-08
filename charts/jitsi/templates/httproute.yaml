@@ -1,0 +1,40 @@
+{{- if .Values.gatewayApi.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jitsi-web
+  {{- if or .Values.gatewayApi.annotations .Values.gatewayApi.commonAnnotations }}
+  {{ $annotations := merge .Values.gatewayApi.annotations .Values.gatewayApi.commonAnnotations }}
+  annotations: {{ toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.gatewayApi.parentRefs | nindent 4 }}
+  {{- if .Values.ingress.serverName }}
+  hostnames:
+    - {{ .Values.ingress.serverName }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /xmpp-websocket
+      backendRefs:
+        - name: prosody
+          port: 5280
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /colibri-ws
+      backendRefs:
+        - name: jitsi-jvb
+          port: 9090
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: jitsi-web
+          port: 80
+{{- end }}

@@ -11,6 +11,15 @@ ingress:
   secretName: ""
   annotations: {}
 
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  annotations: {}
+
 replicaCount: 1
 autoscaling:
   enabled: false

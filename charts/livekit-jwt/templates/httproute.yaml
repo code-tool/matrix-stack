@@ -1,0 +1,31 @@
+{{- if .Values.gatewayApi.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: livekit-jwt
+  labels:
+    {{- include "livekit-jwt.selectorLabels" . | nindent 4 }}
+  {{- if .Values.gatewayApi.annotations }}
+  annotations:
+    {{ .Values.gatewayApi.annotations | toYaml | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.gatewayApi.parentRefs | nindent 4 }}
+  {{- if .Values.ingress.serverName }}
+  hostnames:
+    - {{ .Values.ingress.serverName }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /sfu/get
+        - path:
+            type: Exact
+            value: /get_token
+      backendRefs:
+        - name: livekit-jwt
+          port: 80
+{{- end }}
