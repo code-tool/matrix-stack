@@ -164,6 +164,16 @@ entries:
   element-call:
   - apiVersion: v2
     appVersion: v0.16.3
+    created: "2026-08-08T16:04:59.111974003Z"
+    digest: 69b365e74c203587df12716cd9f40457310b1cc04c638a3c686a900addca871d
+    name: element-call
+    sources:
+    - https://github.com/element-hq/element-call
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.2.0/element-call-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: v0.16.3
     created: "2025-12-29T02:22:53.491070578Z"
     digest: 3a88494915c54c36bd72f469831140370dadb01506a6b88019b9b565e32fbff2
     name: element-call
@@ -209,6 +219,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.0.1/element-call-0.0.1.tgz
     version: 0.0.1
   jitsi:
+  - apiVersion: v1
+    created: "2026-08-08T16:04:59.249740884Z"
+    digest: c8f5605ed24d752f2c560b7399b73abca02a1b9135d1904d0de7543b2293c425
+    name: jitsi
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.4.0/jitsi-0.4.0.tgz
+    version: 0.4.0
   - apiVersion: v1
     created: "2026-03-20T14:28:23.89750037Z"
     digest: c32fa1fdb642d2749842963284e13f10989b30ca085fe14ce02b70b61abfc6a1
@@ -408,6 +425,16 @@ entries:
   livekit-jwt:
   - apiVersion: v2
     appVersion: 0.4.0
+    created: "2026-08-08T16:04:59.374523531Z"
+    digest: 7a87b1bfdb8d69d9752036c30b7b096e69c80645a5db5b0af17c83c9ecb6a673
+    name: livekit-jwt
+    sources:
+    - https://github.com/element-hq/lk-jwt-service
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/livekit-jwt-0.5.0/livekit-jwt-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 0.4.0
     created: "2025-12-29T02:08:44.347173829Z"
     digest: fb89c7cb1a356e78e17994170b1af66fd4aa3ac5d38c56dd85776b36fca8d809
     name: livekit-jwt
@@ -483,6 +510,15 @@ entries:
     version: 0.0.1
   matrix-alertmanager-receiver:
   - apiVersion: v1
+    created: "2026-08-08T16:04:59.515511867Z"
+    digest: 415f89c6ac90afab2507fe947a9e3e823ac29f61ba0b33503756b46e7f6e92be
+    name: matrix-alertmanager-receiver
+    sources:
+    - https://github.com/metio/matrix-alertmanager-receiver
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/matrix-alertmanager-receiver-0.5.0/matrix-alertmanager-receiver-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v1
     created: "2026-02-17T07:15:59.750592519Z"
     digest: 216433ec87c67c12756267696bedcc4921a3cce192b3d7f56c252585f74f4fae
     name: matrix-alertmanager-receiver
@@ -557,6 +593,15 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/overprovisioning-0.0.2/overprovisioning-0.0.2.tgz
     version: 0.0.2
   redis:
+  - apiVersion: v2
+    appVersion: 7.2.15
+    created: "2026-08-08T16:04:59.63133768Z"
+    description: matrix synapse kubernetes deployment
+    digest: 0540eb3f3004cfcbdddc246757132a0bbe5f759524283fe966c402a7f34c8ed0
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.5.0/redis-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v1
     created: "2026-05-06T07:06:28.250063891Z"
     digest: bdb6b2a259f386b11398af3f4901e4946030c6ce5bc507c4a63488de54e7816f
@@ -635,6 +680,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
   sentry-webhook:
+  - apiVersion: v1
+    created: "2026-08-08T16:04:59.770626748Z"
+    digest: db121f248602c08d22ad08bbb7b1e1735404847589352b0ed6bcf669fc14fecb
+    name: sentry-webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.3.0/sentry-webhook-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v1
     created: "2026-05-12T12:39:41.85408894Z"
     digest: e7cb2fb4addf2d7b69e4bd55f533f802a3f37b5db3ea2e0235bc40a2f7e2cfc5
@@ -2278,6 +2330,13 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2026-08-08T16:04:59.899873549Z"
+    digest: 0c4e385816215d904f5800f51854aa2933db95086cc45611a737e56ab999e713
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.8.0/webhook-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v1
     created: "2026-07-28T14:40:58.000421927Z"
     digest: b91829646c7221d7aa14573c65ffbd3fe93a9b057c39d65a70fa44cd0119f241
     name: webhook
@@ -2382,4 +2441,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-07-28T14:40:58.001136729Z"
+generated: "2026-08-08T16:04:59.900680589Z"
