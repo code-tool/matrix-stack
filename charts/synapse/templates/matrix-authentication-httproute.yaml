@@ -1,0 +1,28 @@
+{{- if .Values.matrixAuthentication.enabled }}
+{{- if .Values.matrixAuthentication.gatewayApi.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: matrix-authentication
+  {{- if or .Values.matrixAuthentication.gatewayApi.annotations .Values.matrixAuthentication.gatewayApi.commonAnnotations }}
+  {{ $annotations := merge .Values.matrixAuthentication.gatewayApi.annotations .Values.matrixAuthentication.gatewayApi.commonAnnotations }}
+  annotations: {{ toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.matrixAuthentication.gatewayApi.parentRefs | nindent 4 }}
+  {{- if .Values.matrixAuthentication.ingress.host }}
+  hostnames:
+    - {{ .Values.matrixAuthentication.ingress.host }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: matrix-authentication
+          port: 80
+{{- end }}
+{{- end }}

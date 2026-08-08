@@ -36,3 +36,4 @@ spec:
             items:
              - key: mas-config.yaml
                path: mas-config.yaml
+
