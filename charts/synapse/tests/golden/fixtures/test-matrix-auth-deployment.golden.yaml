@@ -24,7 +24,7 @@ spec:
         app: synapse
         component: matrix-authentication
       annotations:
-        checksum/config: a5a6b03d26e1be82388abd221457458a5a63dd8bf9433311aa9285394517bc27
+        checksum/config: bcd790ee22fc86eb70b9218630ffe2c465806d9d6d3dc92a47297d89a8046e7d
     spec:
       terminationGracePeriodSeconds: 60
       containers:
