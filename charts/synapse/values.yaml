@@ -592,6 +592,16 @@ ingress:
     # ??
     - '/_matrix/client/(.*)/(login|logout|refresh)'
 
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  commonAnnotations: {}
+  annotations: {}
+
 admin:
   ingress:
     enabled: true
@@ -602,6 +612,15 @@ admin:
       nginx.ingress.kubernetes.io/use-regex: "true"
     annotations: {}
     ingressClassName: nginx
+  gatewayApi:
+    enabled: false
+    # parentRefs:
+    #   - name: my-gateway
+    #     namespace: gateway-system
+    #     sectionName: https
+    parentRefs: []
+    commonAnnotations: {}
+    annotations: {}
   image:
     repository: "ghcr.io/etkecc/ketesa"
     tag: "v1.2.1"
@@ -713,6 +732,15 @@ matrixAuthentication:
       nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     annotations:  {}
     ingressClassName: nginx
+  gatewayApi:
+    enabled: false
+    # parentRefs:
+    #   - name: my-gateway
+    #     namespace: gateway-system
+    #     sectionName: https
+    parentRefs: []
+    commonAnnotations: {}
+    annotations: {}
   config:
     clients: []
     database:
@@ -808,6 +836,15 @@ wellKnown:
       nginx.ingress.kubernetes.io/use-regex: "true"
     annotations: {}
     ingressClassName: nginx
+  gatewayApi:
+    enabled: false
+    # parentRefs:
+    #   - name: my-gateway
+    #     namespace: gateway-system
+    #     sectionName: https
+    parentRefs: []
+    commonAnnotations: {}
+    annotations: {}
   image:
     repository: nginx
     tag: 1.28.3
