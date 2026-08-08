@@ -62,3 +62,12 @@ ingress:
   ingressClassName: nginx
   serverName: ''
   secretName: ''
+
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  annotations: {}

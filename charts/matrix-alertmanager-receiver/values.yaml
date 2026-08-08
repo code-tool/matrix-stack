@@ -66,3 +66,13 @@ ingress:
   #  - hosts:
   #      - {{ .Values.ingress.host }}
   #    secretName: {{ .Values.ingress.host }}
+
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  commonAnnotations: {}
+  annotations: {}

@@ -7,6 +7,16 @@ ingress:
   annotations: {}
   ngressClassName: nginx
 
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  commonAnnotations: {}
+  annotations: {}
+
 timeZone: Europe/Amsterdam
 jicofo:
   replicas: 1

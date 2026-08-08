@@ -27,3 +27,16 @@ ingress:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   annotations: {}
+gatewayApi:
+  enabled: false
+  # parentRefs:
+  #   - name: my-gateway
+  #     namespace: gateway-system
+  #     sectionName: https
+  parentRefs: []
+  hostnames: []
+  path: "/webhook"
+  pathType: PathPrefix
+  filters: []
+  commonAnnotations: {}
+  annotations: {}
