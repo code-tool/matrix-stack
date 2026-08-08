@@ -24,14 +24,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-client-keys
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -103,14 +103,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-client-reader
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -182,14 +182,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-federation-reader
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -261,14 +261,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-media-repository
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -340,14 +340,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-room
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -419,14 +419,14 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 6ae47b7c39c02b70a104e798b7a23a7617413285caf67d0311b023252dcba85a
+        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
       labels:
         app: synapse
         component: synapse-sync
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.155.0
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
         imagePullPolicy: IfNotPresent
         resources: 
           limits:

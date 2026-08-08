@@ -15,8 +15,8 @@ synapse:
     repository: "ghcr.io/code-tool/matrix-stack/synapse"
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
-    # also this ghcr contains synapse:v1.151.0-e2e-optimized with e2e_room_key query patches
-    tag: "v1.155.0"
+    # also this ghcr contains synapse:v1.157.0-e2e-optimized with e2e_room_key query patches
+    tag: "v1.157.2"
     pullPolicy: IfNotPresent
   disablePgBouncerForStreamWriters: false
   nodeSelector: {}
@@ -377,24 +377,13 @@ media_storage_providers: []
 identity_server_vector: false
 openid_configuration: true
 experimentalFeatures:
-  msc3967:
-    enabled: true
-  # msc2965 will be enabled with msc3861
-  msc2965:
-    enabled: true
   msc3861:
-    # TODO: enabled by matrixAuthentication.enabled, deprecated section
-    issuer: NOT-CONFIGURED
-    client_id: NOT-CONFIGURED
-    client_auth_method: client_secret_basic
-    client_secret: NOT-CONFIGURED
+    # shared secret for the stable matrix_authentication_service integration,
+    # enabled by matrixAuthentication.enabled (see synapse-secret.yaml / matrix-authentication-secret.yaml)
     admin_token: NOT-CONFIGURED
-    account_management_url: NOT-CONFIGURED
   msc3266:
     enabled: false
   msc4222:
-    enabled: false
-  msc4140:
     enabled: false
   # msc4308 will be enabled with msc4306
   msc4306:

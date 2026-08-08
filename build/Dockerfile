@@ -1,4 +1,4 @@
-ARG SYNAPSE_PKG_VER="v1.155.0"
+ARG SYNAPSE_PKG_VER="v1.157.2"
 ARG PYTHON_PKG_VER="3.13"
 
 # stage 1 : build pip
@@ -23,10 +23,10 @@ COPY workers.patch /tmp/workers.patch
 RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/config/workers.py) \
     < /tmp/workers.patch \
     && rm /tmp/workers.patch
-COPY fix-empty-room-state.patch /tmp/fix-empty-room-state.patch
-RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/controllers/state.py) \
-    < /tmp/fix-empty-room-state.patch \
-    && rm /tmp/fix-empty-room-state.patch
+#COPY fix-empty-room-state.patch /tmp/fix-empty-room-state.patch
+#RUN patch $(ls /usr/local/lib/python$PYTHON_PKG_VER/site-packages/synapse/storage/controllers/state.py) \
+#    < /tmp/fix-empty-room-state.patch \
+#    && rm /tmp/fix-empty-room-state.patch
 
 # stage 3 : apply e2e_room_keys.patch
 FROM pipwheels AS e2e_patch
