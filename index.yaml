@@ -277,6 +277,15 @@ entries:
     version: 0.0.1
   keycloak-sync:
   - apiVersion: v1
+    created: "2026-08-17T13:08:26.401247278Z"
+    description: Master Helm chart for sync users from specific group in KeyCloak
+      to Matrix
+    digest: 5d458dadf09046fcd7ec66f8ef87c9e25d9a72bb01fac4067316d0013212ed7e
+    name: keycloak-sync
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/keycloak-sync-0.0.4/keycloak-sync-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v1
     created: "2026-05-25T09:37:06.995994184Z"
     description: Master Helm chart for sync users from specific group in KeyCloak
       to Matrix
@@ -2468,4 +2477,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-08-12T21:01:50.888490026Z"
+generated: "2026-08-17T13:08:26.401731363Z"
