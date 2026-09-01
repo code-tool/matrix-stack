@@ -579,7 +579,7 @@ ingress:
     #- '/_matrix/client/(api/v1|r0|v3|unstable)/logout(/all)?$'
     #- '/_matrix/client/(r0|v3|unstable)/refresh$'
     # ??
-    - '/_matrix/client/(.*)/(login|logout|refresh)'
+    - '/_matrix/client/(.*)/(login|logout|refresh).*'
 
 gatewayApi:
   enabled: false
