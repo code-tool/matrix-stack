@@ -390,6 +390,7 @@ experimentalFeatures:
     enabled: false
 
 ingress:
+  enabled: true
   secretName: ''
   commonAnnotations:
     nginx.org/client-max-body-size: "50m"
@@ -821,6 +822,7 @@ wellKnown:
     annotations:
       cloud.google.com/neg: '{"ingress":false}'
   ingress:
+    enabled: true
     commonAnnotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
     annotations: {}
