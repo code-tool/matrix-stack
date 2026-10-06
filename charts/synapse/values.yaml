@@ -838,7 +838,7 @@ wellKnown:
     annotations: {}
   image:
     repository: nginx
-    tag: 1.28.3
+    tag: 1.30.5
   resources:
     requests:
       cpu: 20m
