@@ -221,7 +221,7 @@ synapse:
   pgbouncer:
     image:
       repository: "ghcr.io/icoretech/pgbouncer-docker"
-      tag: "1.24.1"
+      tag: "1.25.2"
       pullPolicy: IfNotPresent
     replicas: 2
     # set thish gt 0 if you want to enable serveice sessionAffinity by ClientIP
@@ -276,7 +276,7 @@ synapse:
     connect_timeout: 10
     image:
       repository: prometheuscommunity/pgbouncer-exporter
-      tag: v0.12.0
+      tag: v0.12.1
       pullPolicy: IfNotPresent
     log:
       # debug, info, warn, error
