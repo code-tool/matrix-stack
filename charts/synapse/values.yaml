@@ -613,7 +613,7 @@ admin:
     annotations: {}
   image:
     repository: "ghcr.io/etkecc/ketesa"
-    tag: "v1.3.0"
+    tag: "v1.5.1"
     pullPolicy: IfNotPresent
   replicas: 1
   resources: {}
