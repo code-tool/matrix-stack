@@ -1,6 +1,6 @@
 image:
   repository: "redis"
-  tag: "7.4.11"
+  tag: ''
   pullPolicy: IfNotPresent
 resources: {}
 nodeSelector: {}
