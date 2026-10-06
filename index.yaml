@@ -603,6 +603,15 @@ entries:
     version: 0.0.2
   redis:
   - apiVersion: v2
+    appVersion: 7.4.11
+    created: "2026-10-06T08:02:28.863417123Z"
+    description: matrix synapse kubernetes deployment
+    digest: 3d9f8b27c5b31630c71422534acf181e86eeb4b3c1bf2c2cef387713a2b9be4f
+    name: redis
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/redis-0.6.0/redis-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
     appVersion: 7.2.15
     created: "2026-08-08T16:04:59.63133768Z"
     description: matrix synapse kubernetes deployment
@@ -2495,4 +2504,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-10-05T05:33:33.012424821Z"
+generated: "2026-10-06T08:02:28.863896122Z"
