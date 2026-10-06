@@ -1,4 +1,4 @@
-VERSION=v1.157.2
+VERSION=v1.160.0
 
 .PHONY: all build-main push-main build-e2e push-e2e test-lua
 

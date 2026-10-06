@@ -16,7 +16,7 @@ synapse:
     # this is patched version of mainstream synamse
     # please find patches by link: https://github.com/code-tool/matrix-stack/tree/main/build
     # also this ghcr contains synapse:v1.157.0-e2e-optimized with e2e_room_key query patches
-    tag: "v1.157.2"
+    tag: "v1.160.0"
     pullPolicy: IfNotPresent
   disablePgBouncerForStreamWriters: false
   nodeSelector: {}
