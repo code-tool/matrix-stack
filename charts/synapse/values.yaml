@@ -468,6 +468,10 @@ ingress:
   # to httpd-quarantined-media-changes envoy cluster
   quarantineMediaChangesRoutes:
     - '/_synapse/admin/v1/quarantine_media/.*'
+    - '/_synapse/admin/v1/room/.*/media/quarantine$'
+    - '/_synapse/admin/v1/user/.*/media/quarantine$'
+    - '/_synapse/admin/v1/media/quarantine/.*'
+    - '/_synapse/admin/v1/media/unquarantine/.*'
 
   # was clientReaderStickyRoutes
   # to httpd-sync-user-ring-hash envoy cluster

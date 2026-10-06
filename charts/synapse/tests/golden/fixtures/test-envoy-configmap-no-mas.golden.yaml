@@ -246,6 +246,41 @@ data:
                                   name: whoami_hash
                             - match:
                                 safe_regex:
+                                  regex: '^/_synapse/admin/v1/quarantine_media/.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-quarantined-media-changes
+                            - match:
+                                safe_regex:
+                                  regex: '^/_synapse/admin/v1/room/.*/media/quarantine$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-quarantined-media-changes
+                            - match:
+                                safe_regex:
+                                  regex: '^/_synapse/admin/v1/user/.*/media/quarantine$'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-quarantined-media-changes
+                            - match:
+                                safe_regex:
+                                  regex: '^/_synapse/admin/v1/media/quarantine/.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-quarantined-media-changes
+                            - match:
+                                safe_regex:
+                                  regex: '^/_synapse/admin/v1/media/unquarantine/.*'
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-quarantined-media-changes
+                            - match:
+                                safe_regex:
                                   regex: '^/_matrix/media/.*'
                               route:
                                 timeout: 300s
@@ -300,13 +335,6 @@ data:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-media-repository
-                            - match:
-                                safe_regex:
-                                  regex: '^/_synapse/admin/v1/quarantine_media/.*'
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-quarantined-media-changes
                             - match:
                                 safe_regex:
                                   regex: '^/_matrix/client/(r0|v3|unstable)/sendToDevice/.*'

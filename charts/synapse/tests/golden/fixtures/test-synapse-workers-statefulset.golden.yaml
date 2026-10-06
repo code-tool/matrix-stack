@@ -20,7 +20,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-account-data
@@ -96,7 +96,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-background-worker
@@ -155,7 +155,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-device-lists
@@ -231,7 +231,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-event-persister
@@ -290,7 +290,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-federation-sender
@@ -366,7 +366,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-master
@@ -439,7 +439,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-media-repository-background-jobs
@@ -515,7 +515,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-presence
@@ -574,7 +574,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-push-rules
@@ -650,7 +650,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-pusher
@@ -709,7 +709,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-quarantined-media-changes
@@ -785,7 +785,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-receipts
@@ -861,7 +861,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-thread-subscriptions
@@ -937,7 +937,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-to-device
@@ -1013,7 +1013,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-typing
@@ -1089,7 +1089,7 @@ spec:
         prometheus.io/port: "9092"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/_synapse/metrics"
-        checksum/secret: 35401b3369f1e4d2fab572b9dff98daaa93d78045e8fac365d30008576810735
+        checksum/secret: 4b65a6d0a4597884fd8e3d7105144188adfc18edf9571997d7451b99ec8a55c1
       labels:
         app: synapse
         component: synapse-user-dir

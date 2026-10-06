@@ -165,16 +165,6 @@ data:
                                   name: whoami_hash
                             {{- end }}
 
-                            {{- range $route := .Values.ingress.mediaRepositoryRoutes }}
-                            - match:
-                                safe_regex:
-                                  regex: {{ printf "^%s" $route | squote }}
-                              route:
-                                timeout: 300s
-                                auto_host_rewrite: true
-                                cluster: httpd-media-repository
-                            {{- end }}
-
                             {{- range $route := .Values.ingress.quarantineMediaChangesRoutes }}
                             - match:
                                 safe_regex:
@@ -183,6 +173,16 @@ data:
                                 timeout: 300s
                                 auto_host_rewrite: true
                                 cluster: httpd-quarantined-media-changes
+                            {{- end }}
+
+                            {{- range $route := .Values.ingress.mediaRepositoryRoutes }}
+                            - match:
+                                safe_regex:
+                                  regex: {{ printf "^%s" $route | squote }}
+                              route:
+                                timeout: 300s
+                                auto_host_rewrite: true
+                                cluster: httpd-media-repository
                             {{- end }}
 
                             {{- range $route := .Values.ingress.toDeviceRoutes }}
