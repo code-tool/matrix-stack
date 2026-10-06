@@ -1,6 +1,6 @@
 image:
   repository: "redis"
-  tag: "7.2.15"
+  tag: "7.4.11"
   pullPolicy: IfNotPresent
 resources: {}
 nodeSelector: {}
@@ -11,5 +11,5 @@ exporter:
   enabled: true
   image:
     repository: "oliver006/redis_exporter"
-    tag: "v1.88.0"
+    tag: "v1.93.0"
     pullPolicy: IfNotPresent
