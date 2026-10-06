@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -110,7 +110,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -189,7 +189,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -268,7 +268,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -347,7 +347,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:
@@ -426,7 +426,7 @@ spec:
     spec:
       containers:
       - name: synapse
-        image: ghcr.io/code-tool/matrix-stack/synapse:v1.157.2
+        image: ghcr.io/code-tool/matrix-stack/synapse:v1.160.0
         imagePullPolicy: IfNotPresent
         resources: 
           limits:

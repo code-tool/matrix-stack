@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        image: ghcr.io/icoretech/pgbouncer-docker:1.24.1
+        image: ghcr.io/icoretech/pgbouncer-docker:1.25.2
         imagePullPolicy: IfNotPresent
         resources:
           

@@ -585,7 +585,7 @@ data:
                                 cluster: httpd-user-dir
                             - match:
                                 safe_regex:
-                                  regex: '^/_matrix/client/(.*)/(login|logout|refresh)'
+                                  regex: '^/_matrix/client/(.*)/(login|logout|refresh).*'
                               route:
                                 timeout: 300s
                                 auto_host_rewrite: true
