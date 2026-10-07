@@ -2,4 +2,4 @@ apiVersion: v2
 appVersion: 8.10.2
 description: matrix synapse kubernetes deployment
 name: redis
-version: 0.7.0
+version: 0.7.1
