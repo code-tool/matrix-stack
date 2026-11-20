@@ -164,6 +164,16 @@ entries:
   element-call:
   - apiVersion: v2
     appVersion: v0.16.3
+    created: "2026-11-20T10:56:09.927927368Z"
+    digest: e228592bae11b3601d85ca85b7b92de0a63026735589bc1ce0d8cd5d94a49ef1
+    name: element-call
+    sources:
+    - https://github.com/element-hq/element-call
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.3.0/element-call-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.16.3
     created: "2026-08-08T16:04:59.111974003Z"
     digest: 69b365e74c203587df12716cd9f40457310b1cc04c638a3c686a900addca871d
     name: element-call
@@ -219,6 +229,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/element-call-0.0.1/element-call-0.0.1.tgz
     version: 0.0.1
   jitsi:
+  - apiVersion: v1
+    created: "2026-11-20T10:56:10.067118074Z"
+    digest: 3e5de596b046196dde7e724044d6f3bf81a90cb0bb1393023fb37e3d5c43a6e9
+    name: jitsi
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/jitsi-0.5.0/jitsi-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v1
     created: "2026-08-08T16:04:59.249740884Z"
     digest: c8f5605ed24d752f2c560b7399b73abca02a1b9135d1904d0de7543b2293c425
@@ -441,6 +458,16 @@ entries:
   livekit-jwt:
   - apiVersion: v2
     appVersion: 0.4.0
+    created: "2026-11-20T10:56:10.207129128Z"
+    digest: c2d3ceb4ce8325a053a162845d3167f6929b562dd3cb01d10af311ded578788d
+    name: livekit-jwt
+    sources:
+    - https://github.com/element-hq/lk-jwt-service
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/livekit-jwt-0.6.0/livekit-jwt-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: 0.4.0
     created: "2026-08-08T16:04:59.374523531Z"
     digest: 7a87b1bfdb8d69d9752036c30b7b096e69c80645a5db5b0af17c83c9ecb6a673
     name: livekit-jwt
@@ -525,6 +552,15 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/livekit-jwt-0.0.1/livekit-jwt-0.0.1.tgz
     version: 0.0.1
   matrix-alertmanager-receiver:
+  - apiVersion: v1
+    created: "2026-11-20T10:56:10.420734064Z"
+    digest: 172d00f2b8e1709385000b8f3bfa933801087b583d824a8457aba0f2190cc95c
+    name: matrix-alertmanager-receiver
+    sources:
+    - https://github.com/metio/matrix-alertmanager-receiver
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/matrix-alertmanager-receiver-0.6.0/matrix-alertmanager-receiver-0.6.0.tgz
+    version: 0.6.0
   - apiVersion: v1
     created: "2026-08-08T16:04:59.515511867Z"
     digest: 415f89c6ac90afab2507fe947a9e3e823ac29f61ba0b33503756b46e7f6e92be
@@ -723,6 +759,13 @@ entries:
     - https://github.com/code-tool/matrix-stack/releases/download/redis-0.0.2/redis-0.0.2.tgz
     version: 0.0.2
   sentry-webhook:
+  - apiVersion: v1
+    created: "2026-11-20T10:56:10.65410226Z"
+    digest: 2853d1fdbbf8c2a6fd31ffd877c0047fad2fcc0a51be742105d6fb5159ef5d3c
+    name: sentry-webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/sentry-webhook-0.4.0/sentry-webhook-0.4.0.tgz
+    version: 0.4.0
   - apiVersion: v1
     created: "2026-08-08T16:04:59.770626748Z"
     digest: db121f248602c08d22ad08bbb7b1e1735404847589352b0ed6bcf669fc14fecb
@@ -2526,6 +2569,13 @@ entries:
     version: 0.0.2
   webhook:
   - apiVersion: v1
+    created: "2026-11-20T10:56:10.793972354Z"
+    digest: 772b4fb985363da3b7a7386a57dd6b1583ce92e3057053d6c764e79daa6f5927
+    name: webhook
+    urls:
+    - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.9.0/webhook-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v1
     created: "2026-08-08T16:04:59.899873549Z"
     digest: 0c4e385816215d904f5800f51854aa2933db95086cc45611a737e56ab999e713
     name: webhook
@@ -2637,4 +2687,4 @@ entries:
     urls:
     - https://github.com/code-tool/matrix-stack/releases/download/webhook-0.0.2/webhook-0.0.2.tgz
     version: 0.0.2
-generated: "2026-11-20T10:52:11.741000726Z"
+generated: "2026-11-20T10:56:10.794595235Z"
