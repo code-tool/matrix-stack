@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
-    {{- toYaml .Values.admin.gatewayApi.parentRefs | nindent 4 }}
+    {{- include "synapse.gatewayParentRefs" .Values.admin.gatewayApi.parentRefs | nindent 4 }}
   {{- if .Values.admin.ingress.serverName }}
   hostnames:
     - {{ .Values.admin.ingress.serverName }}
@@ -21,6 +21,9 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: admin
+        - group: ""
+          kind: Service
+          name: admin
           port: 80
+          weight: 1
 {{- end }}

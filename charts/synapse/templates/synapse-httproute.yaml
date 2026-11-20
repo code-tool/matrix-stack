@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
-    {{- toYaml .Values.gatewayApi.parentRefs | nindent 4 }}
+    {{- include "synapse.gatewayParentRefs" .Values.gatewayApi.parentRefs | nindent 4 }}
   {{- if .Values.synapse.serverName }}
   hostnames:
     - {{ .Values.synapse.serverName }}
@@ -21,6 +21,9 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: synapse-client-reader-envoy
+        - group: ""
+          kind: Service
+          name: synapse-client-reader-envoy
           port: 80
+          weight: 1
 {{- end }}

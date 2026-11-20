@@ -6,7 +6,9 @@ metadata:
   name: matrix-authentication
 spec:
   parentRefs:
-    - name: matrix-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: matrix-gateway
       namespace: gateway-system
   hostnames:
     - NOT-CONFIGURED
@@ -16,5 +18,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: matrix-authentication
+        - group: ""
+          kind: Service
+          name: matrix-authentication
           port: 80
+          weight: 1

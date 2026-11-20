@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
-    {{- toYaml .Values.wellKnown.gatewayApi.parentRefs | nindent 4 }}
+    {{- include "synapse.gatewayParentRefs" .Values.wellKnown.gatewayApi.parentRefs | nindent 4 }}
   {{- if .Values.synapse.serverName }}
   hostnames:
     - {{ .Values.synapse.serverName }}
@@ -21,6 +21,9 @@ spec:
             type: PathPrefix
             value: /.well-known/matrix
       backendRefs:
-        - name: well-known
+        - group: ""
+          kind: Service
+          name: well-known
           port: 80
+          weight: 1
 {{- end }}

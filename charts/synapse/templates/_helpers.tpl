@@ -193,3 +193,14 @@ volumes:
   secret:
     secretName: synapse-{{ .name }}-secret
 {{- end }}
+
+{{/*
+Render Gateway API parentRefs with the defaults the API server fills in
+(group, kind), so GitOps tools don't report a permanent diff.
+*/}}
+{{- define "synapse.gatewayParentRefs" -}}
+{{- range $i, $ref := . }}
+{{- if $i }}{{ "\n" }}{{ end -}}
+- {{ toYaml (merge (dict) $ref (dict "group" "gateway.networking.k8s.io" "kind" "Gateway")) | nindent 2 | trim }}
+{{- end }}
+{{- end }}
