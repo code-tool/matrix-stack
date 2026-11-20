@@ -12,7 +12,9 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
-    {{- toYaml .Values.gatewayApi.parentRefs | nindent 4 }}
+    {{- range .Values.gatewayApi.parentRefs }}
+    - {{ toYaml (merge (dict) . (dict "group" "gateway.networking.k8s.io" "kind" "Gateway")) | nindent 6 | trim }}
+    {{- end }}
   {{- if .Values.ingress.serverName }}
   hostnames:
     - {{ .Values.ingress.serverName }}
@@ -26,6 +28,9 @@ spec:
             type: Exact
             value: /get_token
       backendRefs:
-        - name: livekit-jwt
+        - group: ""
+          kind: Service
+          name: livekit-jwt
           port: 80
+          weight: 1
 {{- end }}

@@ -10,7 +10,9 @@ metadata:
   {{- end }}
 spec:
   parentRefs:
-    {{- toYaml .Values.gatewayApi.parentRefs | nindent 4 }}
+    {{- range .Values.gatewayApi.parentRefs }}
+    - {{ toYaml (merge (dict) . (dict "group" "gateway.networking.k8s.io" "kind" "Gateway")) | nindent 6 | trim }}
+    {{- end }}
   {{- if .Values.ingress.serverName }}
   hostnames:
     - {{ .Values.ingress.serverName }}
@@ -21,20 +23,29 @@ spec:
             type: PathPrefix
             value: /xmpp-websocket
       backendRefs:
-        - name: prosody
+        - group: ""
+          kind: Service
+          name: prosody
           port: 5280
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /colibri-ws
       backendRefs:
-        - name: jitsi-jvb
+        - group: ""
+          kind: Service
+          name: jitsi-jvb
           port: 9090
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: jitsi-web
+        - group: ""
+          kind: Service
+          name: jitsi-web
           port: 80
+          weight: 1
 {{- end }}
